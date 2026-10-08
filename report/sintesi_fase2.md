@@ -175,7 +175,7 @@ Il modello è **invariante alla scala**: gli agenti interagiscono attraverso est
 | 50.000 | 30 | 4,2 s | 0,06934 | 0,04294 | 2,1653 | 0,1548 |
 | 500.000 | 10 | 19 s | 0,06935 | 0,04295 | 2,1659 | 0,1549 |
 | 5.000.000 | 3 | 137 s | 0,06933 | 0,04293 | 2,1654 | 0,1548 |
-| **24.000.000** (occupati in Italia) | 1 | in aggiornamento con burn-in di 300 anni (con 120 anni: 589 s, 2,5 GB, stessi valori alla quarta cifra) | | | | |
+| **24.000.000** (occupati in Italia) | 1 | 18 min, 2,4 GB | 0,06933 | 0,04293 | 2,1656 | 0,1549 |
 
 Tempi con 4 core: le repliche girano in parallelo, quindi la riga da 24 milioni (una sola replica) ha usato un solo core.
 Conclusione: 5.000 agenti sono un campione sufficiente per le medie, 50.000 restringono gli intervalli
