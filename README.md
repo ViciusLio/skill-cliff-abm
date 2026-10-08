@@ -74,6 +74,60 @@ complementare, rende più efficace l'insegnamento. Risultati, 50 anni dopo l'int
    scelta privata vale meno di non automatizzare affatto. Su 10 anni le due scelte quasi coincidono:
    il danno arriva dopo.
 
+## Cosa significa: implicazioni
+
+I numeri qui sotto vengono dal modello calibrato, non da dati: indicano direzioni e ordini di
+grandezza, non previsioni.
+
+**Lavoro.**
+- **Il posto da junior è un posto di formazione.** Un junior non produce solo il suo output: è il canale
+  con cui la conoscenza dei senior passa alla generazione successiva. Tagliare le assunzioni
+  entry-level riduce l'apprendimento da incontri del 45%.
+- **Il conto arriva ai senior di domani.** Chi oggi è già senior non perde nulla; chi entra oggi
+  diventerà un senior con meno competenze. Nel modello l'effetto sui senior compare dopo 12 anni.
+- **Restare fuori costa il doppio.** Se i junior sostituiti non trovano un altro lavoro, la perdita
+  di capitale umano passa dal 5,2% al 10,2% e l'output scende sotto lo scenario senza IA.
+
+**Politica.**
+- **È un fallimento di mercato.** La formazione dei junior è un'esternalità tra generazioni:
+  l'impresa paga il costo, il beneficio va all'economia futura. Nel modello un'impresa automatizza
+  il 30% dei compiti junior; il pianificatore, su 50 anni, si ferma al 9%.
+- **L'orizzonte decide.** Su 10 anni le due scelte quasi coincidono (25% contro 30%). Una politica
+  valutata sul bilancio annuale o sul ciclo elettorale non vede il problema.
+- **Le leve hanno un parametro preciso nel modello:**
+  - capacità di mentoring riservata nelle imprese (κ);
+  - apprendistati su progetti reali (p);
+  - contributo sull'automazione dei compiti entry-level (tassa sulle riduzioni di p);
+  - incentivi all'IA che aiuta a insegnare invece di sostituire chi impara (β).
+
+  La Proposizione 1 permette di confrontarle con la stessa metrica, l'effetto su `B`.
+- **Misurare prima.** Quando il calo si vede nei senior è tardi. Gli indicatori da seguire sono le
+  assunzioni entry-level, il rapporto junior/senior e il tempo dedicato al mentoring.
+
+**Tecnologia.**
+- **Conta la direzione, non il livello.** La stessa IA che sostituisce i junior toglie il 5,2% di
+  capitale umano; usata per rendere più efficace l'insegnamento lo aumenta del 5,2% e l'output
+  cresce del 12%.
+- **I co-pilot sono una via di mezzo.** Aiutano chi impara, ma possono ridurne lo sforzo (Ide 2026):
+  nel modello sarebbero un β più alto con meno apprendimento autonomo. Il saldo non è scontato e non
+  l'abbiamo ancora simulato.
+- **Il guadagno di produttività può sparire.** Con la stima prudente di Acemoglu (θ = 0,02), la
+  perdita di capitale umano si mangia circa l'86% del guadagno dell'IA.
+
+**Società.**
+- **Equità tra generazioni.** Chi paga sono i lavoratori che entreranno nei prossimi anni, che oggi
+  non votano e non negoziano.
+- **Disuguaglianza.** Gli incontri comprimono le differenze di competenze; toglierli le allarga.
+  Sostituire i non qualificati porta il Gini da 0,155 a 0,170: chi parte più indietro perde anche
+  le occasioni per recuperare. Il risultato si collega all'ipotesi di "doppia segregazione"
+  (ricchezza e competenze).
+- **Il caso italiano.** Le grandi coorti degli anni '60 vanno in pensione proprio ora: la scogliera
+  demografica e quella dell'IA rischiano di sovrapporsi. Il modello per ora ha una demografia
+  stazionaria, quindi questo resta da verificare.
+
+Approfondimenti: sezione 7 dell'[articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf) e
+sezione 7 del [resoconto](report/resoconto_2026-10-08.md).
+
 ## Come leggere questo lavoro
 
 - **In 10 minuti.** La [lezione](https://viciuslio.github.io/skill-cliff-abm/lezione.html),
