@@ -11,255 +11,441 @@
   color-scheme: light;
   --surface-0: #f4f3f0; --surface-1: #fcfcfb; --border: #e4e3df;
   --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #77766f;
-  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a;
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100; --series-5: #e87ba4;
   --seq-1: #86b6ef; --seq-2: #5598e7; --seq-3: #2a78d6; --seq-4: #1c5cab; --seq-5: #0d366b;
   --grid: #e4e3df; --accent: #2a78d6; --accent-soft: #e6effb;
+  /* illustrazioni */
+  --ink: #2b2a28; --fleece-dark: #34332f; --fleece-light: #ffffff; --face-light: #f3e3cf;
+  --sky: #e6effb; --ground: #dfe8d2; --rock: #b9b2a5; --metal: #c9d3df; --glow: #1baf7a;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
     --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
     --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a998f;
-    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-5: #d55181;
     --seq-1: #b7d3f6; --seq-2: #86b6ef; --seq-3: #5598e7; --seq-4: #3987e5; --seq-5: #256abf;
     --grid: #2e2e2c; --accent: #3987e5; --accent-soft: #1b2a3d;
+    --ink: #d9d6cc; --fleece-dark: #4a4944; --fleece-light: #f1efe9; --face-light: #e8d6c0;
+    --sky: #1b2a3d; --ground: #24301f; --rock: #5d584f; --metal: #7d8a99; --glow: #199e70;
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
   --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
   --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a998f;
-  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-5: #d55181;
   --seq-1: #b7d3f6; --seq-2: #86b6ef; --seq-3: #5598e7; --seq-4: #3987e5; --seq-5: #256abf;
   --grid: #2e2e2c; --accent: #3987e5; --accent-soft: #1b2a3d;
+  --ink: #d9d6cc; --fleece-dark: #4a4944; --fleece-light: #f1efe9; --face-light: #e8d6c0;
+  --sky: #1b2a3d; --ground: #24301f; --rock: #5d584f; --metal: #7d8a99; --glow: #199e70;
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body { margin: 0; background: var(--surface-0); color: var(--text-primary); overflow: hidden;
-  font: 18px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  font: clamp(16px, 0.6vw + 12px, 22px)/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 .deck { position: relative; height: 100%; }
-section.slide { position: absolute; inset: 0; display: none; padding: 56px 16px 72px; overflow-y: auto; }
-section.slide.on { display: block; animation: in .35s ease; }
+section.slide { position: absolute; inset: 0; display: none; padding: 52px 24px 70px; overflow-y: auto; }
+section.slide.on { display: grid; place-items: center; animation: in .35s ease; }
 @keyframes in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-.inner { max-width: 1000px; margin: 0 auto; }
-.when { display: inline-block; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase;
+.inner { width: min(1280px, 100%); }
+.split { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(20px, 4vw, 64px); align-items: center; }
+.art svg { width: 100%; height: auto; max-height: 62vh; display: block; }
+.when { display: inline-block; font-size: .75em; letter-spacing: .08em; text-transform: uppercase;
   color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 3px 12px; margin-bottom: 14px; }
-h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.15; margin: 0 0 12px; }
-h2 { font-size: clamp(1.4rem, 3vw, 2rem); line-height: 1.2; margin: 0 0 14px; }
+h1 { font-size: clamp(2rem, 3.6vw, 3.4rem); line-height: 1.1; margin: 0 0 16px; }
+h2 { font-size: clamp(1.5rem, 2.6vw, 2.4rem); line-height: 1.15; margin: 0 0 16px; }
 p, li { color: var(--text-secondary); }
 strong { color: var(--text-primary); }
-.lead { font-size: 1.15rem; }
-.eq { font-family: "Cambria Math", "STIX Two Math", Georgia, serif; font-size: 1.35rem; color: var(--text-primary);
+.lead { font-size: 1.15em; }
+.eq { font-family: "Cambria Math", "STIX Two Math", Georgia, serif; font-size: 1.4em; color: var(--text-primary);
   background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin: 14px 0; overflow-x: auto; }
-.two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
-.card h3 { margin: 0 0 6px; font-size: 1.05rem; }
-.card p { margin: 0; font-size: .95rem; }
-.big { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
-.chart { width: 100%; height: min(52vh, 420px); }
-.timeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 18px 0; }
-.tl { border-top: 3px solid var(--border); padding-top: 8px; font-size: .9rem; color: var(--text-secondary); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+.card h3 { margin: 0 0 6px; font-size: 1.05em; }
+.card p { margin: 0; font-size: .95em; }
+.big { font-size: clamp(2.2rem, 4.5vw, 3.8rem); font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.chart { width: 100%; height: min(56vh, 520px); }
+.chartwrap { position: relative; }
+.peek { position: absolute; right: 0; top: -64px; width: 96px; }
+.timeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 18px 0; }
+.tl { border-top: 4px solid var(--border); padding-top: 8px; font-size: .9em; color: var(--text-secondary); }
 .tl b { display: block; color: var(--text-primary); }
 .tl.hot { border-color: var(--series-2); }
-.q { border-left: 4px solid var(--accent); padding: 4px 0 4px 14px; margin: 14px 0; font-style: italic; color: var(--text-primary); }
-.src { font-size: .8rem; color: var(--text-muted); margin-top: 14px; }
+.q { border-left: 4px solid var(--accent); padding: 4px 0 4px 14px; margin: 16px 0; font-style: italic; color: var(--text-primary); }
+.src { font-size: .75em; color: var(--text-muted); margin-top: 14px; }
 a { color: var(--accent); }
 .bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 10px;
   padding: 10px 16px; background: color-mix(in srgb, var(--surface-0) 92%, transparent); border-top: 1px solid var(--border); }
-.bar button { font: inherit; font-size: .9rem; color: var(--text-primary); background: var(--surface-1);
+.bar button { font: inherit; font-size: .85rem; color: var(--text-primary); background: var(--surface-1);
   border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
 .progress { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
 .progress div { height: 100%; background: var(--accent); width: 0; transition: width .3s; }
-.count { font-size: .85rem; color: var(--text-muted); font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; }
-.top { position: fixed; top: 0; left: 0; right: 0; padding: 12px 16px; font-size: .85rem; color: var(--text-muted);
-  display: flex; justify-content: space-between; }
-@media (max-width: 760px) { .two, .timeline { grid-template-columns: 1fr; } body { font-size: 16px; } }
+.count { font-size: .8rem; color: var(--text-muted); font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; }
+.top { position: fixed; top: 0; left: 0; right: 0; padding: 12px 16px; font-size: .8rem; color: var(--text-muted);
+  display: flex; justify-content: space-between; z-index: 1; }
+@media (max-width: 860px) {
+  .split, .two, .timeline { grid-template-columns: 1fr; }
+  .art svg { max-height: 34vh; }
+  section.slide.on { place-items: start center; }
+  .peek { display: none; }
+}
 </style>
 </head>
 <body>
+<!-- Personaggi originali: pecora nera senior (con occhiali), agnellino junior, robottino IA. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sheep" viewBox="0 0 140 110">
+      <g stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round">
+        <rect x="42" y="78" width="9" height="24" rx="4" fill="var(--ink)"/>
+        <rect x="60" y="80" width="9" height="22" rx="4" fill="var(--ink)"/>
+        <rect x="86" y="80" width="9" height="22" rx="4" fill="var(--ink)"/>
+        <rect x="104" y="78" width="9" height="24" rx="4" fill="var(--ink)"/>
+        <g fill="var(--fleece-dark)">
+          <circle cx="58" cy="48" r="20"/><circle cx="82" cy="40" r="22"/><circle cx="106" cy="48" r="19"/>
+          <circle cx="68" cy="68" r="19"/><circle cx="96" cy="68" r="19"/><circle cx="118" cy="62" r="12"/>
+          <circle cx="50" cy="64" r="14"/>
+        </g>
+        <ellipse cx="34" cy="52" rx="12" ry="5" fill="var(--fleece-dark)" transform="rotate(-25 34 52)"/>
+        <ellipse cx="30" cy="62" rx="17" ry="20" fill="var(--fleece-dark)"/>
+        <circle cx="24" cy="58" r="6" fill="#fff"/><circle cx="37" cy="58" r="6" fill="#fff"/>
+        <circle cx="25" cy="59" r="2.6" fill="#111" stroke="none"/><circle cx="36" cy="59" r="2.6" fill="#111" stroke="none"/>
+        <g fill="none" stroke="var(--face-light)" stroke-width="2.2">
+          <circle cx="24" cy="58" r="8.5"/><circle cx="37" cy="58" r="8.5"/><path d="M32.5 58 h0"/>
+        </g>
+        <path d="M24 72 q6 5 12 0" fill="none" stroke="var(--face-light)" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+    </symbol>
+    <symbol id="lamb" viewBox="0 0 120 100">
+      <g stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round">
+        <rect x="40" y="70" width="8" height="22" rx="4" fill="var(--ink)"/>
+        <rect x="56" y="72" width="8" height="20" rx="4" fill="var(--ink)"/>
+        <rect x="76" y="72" width="8" height="20" rx="4" fill="var(--ink)"/>
+        <rect x="90" y="70" width="8" height="22" rx="4" fill="var(--ink)"/>
+        <g fill="var(--fleece-light)">
+          <circle cx="54" cy="50" r="16"/><circle cx="72" cy="44" r="18"/><circle cx="90" cy="50" r="16"/>
+          <circle cx="62" cy="64" r="15"/><circle cx="84" cy="64" r="15"/><circle cx="102" cy="58" r="10"/>
+        </g>
+        <ellipse cx="22" cy="44" rx="11" ry="4.5" fill="var(--face-light)" transform="rotate(-30 22 44)"/>
+        <ellipse cx="32" cy="56" rx="15" ry="17" fill="var(--face-light)"/>
+        <circle cx="27" cy="53" r="3" fill="#111" stroke="none"/><circle cx="38" cy="53" r="3" fill="#111" stroke="none"/>
+        <circle cx="28" cy="52" r="1" fill="#fff" stroke="none"/><circle cx="39" cy="52" r="1" fill="#fff" stroke="none"/>
+        <circle cx="23" cy="62" r="3" fill="#f4a3a3" stroke="none" opacity=".8"/><circle cx="42" cy="62" r="3" fill="#f4a3a3" stroke="none" opacity=".8"/>
+        <path d="M29 64 q3 3 6 0" fill="none" stroke-width="2" stroke-linecap="round"/>
+      </g>
+    </symbol>
+    <symbol id="robot" viewBox="0 0 90 120">
+      <g stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round">
+        <line x1="45" y1="6" x2="45" y2="20"/><circle cx="45" cy="6" r="5" fill="var(--series-2)"/>
+        <rect x="15" y="20" width="60" height="42" rx="12" fill="var(--metal)"/>
+        <rect x="24" y="31" width="42" height="20" rx="6" fill="#0d1b2a"/>
+        <circle cx="36" cy="41" r="4" fill="var(--glow)" stroke="none"/><circle cx="54" cy="41" r="4" fill="var(--glow)" stroke="none"/>
+        <rect x="22" y="66" width="46" height="36" rx="8" fill="var(--metal)"/>
+        <rect x="36" y="74" width="18" height="10" rx="3" fill="var(--series-1)"/>
+        <rect x="6" y="70" width="12" height="26" rx="6" fill="var(--metal)"/><rect x="72" y="70" width="12" height="26" rx="6" fill="var(--metal)"/>
+        <rect x="28" y="102" width="12" height="14" rx="4" fill="var(--ink)"/><rect x="50" y="102" width="12" height="14" rx="4" fill="var(--ink)"/>
+      </g>
+    </symbol>
+    <symbol id="bulb" viewBox="0 0 40 50">
+      <g stroke="var(--ink)" stroke-width="2.5"><circle cx="20" cy="18" r="14" fill="#ffd54d"/>
+        <rect x="13" y="32" width="14" height="10" rx="3" fill="var(--metal)"/></g>
+    </symbol>
+  </defs>
+</svg>
+
 <div class="top"><span>La skill cliff · Federico Bassi e Vincenzo Lio</span><a href="index.html">risultati</a></div>
 <main class="deck" id="deck">
 
-<section class="slide"><div class="inner">
-  <span class="when">Lezione</span>
-  <h1>Chi insegnerà ai senior di domani?</h1>
-  <p class="lead">Dall'equazione di Lucas del 1988 a una simulazione di sessant'anni: perché
-    l'IA potrebbe farci perdere capitale umano <strong>molto dopo</strong> aver sostituito un lavoro.</p>
-  <p>Modello ad agenti · fase 1 (senza IA) · Federico Bassi e Vincenzo Lio</p>
-  <p class="src">Frecce ← → per avanzare.</p>
-</div></section>
-
-<section class="slide"><div class="inner">
-  <span class="when">Un'esperienza comune</span>
-  <h2>Il primo lavoro</h2>
-  <p class="lead">Pensate al vostro primo lavoro, o a quello che farete. Quanto di ciò che
-    saprete fare a quarant'anni l'avrete imparato da un manuale, e quanto da <strong>una persona
-    più esperta seduta accanto a voi</strong>?</p>
-  <p class="q">Se quella persona non ha più un junior accanto, perché il lavoro del junior lo fa
-    l'IA, cosa succede fra quindici anni, quando toccherebbe al junior insegnare?</p>
-</div></section>
-
-<section class="slide"><div class="inner">
-  <span class="when">1988 · Robert Lucas</span>
-  <h2>L'efficienza dell'apprendimento come costante</h2>
-  <div class="eq">ḣ = B · (1 − u) · h</div>
-  <p>Il capitale umano <strong>h</strong> cresce in proporzione al tempo dedicato a imparare
-    (<strong>1 − u</strong>, dove u è il tempo in produzione) e a un'efficienza <strong>B</strong>.
-    In Lucas, <strong>B è un parametro</strong>: Lucas lo fissa, non lo spiega.</p>
-  <p>Conseguenza: se B è fisso, una tecnologia che cambia <em>come</em> si lavora non tocca
-    <em>quanto</em> si impara.</p>
-  <p class="src">Lucas (1988), Journal of Monetary Economics.</p>
-</div></section>
-
-<section class="slide"><div class="inner">
-  <span class="when">2014 · Lucas e Moll</span>
-  <h2>La conoscenza viaggia negli incontri</h2>
-  <p>Ventisei anni dopo, Lucas stesso, con Benjamin Moll, sostituisce il parametro con un processo:
-    gli agenti si <strong>incontrano</strong> e chi sa di meno impara da chi sa di più.</p>
-  <div class="eq">Δh<sub>junior</sub> = β · max(0, h<sub>senior</sub> − h<sub>junior</sub>)</div>
-  <p>Il guadagno è proporzionale alla <strong>distanza di conoscenza</strong>. L'efficienza
-    dell'apprendimento dipende allora da <em>chi incontri</em> e da <em>quanto spesso</em>.</p>
-  <p class="src">Lucas e Moll (2014), Journal of Political Economy.</p>
-</div></section>
-
-<section class="slide"><div class="inner">
-  <span class="when">2021 · i dati</span>
-  <h2>Si impara davvero dai colleghi</h2>
-  <div class="two">
-    <div class="card"><div class="big">4–9%</div><p>della retribuzione è, in valore, apprendimento dai colleghi
-      (dati amministrativi tedeschi).</p></div>
-    <div class="card"><div class="big">↑</div><p>Si impara soprattutto da chi <strong>ne sa di più</strong>: chi ha
-      colleghi meglio pagati vede crescere più in fretta il proprio salario.</p></div>
+<section class="slide"><div class="inner split">
+  <div>
+    <span class="when">Lezione</span>
+    <h1>Chi insegnerà ai senior di domani?</h1>
+    <p class="lead">Dall'equazione di Lucas del 1988 a una simulazione di sessant'anni: perché
+      l'IA potrebbe farci perdere capitale umano <strong>molto dopo</strong> aver sostituito un lavoro.</p>
+    <p>Modello ad agenti · fase 1 (senza IA) e fase 2 (con IA) · Federico Bassi e Vincenzo Lio</p>
+    <p class="src">Frecce ← → per avanzare.</p>
   </div>
-  <p class="src">Jarosch, Oberfield e Rossi-Hansberg (2021), Econometrica.</p>
+  <div class="art"><svg viewBox="0 0 400 300" role="img" aria-label="Una pecora nera con gli occhiali insegna a un agnellino">
+    <ellipse cx="200" cy="268" rx="190" ry="22" fill="var(--ground)"/>
+    <use href="#sheep" x="40" y="110" width="200" height="157" transform="translate(280 0) scale(-1 1)"/>
+    <use href="#lamb" x="250" y="170" width="120" height="100"/>
+    <use href="#bulb" x="196" y="70" width="44" height="55"/>
+    <path d="M150 120 q50 -50 110 10" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="6 6"/>
+  </svg></div>
 </div></section>
 
-<section class="slide"><div class="inner">
-  <span class="when">2025 · arriva l'IA</span>
-  <h2>I primi segnali colpiscono i junior</h2>
-  <div class="two">
-    <div class="card"><div class="big">−13/16%</div><p>occupati di 22–25 anni nelle occupazioni esposte all'IA,
-      rispetto ai lavoratori esperti (USA, dati ADP).</p></div>
-    <div class="card"><div class="big">junior ↓</div><p>Nelle imprese che adottano l'IA generativa calano le assunzioni
-      junior; i senior restano stabili.</p></div>
+<section class="slide"><div class="inner split">
+  <div>
+    <span class="when">Un'esperienza comune</span>
+    <h2>Il primo lavoro</h2>
+    <p class="lead">Quanto di ciò che saprete fare a quarant'anni l'avrete imparato da un manuale, e quanto da
+      <strong>una persona più esperta seduta accanto a voi</strong>?</p>
+    <p class="q">Se quella persona non ha più un junior accanto, perché il lavoro del junior lo fa
+      l'IA, cosa succede fra quindici anni, quando toccherebbe al junior insegnare?</p>
   </div>
-  <p>Queste stime misurano l'effetto <strong>oggi</strong>, sull'occupazione. Il capitale umano dei
-    senior <strong>del 2040</strong> non si può ancora osservare.</p>
-  <p class="src">Brynjolfsson, Chandar e Chen (2025); Hosseini e Lichtinger (2025).</p>
+  <div class="art"><svg viewBox="0 0 400 300" role="img" aria-label="Agnellino al computer con la pecora senior alle spalle">
+    <rect x="150" y="190" width="220" height="12" rx="4" fill="var(--rock)"/>
+    <rect x="170" y="202" width="10" height="70" fill="var(--rock)"/><rect x="340" y="202" width="10" height="70" fill="var(--rock)"/>
+    <rect x="250" y="130" width="90" height="60" rx="6" fill="var(--metal)" stroke="var(--ink)" stroke-width="2.5"/>
+    <text x="295" y="167" text-anchor="middle" font-family="monospace" font-size="20" fill="var(--ink)">{ }</text>
+    <use href="#lamb" x="160" y="110" width="110" height="92" transform="translate(430 0) scale(-1 1)"/>
+    <use href="#sheep" x="10" y="120" width="170" height="134" transform="translate(190 0) scale(-1 1)"/>
+    <rect x="40" y="40" width="150" height="56" rx="14" fill="var(--surface-1)" stroke="var(--ink)" stroke-width="2"/>
+    <path d="M90 96 l-6 22 l22 -22" fill="var(--surface-1)" stroke="var(--ink)" stroke-width="2"/>
+    <text x="115" y="75" text-anchor="middle" font-size="18" fill="var(--text-primary)">guarda qui…</text>
+  </svg></div>
+</div></section>
+
+<section class="slide"><div class="inner split">
+  <div>
+    <span class="when">1988 · Robert Lucas</span>
+    <h2>L'efficienza dell'apprendimento come costante</h2>
+    <div class="eq">ḣ = B · (1 − u) · h</div>
+    <p>Il capitale umano <strong>h</strong> cresce in proporzione al tempo dedicato a imparare
+      (<strong>1 − u</strong>, dove u è il tempo in produzione) e a un'efficienza <strong>B</strong>.
+      In Lucas, <strong>B è un parametro</strong>: Lucas lo fissa, non lo spiega.</p>
+    <p class="src">Lucas (1988), Journal of Monetary Economics.</p>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 300" role="img" aria-label="La pecora senior alla lavagna">
+    <rect x="150" y="30" width="230" height="150" rx="8" fill="#29433a" stroke="var(--ink)" stroke-width="3"/>
+    <text x="265" y="100" text-anchor="middle" font-family="Georgia, serif" font-size="30" fill="#f1efe9">ḣ = B(1−u)h</text>
+    <text x="265" y="145" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#ffd54d">B = costante?</text>
+    <ellipse cx="200" cy="272" rx="190" ry="18" fill="var(--ground)"/>
+    <use href="#sheep" x="10" y="120" width="190" height="150" transform="translate(210 0) scale(-1 1)"/>
+  </svg></div>
+</div></section>
+
+<section class="slide"><div class="inner split">
+  <div>
+    <span class="when">2014 · Lucas e Moll</span>
+    <h2>La conoscenza viaggia negli incontri</h2>
+    <p>Lucas stesso, con Benjamin Moll, sostituisce il parametro con un processo: gli agenti si
+      <strong>incontrano</strong> e chi sa di meno impara da chi sa di più.</p>
+    <div class="eq">Δh<sub>junior</sub> = β · max(0, h<sub>senior</sub> − h<sub>junior</sub>)</div>
+    <p>Il guadagno è proporzionale alla <strong>distanza di conoscenza</strong>: B dipende da chi incontri e da quanto spesso.</p>
+    <p class="src">Lucas (2009), Economica; Lucas e Moll (2014), Journal of Political Economy.</p>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 300" role="img" aria-label="Pecora e agnellino si incontrano: si accende una lampadina">
+    <ellipse cx="200" cy="268" rx="190" ry="22" fill="var(--ground)"/>
+    <use href="#lamb" x="30" y="160" width="130" height="108" transform="translate(190 0) scale(-1 1)"/>
+    <use href="#sheep" x="200" y="120" width="190" height="150"/>
+    <use href="#bulb" x="170" y="60" width="60" height="75"/>
+    <g stroke="#ffd54d" stroke-width="4" stroke-linecap="round"><path d="M160 70 l-14 -10"/><path d="M240 70 l14 -10"/><path d="M200 48 v-16"/></g>
+  </svg></div>
+</div></section>
+
+<section class="slide"><div class="inner split">
+  <div>
+    <span class="when">2021 · i dati</span>
+    <h2>Si impara davvero dai colleghi</h2>
+    <div class="two">
+      <div class="card"><div class="big">4–9%</div><p>della retribuzione è, in valore, apprendimento dai colleghi (dati amministrativi tedeschi).</p></div>
+      <div class="card"><div class="big">↑</div><p>Si impara soprattutto da chi <strong>ne sa di più</strong>.</p></div>
+    </div>
+    <p class="src">Jarosch, Oberfield e Rossi-Hansberg (2021), Econometrica.</p>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 300" role="img" aria-label="Un gregge di agnellini attorno alla pecora senior">
+    <ellipse cx="200" cy="268" rx="190" ry="22" fill="var(--ground)"/>
+    <use href="#sheep" x="120" y="100" width="170" height="134"/>
+    <use href="#lamb" x="20" y="190" width="100" height="83"/>
+    <use href="#lamb" x="150" y="200" width="90" height="75"/>
+    <use href="#lamb" x="280" y="185" width="100" height="83"/>
+  </svg></div>
+</div></section>
+
+<section class="slide"><div class="inner split">
+  <div>
+    <span class="when">2025 · arriva l'IA</span>
+    <h2>I primi segnali colpiscono i junior</h2>
+    <div class="two">
+      <div class="card"><div class="big">−13/16%</div><p>occupati di 22–25 anni nelle occupazioni esposte all'IA, rispetto agli esperti (USA).</p></div>
+      <div class="card"><div class="big">junior ↓</div><p>Nelle imprese che adottano l'IA generativa calano le assunzioni junior; i senior restano.</p></div>
+    </div>
+    <p>Sono effetti <strong>di oggi</strong>. Il capitale umano dei senior <strong>del 2040</strong> non si può ancora osservare.</p>
+    <p class="src">Brynjolfsson, Chandar e Chen (2025); Hosseini e Lichtinger (2025); Ide (2026).</p>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 300" role="img" aria-label="Il robot alla scrivania, l'agnellino resta fuori">
+    <rect x="150" y="190" width="200" height="12" rx="4" fill="var(--rock)"/>
+    <rect x="170" y="202" width="10" height="70" fill="var(--rock)"/><rect x="320" y="202" width="10" height="70" fill="var(--rock)"/>
+    <use href="#robot" x="210" y="70" width="100" height="133"/>
+    <use href="#sheep" x="250" y="150" width="140" height="110" transform="translate(640 0) scale(-1 1)"/>
+    <use href="#lamb" x="10" y="190" width="100" height="83"/>
+    <text x="62" y="170" text-anchor="middle" font-size="44" font-weight="700" fill="var(--series-2)">?</text>
+  </svg></div>
 </div></section>
 
 <section class="slide"><div class="inner">
   <span class="when">Il dibattito</span>
   <h2>Tesi e antitesi</h2>
   <div class="two">
-    <div class="card"><h3>Antitesi</h3><p>B è un parametro. L'IA sostituisce o completa il lavoro
-      (Acemoglu 2024): conta l'effetto sulla produttività e sull'occupazione di oggi.
-      La capacità di imparare resta quella.</p></div>
-    <div class="card"><h3>Tesi</h3><p>B emerge dagli incontri. Se l'IA toglie lavoro ai junior,
-      toglie anche gli incontri con cui imparano. Il danno arriva <strong>dopo una generazione
-      professionale</strong>: la <em>skill cliff</em>.</p></div>
+    <div class="card"><h3>Antitesi</h3><p>B è un parametro. L'IA sostituisce o completa il lavoro (Acemoglu 2024):
+      conta l'effetto sulla produttività e sull'occupazione di oggi. La capacità di imparare resta quella.</p></div>
+    <div class="card"><h3>Tesi</h3><p>B emerge dagli incontri. Se l'IA toglie lavoro ai junior, toglie anche gli incontri
+      con cui imparano. Il danno arriva <strong>dopo una generazione professionale</strong>: la <em>skill cliff</em>.</p></div>
   </div>
-  <p class="q">Per decidere chi ha ragione serve un esperimento che non possiamo fare nella realtà.
-    Lo facciamo in un'economia artificiale.</p>
+  <p class="q">Serve un esperimento che non possiamo fare nella realtà: lo facciamo in un'economia artificiale.</p>
 </div></section>
 
-<section class="slide"><div class="inner">
-  <span class="when">Il laboratorio</span>
-  <h2>Un'economia di 5.000 lavoratori</h2>
-  <p>Ogni anno i lavoratori invecchiano: i non qualificati entrano a 20 anni, i laureati a 25, e
-    tutti escono a 65. Ogni lavoratore ha un capitale umano <strong>h</strong>, e il ruolo dipende
-    dall'<strong>esperienza</strong>, non dall'età:</p>
-  <div class="two">
-    <div class="card"><h3 style="color:var(--series-2)">Junior · meno di 5 anni</h3>
-      <p>Con probabilità p incontra un senior e impara β per la distanza di conoscenza.</p></div>
-    <div class="card"><h3 style="color:var(--series-1)">Senior · 15 anni e oltre</h3>
-      <p>Insegna senza perdere nulla; ognuno può seguire al massimo κ junior l'anno.</p></div>
+<section class="slide"><div class="inner split">
+  <div>
+    <span class="when">Il laboratorio</span>
+    <h2>Un'economia artificiale</h2>
+    <p>I lavoratori invecchiano ogni anno: i non qualificati entrano a 20 anni, i laureati a 25, tutti escono a 65.
+      Il ruolo dipende dall'<strong>esperienza</strong>:</p>
+    <div class="two">
+      <div class="card"><h3 style="color:var(--series-2)">Junior · meno di 5 anni</h3>
+        <p>Con probabilità p incontra un senior della sua qualifica e impara β per la distanza di conoscenza.</p></div>
+      <div class="card"><h3 style="color:var(--series-1)">Senior · 15 anni e oltre</h3>
+        <p>Insegna senza perdere nulla; ognuno può seguire al massimo κ junior l'anno.</p></div>
+    </div>
+    <p>Da 5 mila a 24 milioni di agenti i risultati non cambiano: il modello è invariante alla scala.</p>
   </div>
-  <p>Tutti imparano anche da soli, sempre meno con l'età, e perdono ogni anno una piccola
-    parte di ciò che sanno (obsolescenza). Salario = capitale umano.</p>
+  <div class="art"><svg viewBox="0 0 400 300" role="img" aria-label="Un gregge numeroso">
+    <ellipse cx="200" cy="262" rx="195" ry="30" fill="var(--ground)"/>
+    <g>
+      <use href="#sheep" x="20" y="60" width="80" height="63"/><use href="#lamb" x="110" y="75" width="60" height="50"/>
+      <use href="#sheep" x="180" y="55" width="80" height="63"/><use href="#lamb" x="275" y="72" width="60" height="50"/>
+      <use href="#lamb" x="10" y="140" width="60" height="50"/><use href="#sheep" x="80" y="125" width="80" height="63"/>
+      <use href="#lamb" x="170" y="140" width="60" height="50"/><use href="#sheep" x="240" y="125" width="80" height="63"/>
+      <use href="#lamb" x="330" y="140" width="60" height="50"/>
+      <use href="#sheep" x="30" y="195" width="80" height="63"/><use href="#lamb" x="125" y="210" width="60" height="50"/>
+      <use href="#sheep" x="200" y="195" width="80" height="63"/><use href="#lamb" x="295" y="210" width="60" height="50"/>
+    </g>
+  </svg></div>
 </div></section>
 
 <section class="slide"><div class="inner">
   <span class="when">Tarato sulla realtà italiana</span>
   <h2>Il primo test: il profilo dei salari</h2>
-  <p>Nel settore privato italiano i salari salgono lentamente e poi si appiattiscono. Il modello
-    lo riproduce senza imporlo: picco dopo circa 34 anni di esperienza, calo finale lieve.</p>
-  <div class="chart" id="c-profile"></div>
+  <p>Nel settore privato italiano i salari salgono lentamente e poi si appiattiscono. Il modello lo
+    riproduce senza imporlo: picco dopo 34 anni di esperienza, calo finale lieve.</p>
+  <div class="chartwrap"><svg class="peek" viewBox="0 0 120 100" aria-hidden="true"><use href="#lamb"/></svg><div class="chart" id="c-profile"></div></div>
 </div></section>
 
 <section class="slide"><div class="inner">
   <span class="when">Anno 0 · regime</span>
   <h2>B non è un parametro: emerge</h2>
-  <p>Misuriamo B come crescita media del capitale umano dei junior. A regime vale
-    <strong>6,9% l'anno</strong>, e il 62% viene dagli incontri con i senior.</p>
-  <div class="chart" id="c-B"></div>
+  <p>B è la crescita media del capitale umano dei junior: <strong>6,9% l'anno</strong>, di cui il 62% dagli incontri con i senior.</p>
+  <div class="chartwrap"><svg class="peek" viewBox="0 0 140 110" aria-hidden="true"><use href="#sheep"/></svg><div class="chart" id="c-B"></div></div>
 </div></section>
 
-<section class="slide"><div class="inner">
-  <span class="when">Anno 10 · l'esperimento</span>
-  <h2>Dimezziamo gli incontri</h2>
-  <p>Non è ancora l'IA: dall'anno 10 dimezziamo solo la probabilità che un junior incontri un
-    senior. Tutto il resto resta uguale, numeri casuali compresi.</p>
-  <div class="timeline">
-    <div class="tl hot"><b>anno 10</b>gli incontri si dimezzano</div>
-    <div class="tl hot"><b>anno 14</b>junior −5,7%</div>
-    <div class="tl"><b>anni 10–20</b>senior: <strong>nessuna</strong> variazione</div>
-    <div class="tl hot"><b>anno 21</b>il primo senior "impoverito"</div>
-    <div class="tl hot"><b>anno 35+</b>senior −3,5%, poi −6,7%</div>
+<section class="slide"><div class="inner split">
+  <div>
+    <span class="when">Anno 10 · l'esperimento</span>
+    <h2>Dimezziamo gli incontri</h2>
+    <p>Non è ancora l'IA: dall'anno 10 dimezziamo solo la probabilità che un junior incontri un senior.
+      Tutto il resto resta uguale, numeri casuali compresi.</p>
+    <div class="timeline">
+      <div class="tl hot"><b>anno 10</b>incontri dimezzati</div>
+      <div class="tl hot"><b>anno 14</b>junior −5,7%</div>
+      <div class="tl"><b>anni 10–20</b>senior: <strong>nessuna</strong> variazione</div>
+      <div class="tl hot"><b>anno 21</b>il primo senior "impoverito"</div>
+      <div class="tl hot"><b>anno 35+</b>senior −3,5%, poi −6,7%</div>
+    </div>
+    <p class="q">Per dieci anni ogni indicatore sui senior direbbe che non è successo niente.</p>
   </div>
-  <p class="q">Per dieci anni ogni indicatore sui senior direbbe che non è successo niente.</p>
+  <div class="art"><svg viewBox="0 0 400 300" role="img" aria-label="Il gregge si avvicina al bordo di una scogliera">
+    <path d="M0 200 H250 L280 300 H0 Z" fill="var(--ground)"/>
+    <path d="M250 200 L280 300 H400 V300 Z" fill="var(--sky)"/>
+    <path d="M250 200 l14 30 l-6 20 l12 50" fill="none" stroke="var(--rock)" stroke-width="6" stroke-linejoin="round"/>
+    <use href="#sheep" x="40" y="105" width="120" height="94" transform="translate(200 0) scale(-1 1)"/>
+    <use href="#lamb" x="150" y="140" width="80" height="66" transform="translate(380 0) scale(-1 1)"/>
+    <text x="330" y="150" text-anchor="middle" font-size="40" font-weight="700" fill="var(--series-2)">!</text>
+  </svg></div>
 </div></section>
 
 <section class="slide"><div class="inner">
   <span class="when">Anni 10–60 · la skill cliff</span>
   <h2>Il danno scende lungo le età, come un'onda</h2>
-  <p>Capitale umano medio per classe d'età. I 20–29enni perdono subito; le classi successive
-    dopo circa 5, 14, 24 e 33 anni.</p>
+  <p>Capitale umano medio per classe d'età. I 20–29enni perdono subito; le classi successive dopo circa 5, 14, 24 e 33 anni.</p>
   <div class="chart" id="c-classes"></div>
 </div></section>
 
 <section class="slide"><div class="inner">
   <span class="when">Anni 10–60 · B ha memoria</span>
   <h2>L'efficienza dell'apprendimento eredita la storia</h2>
-  <p>Gli incontri si dimezzano e B crolla subito. Poi risale un po', perché i junior partono più in
-    basso e hanno più da imparare. Infine scende ancora, quando i nuovi senior hanno meno da insegnare.</p>
+  <p>B crolla subito, risale un po' (i junior partono più in basso e hanno più da imparare), poi scende ancora quando i nuovi senior hanno meno da insegnare.</p>
   <div class="chart" id="c-Bshock"></div>
 </div></section>
 
 <section class="slide"><div class="inner">
   <span class="when">Dal micro al macro</span>
   <h2>Due proposizioni</h2>
-  <div class="card" style="margin-bottom:12px"><h3>1 · B emergente</h3>
-    <div class="eq" style="font-size:1.1rem">E[B<sup>inc</sup>] = Σ<sub>g</sub> (J<sub>g</sub>/J) · β · p<sup>eff</sup><sub>g</sub> · [ h̄<sup>S</sup><sub>g</sub> · media(1/h<sup>J</sup><sub>g</sub>) − 1 + Ω<sub>g</sub> ]</div>
-    <p>Per ogni qualifica g, B dipende da quanti incontri ci sono (p<sup>eff</sup> = min(p, κS/J)) e da quanta
-      conoscenza separa le generazioni. Verificata sul modello: 0,0427 contro 0,0426 simulato.</p></div>
-  <div class="card"><h3>2 · Il ritardo di trasmissione</h3>
-    <p>Dopo una variazione permanente degli incontri, il capitale umano dei senior resta identico per
-      s<sub>S</sub> − s<sub>J</sub> anni e cambia dall'anno successivo. Con 5 e 15 anni: <strong>11 anni</strong>,
-      esattamente come nella simulazione.</p></div>
+  <div class="two">
+    <div class="card"><h3>1 · B emergente</h3>
+      <div class="eq" style="font-size:1em">E[B<sup>inc</sup>] = Σ<sub>g</sub> (J<sub>g</sub>/J) · β · p<sup>eff</sup><sub>g</sub> · [ h̄<sup>S</sup><sub>g</sub> · media(1/h<sup>J</sup><sub>g</sub>) − 1 + Ω<sub>g</sub> ]</div>
+      <p>B dipende da quanti incontri ci sono (p<sup>eff</sup> = min(p, κS/J)) e da quanta conoscenza separa le
+        generazioni. Verificata sul modello: 0,0427 contro 0,0426 simulato.</p></div>
+    <div class="card"><h3>2 · Il ritardo di trasmissione</h3>
+      <p>Dopo una variazione permanente degli incontri, il capitale umano dei senior resta identico per
+        s<sub>S</sub> − s<sub>J</sub> anni e cambia dall'anno successivo. Con 5 e 15: <strong>11 anni</strong>, esattamente come nella simulazione.</p></div>
+  </div>
 </div></section>
 
 <section class="slide"><div class="inner">
-  <span class="when">Domani · fase 2</span>
-  <h2>La corsa</h2>
-  <p>Ora entra l'IA: una produttività <strong>A(t)</strong> che cresce al tasso g, e un bersaglio che decide
-    chi viene sostituito (junior, senior, qualificati, non qualificati) o se l'IA è complementare.</p>
-  <p class="q">La skill cliff diventa una corsa: l'IA cresce più in fretta di quanto eroda la conoscenza
-    su cui si appoggia?</p>
-  <p>Seguirà un caso italiano con la vera piramide per età, in cui le grandi coorti degli anni '60
-    vanno in pensione proprio ora: per separare la scogliera demografica da quella dell'IA.</p>
+  <span class="when">Fase 2 · l'IA arriva all'anno 10</span>
+  <h2>Chi viene sostituito conta</h2>
+  <p>Capitale umano aggregato rispetto a un mondo senza IA. Sostituire i junior è il caso peggiore (−5,2% dopo 50 anni);
+    sostituire i senior quasi non conta finché ci sono mentori in eccesso; l'IA che aiuta a insegnare fa l'opposto (+5,2%).</p>
+  <div class="chartwrap"><svg class="peek" viewBox="0 0 90 120" aria-hidden="true"><use href="#robot"/></svg><div class="chart" id="c-targets"></div></div>
 </div></section>
 
-<section class="slide"><div class="inner">
-  <span class="when">In aula</span>
-  <h2>Domande per la discussione</h2>
-  <ol>
-    <li>Se il costo arriva dopo dieci anni, chi ha l'incentivo a pagarlo oggi? Il mentoring è un <strong>bene pubblico</strong>?</li>
-    <li>Quali indicatori dovremmo guardare <em>adesso</em> per vedere una skill cliff prima che arrivi?</li>
-    <li>Un'IA che fa da tutor ai junior aumenterebbe β invece di ridurre p: cambierebbe la conclusione?</li>
-  </ol>
-  <p><a href="dinamica.html">→ Dinamica degli agenti</a> · <a href="paper.pdf">→ Articolo</a> ·
-    <a href="https://github.com/ViciusLio/skill-cliff-abm">→ Il codice</a></p>
+<section class="slide"><div class="inner split">
+  <div>
+    <span class="when">Fase 2 · la corsa</span>
+    <h2>La skill cliff si mangia il guadagno dell'IA</h2>
+    <p>Con la stima prudente di Acemoglu (θ = 0,02) e bersaglio junior, senza perdita di capitale umano l'output
+      sarebbe <strong>+6,5%</strong> dopo 50 anni. Con la skill cliff è <strong>+1,0%</strong>: se ne perde circa l'<strong>85%</strong>.</p>
+    <div class="chart" id="c-race" style="height:min(42vh,380px)"></div>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 300" role="img" aria-label="Il robot e la pecora corrono">
+    <rect x="0" y="235" width="400" height="40" fill="var(--ground)"/>
+    <g stroke="var(--surface-1)" stroke-width="4" stroke-dasharray="18 14"><line x1="0" y1="255" x2="400" y2="255"/></g>
+    <use href="#robot" x="220" y="110" width="100" height="133"/>
+    <use href="#sheep" x="40" y="130" width="150" height="118" transform="translate(230 0) scale(-1 1)"/>
+    <g stroke="var(--text-muted)" stroke-width="3" stroke-linecap="round"><path d="M30 160 h-20"/><path d="M30 190 h-26"/><path d="M200 150 h-20"/><path d="M200 180 h-26"/></g>
+    <path d="M360 120 v120" stroke="var(--ink)" stroke-width="3"/><path d="M360 120 h30 v20 h-30" fill="var(--series-2)" stroke="var(--ink)" stroke-width="2"/>
+  </svg></div>
+</div></section>
+
+<section class="slide"><div class="inner split">
+  <div>
+    <span class="when">Domani</span>
+    <h2>Cosa resta da fare</h2>
+    <ul>
+      <li><strong>Un caso italiano</strong> con la vera piramide per età: le grandi coorti degli anni '60 vanno in pensione proprio ora.</li>
+      <li><strong>Junior senza lavoro</strong>: chi viene sostituito non produce e non incontra nessuno.</li>
+      <li><strong>Imprese che scelgono</strong> se automatizzare: per misurare l'automazione socialmente eccessiva (Ide).</li>
+      <li><strong>Calibrazione su dati italiani</strong>: profili salariali INPS, apprendimento dai colleghi.</li>
+    </ul>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 300" role="img" aria-label="Pecora e agnellino guardano l'orizzonte">
+    <circle cx="300" cy="190" r="60" fill="#ffd54d" opacity=".7"/>
+    <rect x="0" y="200" width="400" height="100" fill="var(--ground)"/>
+    <use href="#sheep" x="60" y="100" width="170" height="134" transform="translate(290 0) scale(-1 1)"/>
+    <use href="#lamb" x="200" y="150" width="100" height="83"/>
+  </svg></div>
+</div></section>
+
+<section class="slide"><div class="inner split">
+  <div>
+    <span class="when">In aula</span>
+    <h2>Domande per la discussione</h2>
+    <ol>
+      <li>Se il costo arriva dopo dieci anni, chi ha l'incentivo a pagarlo oggi? Il mentoring è un <strong>bene pubblico</strong>?</li>
+      <li>Quali indicatori dovremmo guardare <em>adesso</em> per vedere una skill cliff prima che arrivi?</li>
+      <li>Un'IA che fa da tutor ai junior aumenta β invece di ridurre p: basta a evitare la scogliera?</li>
+    </ol>
+    <p><a href="dinamica.html">→ Dinamica degli agenti</a> · <a href="fase2.html">→ Fase 2</a> · <a href="paper.pdf">→ Articolo</a> ·
+      <a href="https://github.com/ViciusLio/skill-cliff-abm">→ Il codice</a></p>
+  </div>
+  <div class="art"><svg viewBox="0 0 400 300" role="img" aria-label="La pecora senior con un grande punto interrogativo">
+    <ellipse cx="200" cy="268" rx="190" ry="22" fill="var(--ground)"/>
+    <use href="#sheep" x="40" y="110" width="200" height="157" transform="translate(280 0) scale(-1 1)"/>
+    <use href="#lamb" x="250" y="180" width="110" height="92"/>
+    <text x="310" y="150" text-anchor="middle" font-size="110" font-weight="700" fill="var(--accent)">?</text>
+  </svg></div>
 </div></section>
 
 </main>
@@ -275,56 +461,71 @@ a { color: var(--accent); }
 const $ = (id) => document.getElementById(id);
 const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const slides = [...document.querySelectorAll("section.slide")];
-let cur = 0, DATA = null;
+let cur = 0, F1 = null, F2 = null;
 
 function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
-function band(x, s, color, name) {
+function band(x, s, color, name, f = (v) => v) {
+  const m = s.m.map(f), lo = s.lo.map(f), hi = s.hi.map(f);
   return [
-    { x: x.concat([...x].reverse()), y: s.hi.concat([...s.lo].reverse()), fill: "toself", fillcolor: hexA(color, .18),
+    { x: x.concat([...x].reverse()), y: hi.concat([...lo].reverse()), fill: "toself", fillcolor: hexA(color, .18),
       line: { width: 0 }, hoverinfo: "skip", showlegend: false, type: "scatter" },
-    { x, y: s.m, name, type: "scatter", mode: "lines", line: { color, width: 2.5 }, hovertemplate: `${name}: %{y:.3f}<extra></extra>` },
+    { x, y: m, name, type: "scatter", mode: "lines", line: { color, width: 2.5 }, hovertemplate: `${name}: %{y:.3f}<extra></extra>` },
   ];
 }
 function layout(xt, yt, extra = {}) {
   const g = css("--grid");
   return Object.assign({
     paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
-    font: { family: "system-ui, sans-serif", size: 13, color: css("--text-secondary") },
-    margin: { l: 56, r: 12, t: 8, b: 44 }, hovermode: "x unified",
+    font: { family: "system-ui, sans-serif", size: 14, color: css("--text-secondary") },
+    margin: { l: 60, r: 12, t: 8, b: 44 }, hovermode: "x unified",
     xaxis: { title: { text: xt, standoff: 4 }, gridcolor: g, zeroline: false },
     yaxis: { title: { text: yt }, gridcolor: g, zeroline: false },
     legend: { orientation: "h", yanchor: "bottom", y: 1.02, x: 0 },
     hoverlabel: { bgcolor: css("--surface-1"), bordercolor: g, font: { color: css("--text-primary") } },
   }, extra);
 }
-const shock = () => [{ type: "line", x0: 10, x1: 10, yref: "paper", y0: 0, y1: 1, line: { color: css("--text-muted"), width: 1, dash: "dot" } }];
+const vline = (x) => [{ type: "line", x0: x, x1: x, yref: "paper", y0: 0, y1: 1, line: { color: css("--text-muted"), width: 1, dash: "dot" } }];
 const CFG = { displaylogo: false, responsive: true, displayModeBar: false };
+const pct = (v) => 100 * v;
 
 const charts = {
   "c-profile": () => {
-    const p = DATA.scenarios.base.profile;
+    const p = F1.scenarios.base.profile;
     return [[...band(p.low.age, p.low, css("--series-1"), "non qualificati"), ...band(p.high.age, p.high, css("--series-2"), "qualificati")],
       layout("età", "salario (= h)")];
   },
   "c-B": () => {
-    const s = DATA.scenarios.base.series, y = DATA.years;
+    const s = F1.scenarios.base.series, y = F1.years;
     return [[...band(y, s.B, css("--series-1"), "B totale"), ...band(y, s.B_meet, css("--series-2"), "da incontri"),
       ...band(y, s.B_aut, css("--series-3"), "autonomo")], layout("anno", "crescita annua di h dei junior", { yaxis: { rangemode: "tozero", gridcolor: css("--grid") } })];
   },
   "c-classes": () => {
     const seq = ["--seq-1", "--seq-2", "--seq-3", "--seq-4", "--seq-5"].map(css);
-    const tr = Object.entries(DATA.scenarios.shock_p.classes).flatMap(([k, s], i) => band(DATA.years, s, seq[i], `${k} anni`));
-    return [tr, layout("anno", "h medio", { shapes: shock() })];
+    const tr = Object.entries(F1.scenarios.shock_p.classes).flatMap(([k, s], i) => band(F1.years, s, seq[i], `${k} anni`));
+    return [tr, layout("anno", "h medio", { shapes: vline(10) })];
   },
   "c-Bshock": () => {
-    const s = DATA.scenarios.shock_p.series, b = DATA.scenarios.base.series, y = DATA.years;
+    const s = F1.scenarios.shock_p.series, b = F1.scenarios.base.series, y = F1.years;
     return [[...band(y, b.B_meet, css("--text-muted"), "da incontri, base"), ...band(y, s.B_meet, css("--series-2"), "da incontri, p dimezzato")],
-      layout("anno", "B da incontri", { shapes: shock(), yaxis: { rangemode: "tozero", gridcolor: css("--grid") } })];
+      layout("anno", "B da incontri", { shapes: vline(10), yaxis: { rangemode: "tozero", gridcolor: css("--grid") } })];
+  },
+  "c-targets": () => {
+    const col = { junior: "--series-1", senior: "--series-2", qualificati: "--series-3", non_qualificati: "--series-4", complementare: "--series-5" };
+    const tr = Object.entries(F2.targets).flatMap(([t, s]) => band(F2.years, s.H, css(col[t]), F2.labels[t], pct));
+    return [tr, layout("anno", "H, variazione % rispetto a nessuna IA", { shapes: vline(F2.start) })];
+  },
+  "c-race": () => {
+    const r = F2.race["0.03"], A = r.A, th = 0.02;
+    const y = (v, i) => 100 * ((1 + v) * (1 + th * (A[i] - 1)) - 1);
+    const Y = { m: r.H.m.map(y), lo: r.H.lo.map(y), hi: r.H.hi.map(y) };
+    const pure = { m: A.map(a => 100 * th * (a - 1)), lo: A.map(a => 100 * th * (a - 1)), hi: A.map(a => 100 * th * (a - 1)) };
+    return [[...band(F2.years, pure, css("--text-muted"), "solo produttività IA"), ...band(F2.years, Y, css("--series-1"), "output con skill cliff"),
+      ...band(F2.years, r.H, css("--series-2"), "capitale umano", pct)], layout("anno", "% rispetto a nessuna IA", { shapes: vline(F2.start) })];
   },
 };
 
 function renderCharts(slide) {
-  if (!DATA || !window.Plotly) return;
+  if (!F1 || !F2 || !window.Plotly) return;
   slide.querySelectorAll(".chart").forEach((el) => { const [t, l] = charts[el.id](); Plotly.react(el, t, l, CFG); });
 }
 
@@ -363,8 +564,8 @@ try { const t = localStorage.getItem("theme"); if (t) document.documentElement.d
 const fromHash = () => (parseInt(location.hash.slice(1), 10) || 1) - 1;
 window.addEventListener("hashchange", () => { if (fromHash() !== cur) show(fromHash()); });
 show(fromHash());
-Promise.all([window.plotlyReady, fetch("data/fase1.json").then(r => r.json())])
-  .then(([, d]) => { DATA = d; renderCharts(slides[cur]); })
+Promise.all([window.plotlyReady, fetch("data/fase1.json").then(r => r.json()), fetch("data/fase2.json").then(r => r.json())])
+  .then(([, d1, d2]) => { F1 = d1; F2 = d2; renderCharts(slides[cur]); })
   .catch(() => {});
 </script>
 </body>

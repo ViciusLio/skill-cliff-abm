@@ -50,7 +50,7 @@ check((await page.$$eval("#t-targets tbody tr", (r) => r.length)) === 5, "fase2:
 await page.$eval("#theta", (el) => { el.value = "0.2"; el.dispatchEvent(new Event("input")); });
 check((await page.$eval("#v-y", (e) => e.textContent)).startsWith("+"), "fase2: con θ = 0,2 l'output a fine orizzonte cresce");
 
-for (const [slide, id] of [[9, "c-profile"], [10, "c-B"], [12, "c-classes"], [13, "c-Bshock"]]) {
+for (const [slide, id] of [[9, "c-profile"], [10, "c-B"], [12, "c-classes"], [13, "c-Bshock"], [15, "c-targets"], [16, "c-race"]]) {
   await page.goto(`${base}lezione.html#${slide}`, { waitUntil: "networkidle" });
   await page.waitForTimeout(800);
   const t = await plotTraces(page, `#${id}`);

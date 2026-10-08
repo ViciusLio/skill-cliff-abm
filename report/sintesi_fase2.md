@@ -123,8 +123,11 @@ Il modello è **invariante alla scala**: gli agenti interagiscono attraverso est
 | 50.000 | 30 | 2,6 s | 0,06898 | 0,04258 | 2,1566 | 0,1547 |
 | 500.000 | 10 | 11,4 s | 0,06898 | 0,04258 | 2,1570 | 0,1548 |
 | 5.000.000 | 3 | 75 s | 0,06899 | 0,04259 | 2,1569 | 0,1548 |
+| **24.000.000** (occupati in Italia) | 1 | 589 s, 2,5 GB | 0,06899 | 0,04259 | 2,1569 | 0,1548 |
 
-Tempi con 4 core in parallelo. La replica a scala reale italiana (24 milioni di occupati) è in `report/numeri_scala.json` quando disponibile.
+Tempi con 4 core: le repliche girano in parallelo, quindi la riga da 24 milioni (una sola replica) ha usato un solo core.
+Conclusione: 5.000 agenti sono un campione sufficiente per le medie, 50.000 restringono gli intervalli
+di confidenza per i confronti tra scenari; la scala reale è possibile ma non cambia i risultati.
 
 ## 7. Decisioni da confermare (formato D: opzione raccomandata e implementata per prima)
 
