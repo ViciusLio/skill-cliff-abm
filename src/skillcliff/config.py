@@ -54,6 +54,11 @@ class DemographyCfg:
 @dataclass(frozen=True)
 class AICfg:
     enabled: bool = False
+    target: str = "junior"      # junior | senior | qualificati | non_qualificati | complementare
+    start: int = 10             # anno (registrato) di introduzione
+    g: float = 0.03             # crescita annua della produttività dell'IA A(t)
+    phi_max: float = 0.6        # quota massima dei compiti del bersaglio automatizzabile
+    theta: float = 0.02         # Y = H * (1 + theta * (A - 1))
 
 
 @dataclass(frozen=True)

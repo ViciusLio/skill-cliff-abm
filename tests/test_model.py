@@ -54,8 +54,8 @@ def test_same_seed_identical_results():
 
 
 def test_replications_reproducible():
-    a = run_replications(SMALL, n_reps=3)
-    b = run_replications(SMALL, n_reps=3)
+    a = run_replications(SMALL, n_reps=3, workers=1)
+    b = run_replications(SMALL, n_reps=3, workers=3)   # in parallelo: stessi risultati
     np.testing.assert_array_equal(a["Y"], b["Y"])
     assert a["Y"].shape == (3, SMALL.T)
 

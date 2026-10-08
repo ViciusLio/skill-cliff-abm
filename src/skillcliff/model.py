@@ -32,7 +32,8 @@ class Model:
         self.ai = ai if ai is not None else make_ai(cfg)
         self.t = -cfg.burn_in
 
-    def step(self) -> dict[str, np.ndarray | float]:
+    def step(self, record: bool = True) -> dict[str, np.ndarray | float] | None:
+        """Un anno di simulazione. Con record=False (burn-in) non calcola le metriche."""
         cfg, pop = self.cfg, self.pop
 
         # 1-3. demografia
@@ -46,14 +47,14 @@ class Model:
 
         # 4. apprendimento
         junior, senior = role_masks(cfg, pop.exp)
-        p_mult, beta_mult = self.ai.meeting_multipliers(self.t)
-        meet = meeting_gains(cfg, pop.h, junior, senior, self.rng_meet, p_mult, beta_mult, pop.high)
+        mods = self.ai.meeting_modifiers(self.t)
+        meet = meeting_gains(cfg, pop.h, junior, senior, self.rng_meet, mods, pop.high)
         dh_aut = autonomous_gains(cfg, pop.h, pop.exp)
         h_prev = pop.h
         pop.h = h_prev + meet.dh + dh_aut
 
         self.last_meet, self.last_dh_aut = meet, dh_aut
-        rec = self._record(h_prev, meet, dh_aut, junior, senior)
+        rec = self._record(h_prev, meet, dh_aut, junior, senior) if record else None
         self.t += 1
         return rec
 
@@ -61,7 +62,8 @@ class Model:
         pop, n_ages = self.pop, self.cfg.max_age
         mid = ~junior & ~senior
         w = pop.h  # salario = prodotto marginale = h (Y lineare)
-        g_meet, g_aut = meet.dh / h_prev, dh_aut / h_prev
+        j = np.flatnonzero(junior)           # tassi di crescita calcolati solo sui junior
+        g_meet, g_aut = meet.dh[j] / h_prev[j], dh_aut[j] / h_prev[j]
         rec: dict[str, np.ndarray | float] = {
             "N": len(pop),
             "n_junior": int(junior.sum()),
@@ -69,13 +71,16 @@ class Model:
             "n_senior": int(senior.sum()),
             "n_meetings": meet.n_meetings,
             "p_eff": meet.p_eff,
+            "H": float(pop.h.sum()),
             "Y": self.ai.output(self.t, float(pop.h.sum())),
+            "A": self.ai.productivity(self.t),
+            "phi": self.ai.automation_share(self.t),
             "mean_h": float(pop.h.mean()),
             "mean_h_junior": masked_mean(pop.h, junior),
             "mean_h_mid": masked_mean(pop.h, mid),
             "mean_h_senior": masked_mean(pop.h, senior),
-            "B_meet": masked_mean(g_meet, junior),
-            "B_aut": masked_mean(g_aut, junior),
+            "B_meet": float(g_meet.mean()) if j.size else np.nan,
+            "B_aut": float(g_aut.mean()) if j.size else np.nan,
             "gini_w": gini(w),
         }
         rec["B"] = rec["B_meet"] + rec["B_aut"]
@@ -96,7 +101,7 @@ def run_model(cfg: Config, seed_seq: np.random.SeedSequence, ai=None) -> dict[st
     """
     model = Model(cfg, seed_seq, ai)
     for _ in range(cfg.burn_in):
-        model.step()
+        model.step(record=False)
     records = [model.step() for _ in range(cfg.T)]
     out = {k: np.array([r[k] for r in records], dtype=float) for k in SCALARS + ARRAYS}
     return out

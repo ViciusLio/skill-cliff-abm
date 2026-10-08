@@ -6,6 +6,7 @@ Uso: python scripts/make_report.py [--reps 30] [--sens-reps 10]
 from __future__ import annotations
 
 import argparse
+import functools
 import json
 import sys
 import time
@@ -33,6 +34,7 @@ SEQ = ["#86b6ef", "#5598e7", "#2a78d6", "#1c5cab", "#0d366b"]
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 AGE_CLASSES = [(20, 29), (30, 39), (40, 49), (50, 59), (60, 64)]
 SHOCK_YEAR, SHOCK_P_MULT = 10, 0.5
+SHOCK = functools.partial(MeetingShock, year=SHOCK_YEAR, p_mult=SHOCK_P_MULT)
 
 plt.rcParams.update({
     "figure.dpi": 110, "savefig.dpi": 150, "font.size": 10,
@@ -246,7 +248,7 @@ def main() -> None:
 
     cfg = load_config(args.config)
     base = run_replications(cfg, args.reps)
-    shock = run_replications(cfg, args.reps, ai_factory=lambda c: MeetingShock(c, SHOCK_YEAR, SHOCK_P_MULT))
+    shock = run_replications(cfg, args.reps, ai_factory=SHOCK)
     save_results(ROOT / "outputs" / "base" / "results.npz", cfg, base)
     save_results(ROOT / "outputs" / "shock_p" / "results.npz", cfg, shock)
     years = np.arange(cfg.T)
@@ -303,7 +305,7 @@ def main() -> None:
     # D5: robustezza con soglie junior < 10, senior >= 20.
     rob = cfg.with_overrides({"roles.junior_max_exp": 10, "roles.senior_min_exp": 20})
     rob_base = run_replications(rob, args.reps)
-    rob_shock = run_replications(rob, args.reps, ai_factory=lambda c: MeetingShock(c, SHOCK_YEAR, SHOCK_P_MULT))
+    rob_shock = run_replications(rob, args.reps, ai_factory=SHOCK)
     numbers["robustezza_10_20"] = scenario_summary(rob, rob_base, rob_shock)
     numbers["base_5_15"] = scenario_summary(cfg, base, shock)
     docking = ROOT / "outputs" / "docking.json"

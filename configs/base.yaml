@@ -36,5 +36,10 @@ learning:
 demography:
   mode: stationary      # stationary (N costante, entranti = pensionati) | italy (fase successiva)
 
-ai:
-  enabled: false        # fase 2
+ai:                     # fase 2 (vedi src/skillcliff/ai.py)
+  enabled: false
+  target: junior        # junior | senior | qualificati | non_qualificati | complementare
+  start: 10             # anno di introduzione (sui 60 registrati)
+  g: 0.03               # crescita annua di A(t)
+  phi_max: 0.6          # quota massima dei compiti del bersaglio automatizzabile
+  theta: 0.02           # Y = H (1 + theta (A - 1)); 0,02 = +0,7% in dieci anni (Acemoglu 2024)

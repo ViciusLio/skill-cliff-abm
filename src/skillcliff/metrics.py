@@ -7,7 +7,7 @@ from scipy import stats
 # Serie scalari registrate ogni anno.
 SCALARS = (
     "N", "n_junior", "n_mid", "n_senior", "n_meetings", "p_eff",
-    "Y", "mean_h", "mean_h_junior", "mean_h_mid", "mean_h_senior",
+    "H", "Y", "A", "phi", "mean_h", "mean_h_junior", "mean_h_mid", "mean_h_senior",
     "B", "B_meet", "B_aut", "gini_w",
 )
 
