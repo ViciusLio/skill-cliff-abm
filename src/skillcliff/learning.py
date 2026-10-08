@@ -42,8 +42,13 @@ def meeting_gains(
     rng: np.random.Generator,
     p_mult: float = 1.0,
     beta_mult: float = 1.0,
+    high: np.ndarray | None = None,
 ) -> MeetingOutcome:
     """dh_j = beta * max(0, h_s - h_j) per i junior che incontrano un senior estratto a caso.
+
+    Con meetings.same_qual il senior è estratto tra quelli della stessa qualifica del junior
+    (si impara da chi fa il proprio mestiere) e il vincolo di capacità vale per gruppo:
+    p_eff_g = min(p, kappa * S_g / J_g). Altrimenti l'estrazione è sull'intero pool.
 
     I numeri casuali vengono estratti per tutti i junior a prescindere da p, così due
     scenari con lo stesso seed restano accoppiati (common random numbers): un incontro
@@ -52,18 +57,31 @@ def meeting_gains(
     """
     m = cfg.meetings
     j_idx = np.flatnonzero(junior)
-    s_idx = np.flatnonzero(senior)
     u = rng.random(j_idx.size)
     partner_draw = rng.random(j_idx.size)
-    p_eff = effective_meeting_prob(m.p * p_mult, m.kappa, j_idx.size, s_idx.size)
+    if m.same_qual:
+        if high is None:
+            raise ValueError("meetings.same_qual richiede la qualifica dei lavoratori")
+        groups = [(~high[j_idx], np.flatnonzero(senior & ~high)), (high[j_idx], np.flatnonzero(senior & high))]
+    else:
+        groups = [(np.ones(j_idx.size, dtype=bool), np.flatnonzero(senior))]
+
     dh = np.zeros_like(h)
-    meet = u < p_eff
-    learners = j_idx[meet]
-    partners = np.empty(0, dtype=np.int64)
-    if s_idx.size and meet.any():
-        partners = s_idx[(partner_draw[meet] * s_idx.size).astype(np.int64)]
-        dh[learners] = m.beta * beta_mult * np.maximum(0.0, h[partners] - h[learners])
-    return MeetingOutcome(dh=dh, n_meetings=int(meet.sum()), p_eff=p_eff,
+    learners, partners, p_weighted = [], [], 0.0
+    for in_group, s_idx in groups:
+        p_g = effective_meeting_prob(m.p * p_mult, m.kappa, int(in_group.sum()), s_idx.size)
+        p_weighted += p_g * in_group.sum()
+        meet = in_group & (u < p_g)
+        if s_idx.size and meet.any():
+            l_g = j_idx[meet]
+            s_g = s_idx[(partner_draw[meet] * s_idx.size).astype(np.int64)]
+            dh[l_g] = m.beta * beta_mult * np.maximum(0.0, h[s_g] - h[l_g])
+            learners.append(l_g)
+            partners.append(s_g)
+    learners = np.concatenate(learners) if learners else np.empty(0, dtype=np.int64)
+    partners = np.concatenate(partners) if partners else np.empty(0, dtype=np.int64)
+    p_eff = p_weighted / j_idx.size if j_idx.size else 0.0
+    return MeetingOutcome(dh=dh, n_meetings=int(learners.size), p_eff=float(p_eff),
                           learners=learners, partners=partners)
 
 

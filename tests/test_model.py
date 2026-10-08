@@ -70,7 +70,8 @@ def test_common_random_numbers_demography_independent_of_meetings():
 
 
 def test_meeting_rule_is_beta_times_positive_gap():
-    cfg = SMALL.with_overrides({"meetings.p": 1.0, "meetings.kappa": 10.0, "meetings.beta": 0.25})
+    cfg = SMALL.with_overrides({"meetings.p": 1.0, "meetings.kappa": 10.0, "meetings.beta": 0.25,
+                                "meetings.same_qual": False})
     h = np.array([1.0, 3.0, 0.5, 2.0])
     junior = np.array([True, True, False, False])
     senior = np.array([False, False, False, True])
@@ -102,3 +103,5 @@ def test_uids_unique_and_meeting_pairs_are_junior_senior():
         junior, senior = role_masks(SMALL, pop.exp)
         assert junior[meet.learners].all() and senior[meet.partners].all()
         assert meet.learners.size == meet.partners.size == meet.n_meetings
+        # D1: ogni junior incontra un senior della propria qualifica
+        assert (pop.high[meet.learners] == pop.high[meet.partners]).all()

@@ -26,6 +26,7 @@ meetings:
   p: 0.6                # prob. che un junior incontri un senior in un anno (senza vincoli)
   kappa: 0.20           # capacità: junior seguibili da un senior in un anno (1 senior su 5 fa da mentore)
   beta: 0.10            # efficacia: dh = beta * max(0, h_senior - h_junior)
+  same_qual: true       # il junior incontra senior della propria qualifica (decisione D1)
 
 learning:
   delta0: 0.040         # apprendimento autonomo a inizio carriera

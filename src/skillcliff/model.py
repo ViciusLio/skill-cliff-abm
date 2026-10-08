@@ -47,7 +47,7 @@ class Model:
         # 4. apprendimento
         junior, senior = role_masks(cfg, pop.exp)
         p_mult, beta_mult = self.ai.meeting_multipliers(self.t)
-        meet = meeting_gains(cfg, pop.h, junior, senior, self.rng_meet, p_mult, beta_mult)
+        meet = meeting_gains(cfg, pop.h, junior, senior, self.rng_meet, p_mult, beta_mult, pop.high)
         dh_aut = autonomous_gains(cfg, pop.h, pop.exp)
         h_prev = pop.h
         pop.h = h_prev + meet.dh + dh_aut

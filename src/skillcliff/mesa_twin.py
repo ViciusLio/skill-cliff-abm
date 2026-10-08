@@ -64,14 +64,19 @@ class MesaSkillModel(mesa.Model):
         juniors = [a for a in workers if a.exp < cfg.roles.junior_max_exp]
         seniors = [a for a in workers if a.exp >= cfg.roles.senior_min_exp]
         m = cfg.meetings
-        p_eff = min(m.p, m.kappa * len(seniors) / len(juniors)) if juniors and seniors else 0.0
+        # Con same_qual i junior incontrano senior della propria qualifica, con capacità per gruppo.
+        quals = (False, True) if m.same_qual else (None,)
         meet_gain = 0.0
-        for j in juniors:
-            if self.rng.random() < p_eff:
-                s = seniors[int(self.rng.integers(len(seniors)))]
-                gain = m.beta * max(0.0, s.h - j.h)
-                j.dh += gain
-                meet_gain += gain / j.h
+        for q in quals:
+            js = [a for a in juniors if q is None or a.high == q]
+            ss = [a for a in seniors if q is None or a.high == q]
+            p_eff = min(m.p, m.kappa * len(ss) / len(js)) if js and ss else 0.0
+            for j in js:
+                if self.rng.random() < p_eff:
+                    s = ss[int(self.rng.integers(len(ss)))]
+                    gain = m.beta * max(0.0, s.h - j.h)
+                    j.dh += gain
+                    meet_gain += gain / j.h
         aut_gain = 0.0
         for a in workers:
             before = a.dh

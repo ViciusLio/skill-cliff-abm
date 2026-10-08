@@ -19,7 +19,9 @@ import numpy as np  # noqa: E402
 
 from skillcliff import load_config  # noqa: E402
 from skillcliff.ai import MeetingShock  # noqa: E402
-from skillcliff.experiment import run_replications, save_results  # noqa: E402
+from skillcliff.experiment import replication_seeds, run_replications, save_results  # noqa: E402
+from skillcliff.learning import role_masks  # noqa: E402
+from skillcliff.model import Model  # noqa: E402
 from skillcliff.metrics import mean_ci  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -182,6 +184,52 @@ def profile_stats(base, key, entry_age):
             "calo_finale": float(p[-1] / p[peak] - 1)}
 
 
+def first_senior_effect(base, shock):
+    """Primo anno dopo lo shock in cui l'h medio dei senior differisce dal base (Proposizione 2)."""
+    gap = np.abs(shock["mean_h_senior"] - base["mean_h_senior"]).max(axis=0)
+    after = np.flatnonzero(gap[SHOCK_YEAR:] > 0)
+    return int(after[0]) if after.size else None
+
+
+def check_proposition_1(cfg, years=30):
+    """Confronta B da incontri simulato con l'identità di campo medio (per gruppo di qualifica)."""
+    m = Model(cfg, replication_seeds(cfg, 1)[0])
+    for _ in range(cfg.burn_in):
+        m.step()
+    sim, formula, ratio_of_means = [], [], []
+    for _ in range(years):
+        rec = m.step()
+        pop, meet = m.pop, m.last_meet
+        h0 = pop.h - meet.dh - m.last_dh_aut                     # h a inizio anno
+        junior, senior = role_masks(cfg, pop.exp)
+        groups = (~pop.high, pop.high) if cfg.meetings.same_qual else (np.ones(len(pop), bool),)
+        J = junior.sum()
+        f = r = 0.0
+        for g in groups:
+            hJ, hS = h0[junior & g], h0[senior & g]
+            p_g = min(cfg.meetings.p, cfg.meetings.kappa * hS.size / hJ.size)
+            omega = np.mean(np.maximum(0, hJ[:, None] - hS[None, :]) / hJ[:, None])
+            f += hJ.size / J * cfg.meetings.beta * p_g * (hS.mean() * np.mean(1 / hJ) - 1 + omega)
+            r += hJ.size / J * cfg.meetings.beta * p_g * (hS.mean() / hJ.mean() - 1)
+        sim.append(rec["B_meet"]); formula.append(f); ratio_of_means.append(r)
+    return {"B_meet_simulato": float(np.mean(sim)), "identita": float(np.mean(formula)),
+            "rapporto_delle_medie": float(np.mean(ratio_of_means))}
+
+
+def scenario_summary(cfg, base, shock):
+    ea = cfg.population.entry_age
+    late = slice(SHOCK_YEAR + 25, cfg.T)
+    return {
+        "B": ci_dict(base["B"].mean(1)), "B_meet": ci_dict(base["B_meet"].mean(1)),
+        "profilo_non_qualificati": profile_stats(base, "h_by_age_low", ea.low),
+        "profilo_qualificati": profile_stats(base, "h_by_age_high", ea.high),
+        "ritardo_previsto": cfg.roles.senior_min_exp - cfg.roles.junior_max_exp + 1,
+        "ritardo_osservato": first_senior_effect(base, shock),
+        "var_h_senior_lungo": ci_dict(shock["mean_h_senior"][:, late].mean(1) / base["mean_h_senior"][:, late].mean(1) - 1),
+        "var_Y_lungo": ci_dict(shock["Y"][:, late].mean(1) / base["Y"][:, late].mean(1) - 1),
+    }
+
+
 def ci_dict(samples):
     m, lo, hi = mean_ci(samples)
     return {"media": float(m), "ic95": [float(lo), float(hi)]}
@@ -249,6 +297,15 @@ def main() -> None:
         },
         "sensibilita": {str(k): v for k, v in sens.items()},
     }
+    numbers["shock"]["ritardo_previsto"] = cfg.roles.senior_min_exp - cfg.roles.junior_max_exp + 1
+    numbers["shock"]["ritardo_osservato"] = first_senior_effect(base, shock)
+    numbers["proposizione_1"] = check_proposition_1(cfg)
+    # D5: robustezza con soglie junior < 10, senior >= 20.
+    rob = cfg.with_overrides({"roles.junior_max_exp": 10, "roles.senior_min_exp": 20})
+    rob_base = run_replications(rob, args.reps)
+    rob_shock = run_replications(rob, args.reps, ai_factory=lambda c: MeetingShock(c, SHOCK_YEAR, SHOCK_P_MULT))
+    numbers["robustezza_10_20"] = scenario_summary(rob, rob_base, rob_shock)
+    numbers["base_5_15"] = scenario_summary(cfg, base, shock)
     docking = ROOT / "outputs" / "docking.json"
     if docking.exists():
         numbers["docking"] = json.loads(docking.read_text())
@@ -289,7 +346,7 @@ def main() -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(site, ensure_ascii=False))
     print(f"report fase 1 generato in {time.perf_counter() - t0:.1f}s", file=sys.stderr)
-    print(json.dumps({k: v for k, v in numbers.items() if k not in ("sensibilita", "docking")}, indent=1, ensure_ascii=False))
+    print(json.dumps({k: v for k, v in numbers.items() if k not in ("sensibilita", "docking", "profilo")}, ensure_ascii=False))
 
 
 if __name__ == "__main__":

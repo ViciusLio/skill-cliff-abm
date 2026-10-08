@@ -36,6 +36,7 @@ class MeetingsCfg:
     p: float = 0.6
     kappa: float = 0.20
     beta: float = 0.10
+    same_qual: bool = True
 
 
 @dataclass(frozen=True)
