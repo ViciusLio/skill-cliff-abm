@@ -19,14 +19,14 @@ from skillcliff.population import initial_population, n_entrants, new_entrants
 
 
 class Model:
-    def __init__(self, cfg: Config, seed_seq: np.random.SeedSequence) -> None:
+    def __init__(self, cfg: Config, seed_seq: np.random.SeedSequence, ai=None) -> None:
         self.cfg = cfg
         # Stream separati: le estrazioni demografiche non dipendono da quelle degli incontri.
         ss_init, ss_demo, ss_meet = seed_seq.spawn(3)
         self.rng_demo = np.random.default_rng(ss_demo)
         self.rng_meet = np.random.default_rng(ss_meet)
         self.pop = initial_population(cfg, np.random.default_rng(ss_init))
-        self.ai = make_ai(cfg)
+        self.ai = ai if ai is not None else make_ai(cfg)
         self.t = -cfg.burn_in
 
     def step(self) -> dict[str, np.ndarray | float]:
@@ -83,9 +83,13 @@ class Model:
 ARRAYS = ("h_by_age", "n_by_age", "h_by_age_high", "h_by_age_low")
 
 
-def run_model(cfg: Config, seed_seq: np.random.SeedSequence) -> dict[str, np.ndarray]:
-    """Burn-in e poi T anni registrati. Ritorna serie di lunghezza T (o T x età)."""
-    model = Model(cfg, seed_seq)
+def run_model(cfg: Config, seed_seq: np.random.SeedSequence, ai=None) -> dict[str, np.ndarray]:
+    """Burn-in e poi T anni registrati. Ritorna serie di lunghezza T (o T x età).
+
+    `ai` sostituisce il modulo IA di default (oggetto con meeting_multipliers e output);
+    serve per esperimenti di meccanismo e, nella fase 2, per gli scenari.
+    """
+    model = Model(cfg, seed_seq, ai)
     for _ in range(cfg.burn_in):
         model.step()
     records = [model.step() for _ in range(cfg.T)]

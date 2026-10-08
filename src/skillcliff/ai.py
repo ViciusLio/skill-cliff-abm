@@ -21,6 +21,18 @@ class NoAI:
         return sum_h
 
 
+class MeetingShock(NoAI):
+    """Esperimento di meccanismo (non è IA): dall'anno `year` p e beta sono moltiplicati
+    per costanti. Isola l'effetto di una riduzione permanente degli incontri."""
+
+    def __init__(self, cfg: Config, year: int, p_mult: float = 1.0, beta_mult: float = 1.0) -> None:
+        super().__init__(cfg)
+        self.year, self.p_mult, self.beta_mult = year, p_mult, beta_mult
+
+    def meeting_multipliers(self, t: int) -> tuple[float, float]:
+        return (self.p_mult, self.beta_mult) if t >= self.year else (1.0, 1.0)
+
+
 def make_ai(cfg: Config) -> NoAI:
     if cfg.ai.enabled:
         raise NotImplementedError("L'IA arriva nella fase 2")

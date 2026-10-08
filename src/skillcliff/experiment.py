@@ -15,9 +15,12 @@ def replication_seeds(cfg: Config, n_reps: int | None = None) -> list[np.random.
     return np.random.SeedSequence(cfg.seed).spawn(n_reps or cfg.n_reps)
 
 
-def run_replications(cfg: Config, n_reps: int | None = None) -> dict[str, np.ndarray]:
-    """Ritorna {metrica: array (repliche, T[, età])}."""
-    runs = [run_model(cfg, ss) for ss in replication_seeds(cfg, n_reps)]
+def run_replications(cfg: Config, n_reps: int | None = None, ai_factory=None) -> dict[str, np.ndarray]:
+    """Ritorna {metrica: array (repliche, T[, età])}. ai_factory(cfg) crea un modulo IA per replica."""
+    runs = [
+        run_model(cfg, ss, ai_factory(cfg) if ai_factory else None)
+        for ss in replication_seeds(cfg, n_reps)
+    ]
     return {k: np.stack([r[k] for r in runs]) for k in runs[0]}
 
 
