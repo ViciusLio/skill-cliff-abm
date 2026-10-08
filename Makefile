@@ -4,7 +4,7 @@ PY ?= python
 .PHONY: help install test report fase2 scala docking dynamics paper site all clean
 
 help:            ## mostra questo elenco
-	@grep -E '^[a-z]+:.*## ' Makefile | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
+	@grep -E '^[a-z0-9]+:.*## ' Makefile | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
 
 install:         ## installa il pacchetto con test e Mesa
 	$(PY) -m pip install -e ".[dev,mesa]"
