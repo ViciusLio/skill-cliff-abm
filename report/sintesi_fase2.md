@@ -114,6 +114,34 @@ Con θ = 0,02 (Acemoglu) e bersaglio junior, **la perdita di capitale umano si m
 - **Ma anche guadagno più grande.** Con A esponenziale, il guadagno di output cresce più in fretta della perdita, che si satura con $\varphi_{\max}$; la soglia θ per andare in pari quindi scende.
 - **Con θ = 0** (IA che sostituisce senza aggiungere output) l'output cade esattamente come H.
 
+### 4.4 Automazione scelta dall'impresa contro ottimo sociale (D15)
+
+Script `scripts/automazione.py`, numeri in `report/numeri_d15.json`, figura sotto.
+
+**Impostazione.** Dall'anno 10 una quota costante φ dei compiti junior è automatizzata ($p\times(1-\varphi)$).
+L'output netto relativo allo scenario senza automazione è
+
+$$y_t(\varphi) = r_t(\varphi)\left(1 + \pi\varphi - \tfrac{c}{2}\varphi^2\right),\qquad r_t(\varphi) = \frac{H_t(\varphi)}{H_t(0)},$$
+
+con guadagno pieno dell'automazione π = 0,10 e costo di adozione c = 1/3.
+- **L'impresa** prende il capitale umano come dato: i contratti di trasmissione della conoscenza sono incompleti (Ide 2026) e chi forma un junior non ne cattura il valore futuro. Sceglie quindi $\varphi = \pi/c = 0{,}30$.
+- **Il pianificatore** massimizza $\sum_k \rho^{k+1} y_{t_0+k}(\varphi)$ su un orizzonte dato, con $r_t(\varphi)$ misurato dal modello (griglia di φ, 10 repliche per punto, N = 50.000).
+
+![Automazione: impresa contro pianificatore](fig/fig10_automazione.png)
+
+| ρ | Orizzonte | φ ottimo | Eccesso di automazione | Valore della scelta dell'impresa | Valore dell'ottimo |
+|---|---|---|---|---|---|
+| 0,97 | 10 anni | 0,25 | 0,05 | +1,02% | +1,06% |
+| 0,97 | 25 anni | 0,19 | 0,11 | +0,37% | +0,59% |
+| 0,97 | 50 anni | 0,09 | 0,21 | **−0,60%** | +0,14% |
+| 0,99 | 50 anni | 0,05 | 0,26 | **−1,08%** | +0,04% |
+
+*Valori: output netto scontato rispetto a nessuna automazione.*
+
+1. **L'impresa automatizza troppo, e l'eccesso cresce con l'orizzonte.** Su 10 anni l'eccesso è piccolo (0,05), perché il danno sui senior arriva solo dopo 11 anni (Proposizione 2): chi guarda a dieci anni, come un bilancio o un ciclo politico, sceglie quasi come l'impresa.
+2. **Su 50 anni la scelta privata è peggiore di non automatizzare affatto** (−0,6% con ρ = 0,97). Il guadagno immediato è più che compensato dalla perdita di capitale umano.
+3. **I valori di π e c sono illustrativi**: determinano il livello di φ scelto dall'impresa, non il segno dell'eccesso, che deriva solo dal fatto che l'impresa non vede $r_t(\varphi)$.
+
 ## 5. Verifiche
 
 **Riprodotto e verificato**
@@ -129,6 +157,11 @@ Con θ = 0,02 (Acemoglu) e bersaglio junior, **la perdita di capitale umano si m
 4. **L'IA è esogena.** Nessuna impresa sceglie se automatizzare. Il fallimento di mercato di Ide (automazione socialmente eccessiva) richiede una scelta d'impresa: è il passo successivo.
 5. **Il caso complementare è simmetrico per costruzione** (β × (1+φ)). Non c'è il calo di sforzo dei co-pilot descritto da Ide, che lo renderebbe meno favorevole.
 6. **θ e g sono incerti.** Per questo sono esplorati su griglia; la stima di Acemoglu è prudente, altre sono molto più alte.
+
+**Stabilità numerica (controlli dell'8 ottobre)**
+- **Burn-in.** 120 anni non bastano del tutto: la convergenza è lenta perché ogni generazione impara dalla precedente. Con 300 anni l'h dei senior è più alto dello 0,4% e la deriva residua scende da +1,0·10⁻⁴ a −0,9·10⁻⁵ l'anno (relativa). I confronti tra scenari cambiano pochissimo (H con bersaglio junior: −5,20% con 120 anni, −5,26% con 300, −5,23% con 480). **Da fare:** portare il burn-in a 300 anni e rigenerare i numeri.
+- **Esistenza dello stato stazionario.** Con parametri estremi (p = 1, κ = 1, β = 0,5) il capitale umano cresce senza limite: gli incontri diventano un motore di crescita endogena alla Lucas. Con la calibrazione di base l'economia è stazionaria. La soglia tra i due regimi va caratterizzata (analiticamente con la Proposizione 1, o numericamente su una griglia di p e β).
+- **Robustezza dei risultati.** Invarianza alla scala (5 mila – 24 milioni), docking con Mesa, seed diversi (IC al 95% molto stretti), soglie 10/20: le conclusioni qualitative non cambiano.
 
 **Scelte arbitrarie:** la forma $\varphi = \varphi_{\max}(1 - 1/A)$; la forma moltiplicativa di Y; $t_0$ = 10; la stessa φ per tutti i bersagli.
 
@@ -158,5 +191,4 @@ di confidenza per i confronti tra scenari; la scala reale è possibile ma non ca
   - B: forme diverse per sostituzione e complementarità (task-based alla Acemoglu).
 - **D13 – Junior sostituiti.** Fatto: la versione base (restano occupati, incontrano meno) resta il riferimento; la variante "non occupati" (`ai.displacement`) è implementata, testata e riportata accanto (sez. 4.1).
 - **D14 – Sensibilità a κ per il bersaglio senior.** Fatta (sez. 4.3).
-- **D15 – Scelta d'impresa sull'automazione** (per misurare l'automazione socialmente eccessiva di Ide).
-  - **A (raccomandata):** dopo la revisione di questa sintesi.
+- **D15 – Scelta d'impresa sull'automazione.** Fatto (sez. 4.4): l'eccesso di automazione va da 0,05 (orizzonte di 10 anni) a 0,21 (50 anni).

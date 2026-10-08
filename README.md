@@ -67,6 +67,10 @@ complementare, rende più efficace l'insegnamento. Risultati, 50 anni dopo l'int
    circa l'85% del guadagno di produttività dell'IA.
 5. **Se i junior sostituiti restano senza lavoro** il danno raddoppia (capitale umano −10,1%) e
    l'output finisce sotto lo scenario senza IA.
+6. **Le imprese automatizzano troppo.** Un'impresa che non vede la perdita futura di capitale umano
+   automatizza il 30% dei compiti junior; su un orizzonte di 50 anni l'ottimo sociale è il 9%, e la
+   scelta privata vale meno di non automatizzare affatto. Su 10 anni le due scelte quasi coincidono:
+   il danno arriva dopo.
 
 ## Come leggere questo lavoro
 
@@ -96,6 +100,7 @@ make help        # elenco dei comandi
 make test        # test: invarianti, riproducibilità, IA, docking con Mesa
 make report      # fase 1: figure, numeri e dati del sito (~10 s con 4 core)
 make fase2       # fase 2: scenari IA, corsa, sensibilità (~35 s con 4 core)
+make automazione # D15: automazione dell'impresa contro ottimo sociale (~15 s)
 make scala       # invarianza alla scala, fino a 5 milioni di agenti (~1,5 min)
 make paper       # compila paper/main.pdf
 make site        # sito in locale sulla porta 8000 (si apre da solo)
@@ -132,13 +137,14 @@ src/skillcliff/   config.py      parametri (dataclass da YAML)
                   model.py       dinamica annuale
                   metrics.py     metriche, Gini, IC tra repliche
                   experiment.py  repliche con seed derivati, salvataggio
-                  ai.py          IA (fase 2): A(t), bersagli, non occupazione, output;
-                                 esperimento di meccanismo "p dimezzato"
+                  ai.py          IA (fase 2): A(t), bersagli, non occupazione, output,
+                                 automazione a quota fissa (D15), esperimento "p dimezzato"
                   mesa_twin.py   gemello Mesa (solo docking)
 configs/          parametri YAML
 scripts/          run_scenario.py   repliche di uno scenario con parametri da riga di comando
                   make_report.py    fase 1: figure, numeri, dati del sito
                   fase2.py          fase 2: scenari IA, corsa, sensibilità a kappa
+                  automazione.py    D15: automazione scelta dall'impresa contro ottimo sociale
                   scale_check.py    invarianza alla scala (fino a 24 milioni di agenti)
                   docking.py        confronto NumPy vs Mesa
                   export_dynamics.py  dati della vista dinamica

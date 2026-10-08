@@ -1,0 +1,66 @@
+{
+ "pi": 0.1,
+ "c": 0.3333333333333333,
+ "phi_impresa": 0.30000000000000004,
+ "N": 50000,
+ "repliche": 10,
+ "H_fine_per_phi": {
+  "0.00": 0.0,
+  "0.05": -0.008898935895504279,
+  "0.10": -0.01772096142995494,
+  "0.15": -0.026497416877883873,
+  "0.20": -0.03526072428155125,
+  "0.25": -0.043881900361580684,
+  "0.30": -0.05252673690651033,
+  "0.35": -0.061055983698655725,
+  "0.40": -0.06962984076085255,
+  "0.45": -0.07810702830668581,
+  "0.50": -0.08654480324225866,
+  "0.55": -0.09501391945893634,
+  "0.60": -0.1032938933765587
+ },
+ "pianificatore": {
+  "rho=0.97,orizzonte=10": {
+   "phi_ottimo": 0.251,
+   "eccesso_di_automazione": 0.049000000000000044,
+   "perdita_di_benessere_scelta_impresa": 0.00040007888164306227,
+   "valore_ottimo": 0.010639732197250007,
+   "valore_scelta_impresa": 0.01023539658344852
+  },
+  "rho=0.97,orizzonte=25": {
+   "phi_ottimo": 0.187,
+   "eccesso_di_automazione": 0.11300000000000004,
+   "perdita_di_benessere_scelta_impresa": 0.002210620711076916,
+   "valore_ottimo": 0.005918182024019281,
+   "valore_scelta_impresa": 0.0036944784571881772
+  },
+  "rho=0.97,orizzonte=50": {
+   "phi_ottimo": 0.092,
+   "eccesso_di_automazione": 0.20800000000000005,
+   "perdita_di_benessere_scelta_impresa": 0.007425597274614337,
+   "valore_ottimo": 0.0014473605416749358,
+   "valore_scelta_impresa": -0.00598898424943306
+  },
+  "rho=0.99,orizzonte=10": {
+   "phi_ottimo": 0.25,
+   "eccesso_di_automazione": 0.050000000000000044,
+   "perdita_di_benessere_scelta_impresa": 0.00042692877381156347,
+   "valore_ottimo": 0.010510470346116962,
+   "valore_scelta_impresa": 0.010079054350088379
+  },
+  "rho=0.99,orizzonte=25": {
+   "phi_ottimo": 0.17500000000000002,
+   "eccesso_di_automazione": 0.12500000000000003,
+   "perdita_di_benessere_scelta_impresa": 0.0026654558127027217,
+   "valore_ottimo": 0.005248278148550112,
+   "valore_scelta_impresa": 0.0025688332823496918
+  },
+  "rho=0.99,orizzonte=50": {
+   "phi_ottimo": 0.045,
+   "eccesso_di_automazione": 0.25500000000000006,
+   "perdita_di_benessere_scelta_impresa": 0.011119645064359363,
+   "valore_ottimo": 0.0003577710990212424,
+   "valore_scelta_impresa": -0.010765852252973551
+  }
+ }
+}

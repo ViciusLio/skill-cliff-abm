@@ -96,3 +96,15 @@ def test_displacement_identical_before_start_and_keeps_senior_lag():
     np.testing.assert_array_equal(base["H"][: s + 1], ai["H"][: s + 1])
     np.testing.assert_array_equal(base["mean_h_senior"][: s + lag], ai["mean_h_senior"][: s + lag])
     assert ai["mean_h_junior"][s + 3] < base["mean_h_junior"][s + 3]
+
+
+def test_fixed_automation_cuts_junior_meetings_from_start():
+    from skillcliff.ai import FixedAutomation
+
+    base = run_model(AI_CFG, np.random.SeedSequence(6))
+    fx = run_model(AI_CFG, np.random.SeedSequence(6), FixedAutomation(AI_CFG, phi=0.4))
+    s = AI_CFG.ai.start
+    np.testing.assert_array_equal(base["H"][:s], fx["H"][:s])
+    assert fx["phi"][s] == 0.4 and fx["phi"][s - 1] == 0.0
+    assert fx["p_eff"][s + 1] == pytest.approx(0.6 * AI_CFG.meetings.p)
+    assert fx["H"][-1] < base["H"][-1]

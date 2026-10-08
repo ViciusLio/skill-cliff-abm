@@ -123,5 +123,23 @@ class MeetingShock(NoAI):
         return MeetingModifiers(p=(self.p_mult,) * 2, beta=(self.beta_mult,) * 2)
 
 
+class FixedAutomation(NoAI):
+    """D15: dall'anno `start` una quota costante phi dei compiti junior è automatizzata
+    (p * (1 - phi) per entrambe le qualifiche). Serve a confrontare la scelta dell'impresa
+    con quella del pianificatore: phi è la variabile di scelta, l'output è calcolato fuori."""
+
+    def __init__(self, cfg: Config, phi: float, start: int | None = None) -> None:
+        super().__init__(cfg)
+        self.phi = phi
+        self.start = cfg.ai.start if start is None else start
+
+    def automation_share(self, t: int) -> float:
+        return self.phi if t >= self.start else 0.0
+
+    def meeting_modifiers(self, t: int) -> MeetingModifiers:
+        cut = 1.0 - self.automation_share(t)
+        return MeetingModifiers(p=(cut, cut))
+
+
 def make_ai(cfg: Config) -> NoAI:
     return AI(cfg) if cfg.ai.enabled else NoAI(cfg)
