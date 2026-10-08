@@ -1,10 +1,9 @@
-# Pubblica site/ su GitHub Pages. I dati in site/data/ sono generati da
+# Pubblica site/ su GitHub Pages dal branch di default. I dati in site/data/ sono generati da
 # scripts/make_report.py e versionati, così il sito mostra esattamente i risultati della sintesi.
 name: Pages
 
 on:
   push:
-    branches: [main]
     paths: ["site/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
@@ -19,6 +18,8 @@ concurrency:
 
 jobs:
   deploy:
+    # Pubblica solo dal branch di default del repository (oggi il branch di sviluppo, poi main).
+    if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
     environment:
       name: github-pages

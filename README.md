@@ -64,5 +64,6 @@ outputs/          risultati delle simulazioni (non versionati, tranne outputs/ex
 
 ## Report interattivo (GitHub Pages)
 
-Il workflow `.github/workflows/pages.yml` rigenera i risultati e pubblica `site/` a ogni push su `main`.
+Il workflow `.github/workflows/pages.yml` pubblica `site/` a ogni push sul branch di default che modifica `site/`
+(i dati si rigenerano in locale con `scripts/make_report.py` e si versionano).
 Va attivato una sola volta in *Settings → Pages → Build and deployment → Source: GitHub Actions*.
