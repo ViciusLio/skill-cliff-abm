@@ -11,3 +11,4 @@ outputs/*
 !outputs/examples/
 !outputs/.gitkeep
 _site/
+site/vendor/

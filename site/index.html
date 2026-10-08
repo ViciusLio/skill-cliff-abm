@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Skill Cliff ABM</title>
 <meta name="description" content="Report interattivo del modello ad agenti sulla trasmissione di capitale umano tra senior e junior.">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.35.2/plotly.min.js"></script>
+<script src="plotly-loader.js"></script>
 <style>
 :root {
   color-scheme: light;
@@ -218,7 +218,7 @@ $("theme").addEventListener("click", () => {
 try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => DATA && render());
 
-fetch("data/fase1.json").then(r => r.json()).then(d => {
+Promise.all([window.plotlyReady, fetch("data/fase1.json").then(r => r.json())]).then(([, d]) => {
   DATA = d;
   $("scenario").innerHTML = Object.entries(d.scenarios).map(([k, s]) => `<option value="${k}">${s.label}</option>`).join("");
   $("scenario").addEventListener("change", render);
