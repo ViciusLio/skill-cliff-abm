@@ -12,3 +12,15 @@ outputs/*
 !outputs/.gitkeep
 _site/
 site/vendor/
+
+# LaTeX: il PDF si genera (make paper, oppure il workflow Pages)
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.log
+paper/*.out
+paper/*.spl
+paper/*.synctex.gz
+paper/main.pdf

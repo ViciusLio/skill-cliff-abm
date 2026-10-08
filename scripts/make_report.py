@@ -1,4 +1,4 @@
-"""Fase 1: esegue gli esperimenti, produce le figure in report/fig/, i numeri chiave in
+"""Fase 1: esegue gli esperimenti, produce le figure in report/fig/ (italiano) e paper/fig/ (inglese, PDF), i numeri chiave in
 report/numeri_fase1.json e i dati per il report interattivo in site/data/fase1.json.
 
 Uso: python scripts/make_report.py [--reps 30] [--sens-reps 10]
@@ -62,69 +62,97 @@ def profile(res, key):
     return np.nanmean(res[key], axis=1)
 
 
-def savefig(fig, name):
+# Etichette delle figure: italiano per report/fig, inglese per l'articolo (paper/fig).
+LABELS = {
+    "it": {
+        "dir": FIG, "base": "(a) Base stazionario", "shock": f"(b) p dimezzato dall'anno {SHOCK_YEAR}",
+        "year": "anno", "age": "età", "years_old": "anni", "mean_h": "h medio",
+        "B": "B totale", "B_meet": "da incontri", "B_aut": "autonomo",
+        "B_y": "crescita media annua di h dei junior", "low": "non qualificati", "high": "qualificati",
+        "all": "tutti", "profile": "Profilo salariale per età (w = h)", "wage": "salario medio",
+        "base_short": "base", "shock_short": f"p dimezzato dall'anno {SHOCK_YEAR}", "gini": "Gini dei salari",
+        "kappa_base": " (base; uguale per kappa > 0.2)", "sens_a": "(a) B da incontri",
+        "sens_b": "(b) h medio dei senior", "p": "p (probabilità d'incontro)",
+        "files": ("fig1_h_per_classe_eta.png", "fig2_B_emergente.png", "fig3_profilo_salariale.png",
+                  "fig4_gini.png", "fig5_sensibilita_p_kappa.png"),
+    },
+    "en": {
+        "dir": ROOT / "paper" / "fig", "base": "(a) Stationary baseline",
+        "shock": f"(b) p halved from year {SHOCK_YEAR}", "year": "year", "age": "age", "years_old": "years",
+        "mean_h": "mean h", "B": "total B", "B_meet": "from meetings", "B_aut": "autonomous",
+        "B_y": "mean annual growth of junior h", "low": "low-skilled", "high": "high-skilled", "all": "all",
+        "profile": "Age-wage profile (w = h)", "wage": "mean wage", "base_short": "baseline",
+        "shock_short": f"p halved from year {SHOCK_YEAR}", "gini": "Wage Gini",
+        "kappa_base": " (baseline; same for kappa > 0.2)", "sens_a": "(a) B from meetings",
+        "sens_b": "(b) mean senior h", "p": "p (meeting probability)",
+        "files": ("fig1_h_by_age_class.pdf", "fig2_emergent_B.pdf", "fig3_age_wage_profile.pdf",
+                  "fig4_gini.pdf", "fig5_sensitivity_p_kappa.pdf"),
+    },
+}
+
+
+def savefig(fig, L, i):
+    L["dir"].mkdir(parents=True, exist_ok=True)
     fig.tight_layout()
-    fig.savefig(FIG / name, bbox_inches="tight")
+    fig.savefig(L["dir"] / L["files"][i], bbox_inches="tight")
     plt.close(fig)
 
 
-def fig_cohorts(base, shock, years):
+def fig_cohorts(base, shock, years, L):
     fig, axes = plt.subplots(1, 2, figsize=(10, 3.8), sharey=True)
-    for ax, res, title in ((axes[0], base, "(a) Base stazionario"),
-                           (axes[1], shock, f"(b) Esperimento: p dimezzato dall'anno {SHOCK_YEAR}")):
+    for ax, res, title in ((axes[0], base, L["base"]), (axes[1], shock, L["shock"])):
         for (a0, a1), c in zip(AGE_CLASSES, SEQ):
-            band(ax, years, age_class_means(res, a0, a1), c, f"{a0}-{a1} anni")
+            band(ax, years, age_class_means(res, a0, a1), c, f"{a0}-{a1} {L['years_old']}")
         ax.set_title(title)
-        ax.set_xlabel("anno")
+        ax.set_xlabel(L["year"])
     axes[1].axvline(SHOCK_YEAR, color=INK2, linewidth=1, linestyle=":")
-    axes[0].set_ylabel("h medio")
+    axes[0].set_ylabel(L["mean_h"])
     axes[1].legend(loc="lower left", ncol=2, fontsize=8)
-    savefig(fig, "fig1_h_per_classe_eta.png")
+    savefig(fig, L, 0)
 
 
-def fig_B(base, shock, years):
+def fig_B(base, shock, years, L):
     fig, axes = plt.subplots(1, 2, figsize=(10, 3.6), sharey=True)
-    for ax, res, title in ((axes[0], base, "(a) Base stazionario"),
-                           (axes[1], shock, f"(b) p dimezzato dall'anno {SHOCK_YEAR}")):
-        band(ax, years, res["B"], BLUE, "B totale")
-        band(ax, years, res["B_meet"], ORANGE, "da incontri")
-        band(ax, years, res["B_aut"], AQUA, "autonomo")
+    for ax, res, title in ((axes[0], base, L["base"]), (axes[1], shock, L["shock"])):
+        band(ax, years, res["B"], BLUE, L["B"])
+        band(ax, years, res["B_meet"], ORANGE, L["B_meet"])
+        band(ax, years, res["B_aut"], AQUA, L["B_aut"])
         ax.set_title(title)
-        ax.set_xlabel("anno")
+        ax.set_xlabel(L["year"])
     axes[1].axvline(SHOCK_YEAR, color=INK2, linewidth=1, linestyle=":")
-    axes[0].set_ylabel("crescita media annua di h dei junior")
+    axes[0].set_ylabel(L["B_y"])
     axes[0].legend(loc="lower right", fontsize=8)
     axes[0].set_ylim(bottom=0)
-    savefig(fig, "fig2_B_emergente.png")
+    savefig(fig, L, 1)
 
 
-def fig_profile(base, cfg):
+def fig_profile(base, cfg, L):
     ages = np.arange(cfg.max_age)
     fig, ax = plt.subplots(figsize=(6.4, 3.8))
-    for key, c, lab, a0 in (("h_by_age_low", BLUE, "non qualificati", cfg.population.entry_age.low),
-                            ("h_by_age_high", ORANGE, "qualificati", cfg.population.entry_age.high),
-                            ("h_by_age", INK2, "tutti", cfg.population.entry_age.low)):
+    for key, c, lab, a0 in (("h_by_age_low", BLUE, L["low"], cfg.population.entry_age.low),
+                            ("h_by_age_high", ORANGE, L["high"], cfg.population.entry_age.high),
+                            ("h_by_age", INK2, L["all"], cfg.population.entry_age.low)):
         p = profile(base, key)[:, a0:]
         band(ax, ages[a0:], p, c, lab, linewidth=2 if key != "h_by_age" else 1.2)
-    ax.set_title("Profilo salariale per età (w = h)")
-    ax.set_xlabel("età")
-    ax.set_ylabel("salario medio")
+    ax.set_title(L["profile"])
+    ax.set_xlabel(L["age"])
+    ax.set_ylabel(L["wage"])
     ax.legend(loc="lower right", fontsize=8)
-    savefig(fig, "fig3_profilo_salariale.png")
+    savefig(fig, L, 2)
 
 
-def fig_gini(base, shock, years):
+def fig_gini(base, shock, years, L):
     fig, ax = plt.subplots(figsize=(6.4, 3.4))
-    band(ax, years, base["gini_w"], BLUE, "base")
-    band(ax, years, shock["gini_w"], ORANGE, f"p dimezzato dall'anno {SHOCK_YEAR}")
+    band(ax, years, base["gini_w"], BLUE, L["base_short"])
+    band(ax, years, shock["gini_w"], ORANGE, L["shock_short"])
     ax.axvline(SHOCK_YEAR, color=INK2, linewidth=1, linestyle=":")
-    ax.set_title("Gini dei salari")
-    ax.set_xlabel("anno")
+    ax.set_title(L["gini"])
+    ax.set_xlabel(L["year"])
     ax.legend(fontsize=8)
-    savefig(fig, "fig4_gini.png")
+    savefig(fig, L, 3)
 
 
-def fig_sensitivity(sens):
+def fig_sensitivity(sens, L):
     fig, axes = plt.subplots(1, 2, figsize=(10, 3.6))
     colors = [BLUE, ORANGE, AQUA]
     for (kappa, rows), c in zip(sens.items(), colors):
@@ -134,14 +162,14 @@ def fig_sensitivity(sens):
             lo = np.array([r[key][1] for r in rows])
             hi = np.array([r[key][2] for r in rows])
             ax.fill_between(ps, lo, hi, color=c, alpha=0.18, linewidth=0)
-            lab = f"kappa = {kappa}" + (" (base; uguale per kappa > 0.2)" if kappa == 0.2 else "")
+            lab = f"kappa = {kappa}" + (L["kappa_base"] if kappa == 0.2 else "")
             ax.plot(ps, m, color=c, marker="o", markersize=4, label=lab)
-    axes[0].set_title("(a) B da incontri")
-    axes[1].set_title("(b) h medio dei senior")
+    axes[0].set_title(L["sens_a"])
+    axes[1].set_title(L["sens_b"])
     for ax in axes:
-        ax.set_xlabel("p (probabilità d'incontro)")
+        ax.set_xlabel(L["p"])
     axes[0].legend(fontsize=8)
-    savefig(fig, "fig5_sensibilita_p_kappa.png")
+    savefig(fig, L, 4)
 
 
 def profile_stats(base, key, entry_age):
@@ -188,11 +216,12 @@ def main() -> None:
                          "p_eff": float(r["p_eff"].mean())})
         sens[kappa] = rows
 
-    fig_cohorts(base, shock, years)
-    fig_B(base, shock, years)
-    fig_profile(base, cfg)
-    fig_gini(base, shock, years)
-    fig_sensitivity(sens)
+    for L in LABELS.values():
+        fig_cohorts(base, shock, years, L)
+        fig_B(base, shock, years, L)
+        fig_profile(base, cfg, L)
+        fig_gini(base, shock, years, L)
+        fig_sensitivity(sens, L)
 
     ea = cfg.population.entry_age
     tm = lambda res, k: res[k].mean(axis=1)  # noqa: E731  media temporale per replica

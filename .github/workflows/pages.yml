@@ -1,10 +1,10 @@
-# Pubblica site/ su GitHub Pages dal branch di default. I dati in site/data/ sono generati da
+# Pubblica site/ (e l'articolo compilato, site/paper.pdf) su GitHub Pages dal branch di default. I dati in site/data/ sono generati da
 # scripts/make_report.py e versionati, così il sito mostra esattamente i risultati della sintesi.
 name: Pages
 
 on:
   push:
-    paths: ["site/**", ".github/workflows/pages.yml"]
+    paths: ["site/**", "paper/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:
@@ -27,6 +27,12 @@ jobs:
           npm pack --silent plotly.js-dist-min@2.35.2
           mkdir -p site/vendor
           tar -xzf plotly.js-dist-min-2.35.2.tgz -O package/plotly.min.js > site/vendor/plotly.min.js
+      - name: Compila l'articolo
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: main.tex
+          working_directory: paper
+      - run: cp paper/main.pdf site/paper.pdf
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
