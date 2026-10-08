@@ -18,16 +18,16 @@
 
 \begin{frontmatter}
 
-\title{Is learning efficiency a parameter? An agent-based approach to intergenerational knowledge transmission and the AI skill cliff}
+\title{What seniors no longer teach: learning efficiency, intergenerational knowledge transmission and the AI skill cliff. An agent-based approach}
 
-\author[lille]{Federico Bassi}
-\author[aff2]{\todo{Nome Cognome}\corref{cor}}
+\author[aff1]{Vincenzo Lio\corref{cor}}
+\author[aff2]{Federico Bassi}
 \cortext[cor]{Corresponding author.}
-\affiliation[lille]{organization={Centre lillois d'\'etudes et de recherches sociologiques et \'economiques (Cler\-s\'e), Universit\'e de Lille \todo{da verificare}},country={France}}
-\affiliation[aff2]{organization={\todo{Affiliazione}},country={Italy}}
+\affiliation[aff1]{organization={\todo{Affiliation}},country={Italy}}
+\affiliation[aff2]{organization={\todo{Affiliation}},country={\todo{Country}}}
 
 \begin{abstract}
-Growth models in the tradition of \citet{Lucas1988} treat the efficiency with which workers accumulate human capital as a fixed parameter, while the literature on knowledge diffusion \citep{LucasMoll2014,Jarosch2021} locates learning in encounters between workers who know more and workers who know less. Recent evidence that generative AI reduces the employment of entry-level workers \citep{Brynjolfsson2025,HosseiniLichtinger2025} turns this distinction into a policy question: if AI substitutes for junior work, it may also remove the occasions on which junior workers learn from senior ones. This paper develops an agent-based model in which learning efficiency is not assumed but emerges from junior--senior meetings, and uses it to characterise the timing of the resulting losses. Calibrated to an age--wage profile that rises slowly and flattens, as in the Italian private sector, the model shows that a permanent reduction in meetings leaves the human capital of senior workers \emph{exactly} unchanged for a number of years equal to the distance between the junior and senior thresholds, and erodes it thereafter through a cumulative, intergenerational mechanism. We call this delayed fall in aggregate human capital the \emph{skill cliff}. A mean-field identity links the micro-level rules to an aggregate law of motion in which learning efficiency depends on meeting opportunities, on mentoring capacity and on the distribution of knowledge.
+In the growth model of \citet{Lucas1988} the efficiency with which workers accumulate human capital, $B$, is a constant. In the later work of Lucas himself \citep{Lucas2009,LucasMoll2014}, knowledge is acquired in encounters between people who know more and people who know less. Recent evidence that generative AI reduces the employment of entry-level workers \citep{Brynjolfsson2025,HosseiniLichtinger2025} turns this distinction into a policy question: if AI substitutes for junior work, it may also remove the occasions on which junior workers learn from senior ones \citep{Ide2026}. This paper develops an agent-based model in which $B$ is not assumed but emerges from junior--senior meetings, and uses it to characterise the timing of the resulting losses. Calibrated to an age--wage profile that rises slowly and flattens, as in the Italian private sector, the model shows that a permanent halving of meeting opportunities leaves the human capital of senior workers \emph{exactly} unchanged for ten years and erodes it thereafter, through a cumulative and intergenerational mechanism, by 6.7 per cent in the long run. We call this delayed fall the \emph{skill cliff}. Two propositions connect the micro-level rules to the aggregate: an identity that expresses $B$ as a function of meeting opportunities, mentoring capacity and the distribution of knowledge, and a transmission lag equal to the distance between the junior and senior thresholds plus one year.
 \end{abstract}
 
 \begin{keyword}
@@ -40,43 +40,61 @@ Human capital \sep Knowledge diffusion \sep Artificial intelligence \sep Agent-b
 % ---------------------------------------------------------------------------
 \section{Introduction}
 
-Assumptions about the efficiency of learning are central to theories of growth driven by human capital. The debate can be summarised by two positions. In the canonical formulation of \citet{Lucas1988}, human capital grows as $\dot h = B\,u\,h$, where $u$ is the share of time devoted to learning and $B$ is a technological parameter; in the diffusion approach of \citet{LucasMoll2014}, knowledge is acquired through meetings, and what a learner gains depends on the distance between what the learner knows and what the counterpart knows. Empirical work on coworker learning supports the second view: wage growth is faster for workers whose colleagues earn more, and the value of this learning amounts to a non-negligible share of compensation \citep{Jarosch2021,Herkenhoff2024}.
+In 1988 an economist from Chicago wrote an equation that changed how economists think about the development of nations. \citet{Solow1956} had explained growth through the accumulation of physical capital and a technology that fell from outside the model like rain. \citet{Lucas1988} brought growth inside: it originates in the decisions of agents about how to use their time, and its engine is human capital, the knowledge embodied in people. In his model human capital grows as
+\begin{equation}\label{eq:lucas}
+\dot h = B\,(1-u)\,h,
+\end{equation}
+where $u$ is the share of time devoted to production, $1-u$ the share devoted to learning, and $B$ the efficiency of learning: how much new human capital is generated by each hour spent learning. In 1988, $B$ is a constant. Lucas fixes it; he does not explain it.
 
-The distinction is not merely formal. If $B$ is a parameter, a technology that changes the organisation of work leaves the efficiency of learning untouched. If instead $B$ emerges from meetings, a technology that reduces the number of meetings reduces $B$ itself. Generative AI provides a pressing case. Early evidence suggests that it reduces the employment of young and entry-level workers in exposed occupations, while leaving senior employment broadly unchanged \citep{Brynjolfsson2025,HosseiniLichtinger2025}; and recent theoretical work argues that automation may weaken the apprenticeship channel through which tacit knowledge is transmitted across generations \citep{Ide2025}. Whether AI acts as a substitute or as a complement to labour \citep{Acemoglu2024,AcemogluRestrepo2019} then matters not only for current employment, but for the human capital of future senior workers.
+The choice was a necessary simplification, and it has produced insights that still stand. But it also hides a question that has become urgent: what does $B$ depend on? Two people who devote the same time to learning, starting from the same human capital, will learn at very different speeds if the context differs. A resident in a teaching hospital, surrounded by complex cases and experienced surgeons, has a higher $B$ than a doctor working alone in a small practice. A junior programmer whose code is reviewed by a senior engineer, who explains the mistakes before they matter, has a higher $B$ than one whose only interlocutor is a search engine. $B$ measures the quality of the context in which one learns, and that context is made of people.
 
-The existing literature, however, is lacking in three respects. First, learning efficiency is typically treated as a parameter, even where its microfoundations are explicitly social. Second, the effects of AI on the labour market are measured at impact---on the employment of young workers today---while the transmission channel operates with a delay of one professional generation. Third, the timing of this delay, and the conditions under which a gradual reduction in meetings turns into an abrupt fall in aggregate human capital, have not, to our knowledge, been characterised.
+Lucas himself moved in this direction. In \citet{Lucas2009}, growth emerges from individuals who learn by observing and imitating those who do better; in \citet{LucasMoll2014}, agents divide their time between producing with the knowledge they have and searching for encounters with others from whom to learn, and what a learner gains depends on the distance between what the learner knows and what the counterpart knows. Empirical work on coworker learning supports this view: wage growth is faster for workers whose colleagues earn more, and the value of this learning amounts to 4 to 9 per cent of compensation \citep{Jarosch2021,Herkenhoff2024}.
 
-We therefore develop an agent-based model (ABM) in which $B$ is an emergent property of junior--senior meetings, in the spirit of the use of agent-based methods to microfound aggregate dynamics in \citet{Bassi2022} and \citet{RailsbackGrimm2011}. The contribution of the paper is threefold. First, we show that a parsimonious model with demography, meetings and life-cycle learning reproduces a concave age--wage profile and produces a value of the learning share of junior wage growth consistent with \citet{Jarosch2021}. Second, we show that a permanent reduction in meeting opportunities produces a \emph{skill cliff}: senior human capital is exactly unaffected for $s_S - s_J + 1$ years, where $s_J$ and $s_S$ are the junior and senior experience thresholds, and declines thereafter as cohorts trained under fewer meetings become the teachers of the next ones. Third, we derive a mean-field identity that maps the micro-level rules into an aggregate law of motion for $B$, which can be used to augment single-equation growth models.
+The distinction is not merely formal. If $B$ is a parameter, a technology that changes the organisation of work leaves the efficiency of learning untouched. If $B$ emerges from meetings, a technology that reduces the number of meetings reduces $B$ itself. Generative AI provides a pressing case. Early evidence suggests that it reduces the employment of young and entry-level workers in exposed occupations, while leaving senior employment broadly unchanged \citep{Brynjolfsson2025,HosseiniLichtinger2025}. \citet{Ide2026} shows, in an overlapping-generations model, that automating entry-level tasks makes seniors more productive today but cuts the channel through which tacit knowledge passes to the next generation; because contracts for the transfer of tacit knowledge are inherently incomplete, the market automates more than is socially optimal, and long-run growth per capita may fall by 0.05 to 0.35 percentage points a year.
 
-The remainder of the paper is organised as follows. Section~\ref{sec:background} reviews the theoretical background. Section~\ref{sec:model} presents the model as implemented. Section~\ref{sec:results} reports the baseline simulations and a mechanism experiment that isolates the meeting channel. Section~\ref{sec:aggregate} derives the implications for aggregate modelling. Section~\ref{sec:conclusions} concludes and outlines the introduction of AI.
+The literature is, however, lacking in three respects. First, learning efficiency is typically treated as a parameter, even where its microfoundations are explicitly social. Second, the effects of AI on the labour market are measured at impact---on the employment of young workers today---while the transmission channel operates with a delay of one professional generation: nobody can yet observe the human capital of the seniors of 2040. Third, the timing of this delay, and the conditions under which a gradual reduction in meetings turns into a fall in aggregate human capital, have not, to our knowledge, been characterised.
+
+We therefore develop an agent-based model (ABM) in which $B$ is an emergent property of junior--senior meetings, in the spirit of the use of agent-based methods to microfound aggregate dynamics in \citet{Bassi2022} and \citet{RailsbackGrimm2011}. The contribution of the paper is threefold. First, we show that a parsimonious model with demography, meetings and life-cycle learning reproduces a concave age--wage profile and a share of learning from coworkers consistent with \citet{Jarosch2021}. Second, we show that a permanent reduction in meeting opportunities produces a \emph{skill cliff}: senior human capital is exactly unaffected for $s_S - s_J$ years, where $s_J$ and $s_S$ are the junior and senior experience thresholds, and declines thereafter as cohorts trained under fewer meetings become the teachers of the next ones. Third, we derive an aggregate identity for $B$ that can be used to make learning efficiency endogenous in single-equation growth models such as Eq.~\eqref{eq:lucas}.
+
+The remainder of the paper is organised as follows. Section~\ref{sec:background} reviews the theoretical background. Section~\ref{sec:model} presents the model as implemented. Section~\ref{sec:results} reports the baseline simulations and a mechanism experiment that isolates the meeting channel. Section~\ref{sec:aggregate} derives the implications for aggregate modelling. Section~\ref{sec:conclusions} discusses policy, outlines the introduction of AI and concludes.
 
 % ---------------------------------------------------------------------------
 \section{Theoretical background and motivation}\label{sec:background}
 
-\paragraph{Learning efficiency as a parameter} In \citet{Lucas1988} the parameter $B$ governs the return to time spent learning and, through it, the growth rate of the economy. Life-cycle models of investment in human capital \citep{BenPorath1967} explain why individual learning declines with age, and hence why empirical age--earnings profiles are concave \citep{MurphyWelch1990,Lagakos2018}; but they too treat the productivity of learning as given.
+\subsection{Learning efficiency: from parameter to process}
 
-\paragraph{Learning through meetings} \citet{LucasMoll2014} replace the parameter with a process: agents meet others and adopt their knowledge if it is better. The gain from a meeting is increasing in the knowledge gap, so that the efficiency of learning depends on the distribution of knowledge in the population. \citet{Jarosch2021} estimate that learning from coworkers accounts for 4 to 9 per cent of total compensation, and that it is concentrated in interactions with more knowledgeable colleagues.\footnote{The mapping between their measure and ours is approximate: they measure learning from all coworkers as a share of the compensation of all workers, while we measure learning of junior workers from senior ones as a share of junior wages.}
+In \citet{Lucas1988} the parameter $B$ pins down the balanced growth rate of the economy and, along the saddle path, the speed at which the economy approaches it. Life-cycle models of investment in human capital \citep{BenPorath1967} explain why individual learning declines with age, and hence why empirical age--earnings profiles are concave \citep{MurphyWelch1990,Lagakos2018}; but they too treat the productivity of learning as given. In \citet{LucasMoll2014} the parameter is replaced by a process: the distribution of knowledge in the population is the state variable, and growth depends on how often people meet, on whom they meet, and on whether the difference in knowledge between them is large enough to make the meeting fruitful. $B$ becomes the endogenous outcome of the structure of encounters among workers: high when juniors frequently meet more capable seniors, low when those encounters disappear.\footnote{The mapping between the evidence and our measure is approximate: \citet{Jarosch2021} measure learning from all coworkers as a share of the compensation of all workers, while we measure learning of junior workers from senior ones as a share of junior wages.}
 
-\paragraph{Automation, entry-level work and the apprenticeship channel} If senior workers transmit tacit knowledge mainly through joint work with junior ones, a technology that automates junior tasks reduces the occasions for transmission \citep{Ide2025}. The available evidence measures the first-round effect: employment of 22--25 year-olds in AI-exposed occupations has fallen by 13--16 per cent relative to older workers \citep{Brynjolfsson2025}, and firms adopting generative AI hire fewer junior workers \citep{HosseiniLichtinger2025}. The second-round effect---on the human capital of those who will be senior workers in ten or twenty years---is, by construction, not yet observable. A model is needed to discipline expectations about it.
+\subsection{Automation, entry-level work and the apprenticeship channel}
+
+Tacit knowledge differs from codified knowledge: it is not in manuals and is not transmitted by a slide deck, but acquired through situated practice, error and correction in real time. \citet{Ide2026} identifies two forces through which AI erodes its transmission. On the supply side, automating entry-level tasks reduces the apprenticeship opportunities that experts offer. On the demand side, AI co-pilots partly compensate for missing mentors, but they also reduce the effort that novices put into learning by practice: they deliver the output without building the capability---and capability is exactly what is needed to become the senior who will teach the next generation.
+
+The available evidence measures only the first-round effect. Employment of 22--25 year-olds in AI-exposed occupations has fallen by 13--16 per cent relative to older workers \citep{Brynjolfsson2025}, and firms adopting generative AI hire fewer junior workers \citep{HosseiniLichtinger2025}. The second-round effect, on the human capital of future seniors, is by construction not yet observable. A model is needed to discipline expectations about it.
+
+\subsection{Substitution, complementarity and direction}
+
+\citet{Acemoglu2024} estimates modest aggregate productivity gains from AI over the next decade and argues that its direction matters: AI can be used to augment workers or to replace them, and the industry is choosing the second option because it lowers labour costs in the short run \citep[see also][]{AcemogluRestrepo2019}. In the framework of Eq.~\eqref{eq:lucas}, the distinction has precise consequences: complementary AI may raise $B$ by making learning more efficient, while substitutive AI lowers it by emptying the contexts in which learning happens. Acemoglu is right that direction matters, but the analysis stops at the short run and at directly automatable tasks: it does not capture the intergenerational mechanism. The problem is not only how many jobs disappear today, but how much tacit knowledge is not transmitted tomorrow.
+
+The connection between these three strands---Lucas and Moll on the social nature of $B$, Ide on automation as a destroyer of encounters, Acemoglu on the direction of technical change---is our interpretation rather than a result of any of them. The model in the next section is designed to test whether it holds together quantitatively.
 
 % ---------------------------------------------------------------------------
 \section{The model}\label{sec:model}
 
 \subsection{Agents and demography}
 
-The economy is populated by $N=5{,}000$ workers indexed by $i$. Each period corresponds to one year. Worker $i$ is characterised by age $a_i$, years of experience $s_i$, a skill level $q_i\in\{L,H\}$ and human capital $h_i$. At the beginning of each period all workers age by one year; those reaching the retirement age $\bar a=65$ leave and are replaced one-for-one by entrants, so that $N$ is constant.\footnote{A variant with the Italian age pyramid, in which $N$ varies over time, is left to a dedicated case study.} An entrant is high-skilled with probability $q=0.3$, enters at age 25 if high-skilled and 20 otherwise, and draws
+The economy is populated by $N=5{,}000$ workers indexed by $i$; each period corresponds to one year. Worker $i$ is characterised by age $a_{i,t}$, years of experience $s_{i,t}$, a skill level $q_i\in\{L,H\}$ and human capital $h_{i,t}$. At the beginning of each period all workers age by one year, $a_{i,t}=a_{i,t-1}+1$ and $s_{i,t}=s_{i,t-1}+1$; those reaching the retirement age $\bar a=65$ leave and are replaced one-for-one by entrants, so that $N$ is constant.\footnote{A variant with the Italian age pyramid, in which $N$ varies over time, is left to a dedicated case study.} An entrant is high-skilled with probability $q=0.3$, enters with $s=0$ at age 25 if high-skilled and 20 otherwise, and draws
 \begin{equation}
 h_{i,0} = \bar h_0(q_i)\, e^{\varepsilon_i}, \qquad \varepsilon_i \sim \mathcal N\!\left(-\tfrac{\sigma^2}{2},\sigma^2\right),
 \end{equation}
-with $\bar h_0(L)=1$, $\bar h_0(H)=1.5$ and $\sigma=0.2$. Roles are defined by experience rather than age: worker $i$ is \emph{junior} if $s_i < s_J$ and \emph{senior} if $s_i \ge s_S$, with $s_J=5$ and $s_S=15$.
+with $\bar h_0(L)=1$, $\bar h_0(H)=1.5$ and $\sigma=0.2$. Roles are defined by experience rather than age: worker $i$ is \emph{junior} if $s_{i,t} < s_J$ and \emph{senior} if $s_{i,t} \ge s_S$, with $s_J=5$ and $s_S=15$.
 
 \subsection{Meetings}
 
-Let $J_t$ and $S_t$ denote the number of junior and senior workers. Each senior can follow at most $\kappa$ juniors per year, so that the number of meetings is $\min(pJ_t,\kappa S_t)$ and the probability that a junior meets a senior is
+Junior workers learn from seniors of their own skill group $g\in\{L,H\}$: one learns from those who do the same job. Let $J_{g,t}$ and $S_{g,t}$ denote the number of junior and senior workers in group $g$. Each senior can follow at most $\kappa$ juniors per year, so that the number of meetings is $\min(pJ_{g,t},\kappa S_{g,t})$ and the probability that a junior meets a senior is
 \begin{equation}\label{eq:peff}
-p^{\mathrm{eff}}_t = \min\!\left(p,\ \kappa \frac{S_t}{J_t}\right).
+p^{\mathrm{eff}}_{g,t} = \min\!\left(p,\ \kappa \frac{S_{g,t}}{J_{g,t}}\right).
 \end{equation}
-A junior $j$ who meets a senior $k$, drawn uniformly among seniors, gains
+A junior $j$ who meets a senior $k$, drawn uniformly among the seniors of the same group, gains
 \begin{equation}\label{eq:meeting}
 \Delta h^{\mathrm{inc}}_{j,t} = \beta \max\left(0,\ h_{k,t}-h_{j,t}\right),
 \end{equation}
@@ -86,9 +104,9 @@ as in \citet{LucasMoll2014}: the gain is proportional to the knowledge gap, and 
 
 All workers also learn autonomously, at a rate that declines with experience as in \citet{BenPorath1967}, and lose a fraction $d$ of their knowledge to obsolescence:
 \begin{equation}\label{eq:aut}
-\Delta h^{\mathrm{aut}}_{i,t} = \left[\delta(s_i)-d\right] h_{i,t}, \qquad \delta(s) = \delta_0 \max\!\left(0,\ 1-\frac{s}{S_h}\right).
+\Delta h^{\mathrm{aut}}_{i,t} = \left[\delta(s_{i,t})-d\right] h_{i,t}, \qquad \delta(s) = \delta_0 \max\!\left(0,\ 1-\frac{s}{S_h}\right).
 \end{equation}
-Both components are computed on beginning-of-period human capital and applied simultaneously; $h$ remains non-negative because $d<1$.
+Both components are computed on beginning-of-period human capital and applied simultaneously, $h_{i,t+1}=h_{i,t}+\Delta h^{\mathrm{inc}}_{i,t}+\Delta h^{\mathrm{aut}}_{i,t}$; $h$ remains non-negative because $d<1$.
 
 \subsection{Output, wages and emergent learning efficiency}
 
@@ -96,11 +114,11 @@ Output is $Y_t=\sum_i h_{i,t}$ and wages equal marginal products, $w_i = h_i$.\f
 \begin{equation}\label{eq:B}
 B_t = \underbrace{\frac{1}{J_t}\sum_{j}\frac{\Delta h^{\mathrm{inc}}_{j,t}}{h_{j,t}}}_{B^{\mathrm{inc}}_t} + \underbrace{\frac{1}{J_t}\sum_{j}\frac{\Delta h^{\mathrm{aut}}_{j,t}}{h_{j,t}}}_{B^{\mathrm{aut}}_t},
 \end{equation}
-which coincides with $\dot h/h = B\,u$ in \citet{Lucas1988} with $u=1$.
+which corresponds to $\dot h/h = B(1-u)$ in Eq.~\eqref{eq:lucas} with the time devoted to learning normalised to one.
 
 \subsection{Calibration and implementation}
 
-Table~\ref{tab:params} reports the parameter values. Demographic parameters reflect the Italian labour market; $\beta$ is chosen so that $B^{\mathrm{inc}}$ falls within the range estimated by \citet{Jarosch2021}; $(\delta_0,S_h,d)$ are chosen to produce an age--wage profile that rises slowly, peaks late and declines only mildly. The model is implemented in vectorised Python; each run includes a burn-in of 120 years, and statistics are averaged over 30 replications with independent seeds and 95\% confidence intervals. Scenarios share random numbers replication by replication. An independent re-implementation of the same rules with one object per agent in Mesa yields statistically indistinguishable results (Appendix~\ref{app:docking}), a form of model docking \citep{Axtell1996}. Code and data are available at \url{https://github.com/ViciusLio/skill-cliff-abm}.
+Table~\ref{tab:params} reports the parameter values. Demographic parameters reflect the Italian labour market; $\beta$ is chosen so that $B^{\mathrm{inc}}$ falls within the range estimated by \citet{Jarosch2021}; $(\delta_0,S_h,d)$ are chosen to produce an age--wage profile that rises slowly, peaks late and declines only mildly, as in the Italian private sector. The model is implemented in vectorised Python; each run includes a burn-in of 120 years, and statistics are averaged over 30 replications with independent seeds and 95\% confidence intervals. Scenarios share random numbers replication by replication. An independent re-implementation of the same rules with one object per agent in Mesa yields statistically indistinguishable results (Appendix~\ref{app:docking}), a form of model docking \citep{Axtell1996}. Code and data are available at \url{https://github.com/ViciusLio/skill-cliff-abm}.
 
 \begin{table}[t]\centering\small
 \caption{Parameters of the baseline model.}\label{tab:params}
@@ -128,9 +146,9 @@ $\delta_0, S_h, d$ & 0.04 / 50 / 0.012 & autonomous learning, obsolescence & con
 
 \subsection{Baseline: stylised facts}
 
-The baseline reproduces a concave age--wage profile (Figure~\ref{fig:profile}). Wages peak after 34 years of experience for both skill groups, at a level 1.90 (low-skilled) and 1.72 (high-skilled) times the entry wage, and decline by 3.7 and 0.9 per cent respectively before retirement. Emergent learning efficiency is $B=0.0709$ (95\% CI $[0.0708, 0.0710]$), of which $B^{\mathrm{inc}}=0.0445$, or 63 per cent, comes from meetings (Figure~\ref{fig:B}, panel a). The ratio of seniors to juniors is 5.70, so that mentoring capacity does not bind in the steady state ($p^{\mathrm{eff}}=p$).
+The baseline reproduces a concave age--wage profile (Figure~\ref{fig:profile}). Wages peak after 34 years of experience in both skill groups, at a level 1.83 times the entry wage, and decline by 3.8 (low-skilled) and 0.9 (high-skilled) per cent before retirement. Emergent learning efficiency is $B=0.0690$ (95\% CI $[0.0689, 0.0691]$), of which $B^{\mathrm{inc}}=0.0426$, or 62 per cent, comes from meetings (Figure~\ref{fig:B}, panel a). The ratio of seniors to juniors is 5.70, so that mentoring capacity does not bind in the steady state ($p^{\mathrm{eff}}=p$).
 
-Two discrepancies should be noted. First, the profile of low-skilled workers is steeper than that of high-skilled workers, while the evidence points in the opposite direction \citep{Lagakos2018}: juniors are matched to seniors drawn from the whole population, so that low-skilled juniors face a larger gap to close. Second, the wage Gini coefficient (0.135) is well below observed values, because human capital is the only determinant of wages in the model. Neither is a calibration target.
+Two discrepancies should be noted. First, the profiles of the two skill groups have the same slope, while the evidence indicates that they are steeper for the more educated \citep{Lagakos2018}; reproducing this would require a skill-specific autonomous learning rate, which we leave out to keep the model essential. Second, the wage Gini coefficient (0.155) is well below observed values, because human capital is the only determinant of wages in the model. Neither is a calibration target.
 
 \begin{figure}[t]\centering
 \includegraphics[width=.62\linewidth]{fig3_age_wage_profile.pdf}
@@ -139,9 +157,9 @@ Two discrepancies should be noted. First, the profile of low-skilled workers is 
 
 \subsection{The skill cliff: a mechanism experiment}
 
-To isolate the channel through which AI will operate, we halve $p$ permanently from year 10 onwards, holding everything else constant.\footnote{This is not an AI scenario: it is the comparative dynamics of the meeting channel alone.} Figure~\ref{fig:cohorts} reports mean human capital by age class. The response is immediate for workers aged 20--29, whose human capital is 5.6 per cent lower after four years. For senior workers the response is delayed: their mean human capital is \emph{exactly} unchanged for ten years, falls by 0.04 per cent in the eleventh, by 3.5 per cent after 25 years and by 6.7 per cent in the new steady state, while output falls by 7.1 per cent. Successive age classes start to decline roughly 15, 20--25 and 30 years after the shock.
+To isolate the channel through which AI will operate, we halve $p$ permanently from year 10 onwards, holding everything else constant.\footnote{This is not an AI scenario: it is the comparative dynamics of the meeting channel alone.} Figure~\ref{fig:cohorts} reports mean human capital by age class. The response is immediate for junior workers, whose human capital is 5.7 per cent lower after four years. For senior workers the response is delayed: their mean human capital is \emph{exactly} unchanged for ten years, starts falling in the eleventh, is 3.5 per cent lower after 25 years and 6.7 per cent lower in the new steady state, while output falls by 7.2 per cent. The loss travels along the age distribution like a wave: it exceeds 0.5 per cent at once for workers aged 20--29, and after about 5, 14, 24 and 33 years for the following age classes.
 
-The path of learning efficiency is non-monotonic (Figure~\ref{fig:B}, panel b). $B^{\mathrm{inc}}$ halves at impact, from 0.045 to 0.022; it then rises to 0.025 over the following two decades, because juniors start from lower levels and the gap to their seniors widens; and it falls again, to 0.021 after 50 years, as seniors trained under fewer meetings become the teachers. Learning efficiency thus inherits the history of meetings: it is not a parameter but a state variable. Finally, the wage Gini rises from 0.135 to about 0.154 (Figure~\ref{fig:gini}): meetings compress inequality by pulling juniors towards seniors.
+The path of learning efficiency is non-monotonic (Figure~\ref{fig:B}, panel b). $B^{\mathrm{inc}}$ halves at impact, from 0.043 to 0.021; it then rises to 0.024 over the following two decades, because juniors start from lower levels and the gap to their seniors widens; and it falls again, to 0.020 after 50 years, as seniors trained under fewer meetings become the teachers. Learning efficiency inherits the history of meetings: it is not a parameter but a state variable. Finally, the wage Gini rises from 0.155 to 0.165 (Figure~\ref{fig:gini}): meetings compress inequality by pulling juniors towards seniors.
 
 \begin{figure}[t]\centering
 \includegraphics[width=\linewidth]{fig1_h_by_age_class.pdf}
@@ -158,9 +176,11 @@ The path of learning efficiency is non-monotonic (Figure~\ref{fig:B}, panel b). 
 \caption{Wage Gini coefficient.}\label{fig:gini}
 \end{figure}
 
-\subsection{Mentoring capacity}
+\subsection{Mentoring capacity and robustness}
 
-Figure~\ref{fig:sens} shows $B^{\mathrm{inc}}$ and mean senior human capital as functions of $p$ for different values of $\kappa$. Both increase more than linearly in $p$, reflecting the cumulative mechanism described above, until the capacity constraint in Eq.~\eqref{eq:peff} binds, at $p=\kappa S/J$; beyond that point additional demand for meetings is rationed. In the baseline the constraint becomes active only if $S/J$ falls below $p/\kappa=3$, that is, after a large reduction in the number of seniors relative to juniors.
+Figure~\ref{fig:sens} shows $B^{\mathrm{inc}}$ and mean senior human capital as functions of $p$ for different values of $\kappa$. Both increase more than linearly in $p$, reflecting the cumulative mechanism described above, until the capacity constraint in Eq.~\eqref{eq:peff} binds; beyond that point additional demand for meetings is rationed. In the baseline the constraint becomes active only if $S/J$ falls below $p/\kappa=3$, that is, after a large reduction in the number of seniors relative to juniors.
+
+With thresholds $s_J=10$ and $s_S=20$, $B$ falls to 0.056 because the junior pool includes workers further from entry, but the long-run effects of halving $p$ are similar ($-6.4$ per cent for senior human capital, $-7.0$ per cent for output) and the transmission lag is again 11 years: it depends on the distance between the thresholds, not on their level.
 
 \begin{figure}[t]\centering
 \includegraphics[width=\linewidth]{fig5_sensitivity_p_kappa.pdf}
@@ -173,41 +193,49 @@ Figure~\ref{fig:sens} shows $B^{\mathrm{inc}}$ and mean senior human capital as 
 Single-equation growth models remain popular, and with good reason. Are there lessons from the agent-based model that can be incorporated into them? We argue that there are two.
 
 \begin{proposition}[Emergent learning efficiency]\label{prop:B}
-Let $\bar h^S_t$ be mean senior human capital, $\overline{h^{-1}}^{J}_t$ the mean of the inverse of junior human capital, and $\bar\delta^J$ the mean autonomous learning rate of juniors, all at the beginning of period $t$. Under random matching, the expected learning efficiency of juniors is
+Let $\bar h^S_{g,t}$ be mean senior human capital in group $g$ and $\overline{h^{-1}}^{J}_{g,t}$ the mean of the inverse of junior human capital in the same group, both at the beginning of period $t$. Under random matching within groups, the expected contribution of meetings to learning efficiency is
 \begin{equation}\label{eq:Bmf}
-\mathbb E[B_t] = \bar\delta^J - d + \beta\, p^{\mathrm{eff}}_t \left[\bar h^S_t\, \overline{h^{-1}}^{J}_t - 1 + \Omega_t\right],
+\mathbb E\big[B^{\mathrm{inc}}_t\big] = \sum_g \frac{J_{g,t}}{J_t}\,\beta\, p^{\mathrm{eff}}_{g,t} \left[\bar h^S_{g,t}\, \overline{h^{-1}}^{J}_{g,t} - 1 + \Omega_{g,t}\right],
 \end{equation}
 where
 \begin{equation*}
-\Omega_t = \frac{1}{J_t S_t}\sum_{j,k}\frac{\max(0,h_{j,t}-h_{k,t})}{h_{j,t}} \ge 0 .
+\Omega_{g,t} = \frac{1}{J_{g,t} S_{g,t}}\sum_{j,k\in g}\frac{\max(0,h_{j,t}-h_{k,t})}{h_{j,t}} \ge 0 .
 \end{equation*}
 \end{proposition}
 \begin{proof}
-Since $\max(0,x) = x + \max(0,-x)$, the expected gain of junior $j$ from a meeting with a uniformly drawn senior is $\beta(\bar h^S_t - h_{j,t}) + \beta S_t^{-1}\sum_k \max(0, h_{j,t}-h_{k,t})$. Dividing by $h_{j,t}$, multiplying by $p^{\mathrm{eff}}_t$ and averaging over juniors gives the meeting term; the autonomous term follows from Eq.~\eqref{eq:aut}.
+Since $\max(0,x) = x + \max(0,-x)$, the expected gain of junior $j$ from a meeting with a uniformly drawn senior of the same group is $\beta(\bar h^S_{g,t} - h_{j,t}) + \beta S_{g,t}^{-1}\sum_{k\in g} \max(0, h_{j,t}-h_{k,t})$. Dividing by $h_{j,t}$, multiplying by $p^{\mathrm{eff}}_{g,t}$ and averaging over juniors gives the result.
 \end{proof}
 
-Eq.~\eqref{eq:Bmf} is the aggregate counterpart of the micro-level rules. Learning efficiency depends on three objects that a fixed $B$ suppresses: meeting opportunities ($p$), mentoring capacity relative to demand ($\kappa S/J$), and the distribution of knowledge between generations ($\bar h^S \overline{h^{-1}}^J$). In the baseline the identity is verified numerically (0.0443 against a simulated 0.0441). The truncation term $\Omega_t$ is small (0.0004), while the dispersion of junior human capital matters: replacing $\overline{h^{-1}}^J$ with $1/\bar h^J$ underestimates $B^{\mathrm{inc}}$ by about 16 per cent.
+Eq.~\eqref{eq:Bmf} is the aggregate counterpart of the micro-level rules. Learning efficiency depends on three objects that a constant $B$ suppresses: meeting opportunities ($p$), mentoring capacity relative to demand ($\kappa S/J$), and the distribution of knowledge between generations ($\bar h^S \overline{h^{-1}}^J$). In the baseline the identity is verified numerically (0.0427 against a simulated 0.0426). The dispersion of junior human capital matters: replacing $\overline{h^{-1}}^J$ with $1/\bar h^J$ underestimates $B^{\mathrm{inc}}$ by about 10 per cent.
 
 \begin{proposition}[Transmission lag]\label{prop:lag}
-Suppose that meeting opportunities change permanently at $t_0$ and that seniors do not learn from meetings. Then mean senior human capital is unaffected for $t \le t_0 + s_S - s_J$, and is affected from $t_0 + s_S - s_J + 1$ onwards.
+Suppose that meeting opportunities change permanently at $t_0$ and that seniors do not learn from meetings. Then mean senior human capital is unaffected for $t \le t_0 + s_S - s_J$, and can be affected from $t_0 + s_S - s_J + 1$ onwards.
 \end{proposition}
 \begin{proof}
 A worker who is junior at $t_0$ has experience at most $s_J-1$ and becomes senior when their experience reaches $s_S$, that is, after at least $s_S-s_J+1$ years. Until then the set of seniors consists of workers whose junior years ended before $t_0$, and whose human capital evolves according to Eq.~\eqref{eq:aut} alone.
 \end{proof}
 
-With $s_J=5$ and $s_S=15$ the lag is 11 years, exactly as observed in the simulations. Proposition~\ref{prop:lag} explains why the first-round evidence on young workers \citep{Brynjolfsson2025} cannot, by itself, reveal the second-round effect on human capital: the latter is invisible for a full professional generation, and then unfolds over several. The long-run elasticity of senior human capital to meeting opportunities, $\varepsilon = \Delta \ln \bar h^S_\infty / \Delta\ln p \approx 0.10$ in the baseline, plays here the role that the degree of hysteresis plays in aggregate models of the normal rate of utilisation \citep{Bassi2022}: it summarises in a single number a property that emerges from heterogeneous micro-behaviour.
+With $s_J=5$ and $s_S=15$, senior human capital is unchanged for ten years and the first effect appears in the eleventh, exactly as observed in the simulations. Proposition~\ref{prop:lag} explains why the first-round evidence on young workers \citep{Brynjolfsson2025} cannot, by itself, reveal the second-round effect on human capital: the latter is invisible for a full professional generation, and then unfolds over several. The long-run elasticity of senior human capital to meeting opportunities, $\varepsilon = \Delta \ln \bar h^S_\infty / \Delta\ln p \approx 0.10$ in the baseline, plays here the role that the degree of hysteresis plays in aggregate models of the normal rate of capacity utilisation \citep{Bassi2022}: it summarises in a single number a property that emerges from heterogeneous micro-behaviour.
 
 % ---------------------------------------------------------------------------
-\section{Conclusions}\label{sec:conclusions}
+\section{Discussion and conclusions}\label{sec:conclusions}
+
+\subsection{A market failure that nobody sees}
+
+When a firm automates junior work, its accounts improve at once: senior productivity rises and costs fall. No item in the balance sheet records that the next generation of workers will receive less learning, and no economic indicator captures the fall of $B$ that takes place within organisational hierarchies. The structure of the problem resembles pollution: those who pollute obtain an immediate competitive advantage, while those who bear the cost are dispersed in time and space and are often not yet born. Proposition~\ref{prop:lag} adds a quantitative dimension to this analogy: in our calibration the cost is invisible in senior human capital for ten years, so that when it appears the policies that could prevent it are already late---the training of a senior takes fifteen to twenty years of exposure to difficult situations, and cannot be accelerated by subsidies or intensive courses.
+
+The responses discussed in the policy debate differ in feasibility and horizon. At the level of the firm, a share of team capacity can be reserved for mentoring and for tasks that juniors own. At the institutional level, apprenticeship programmes can separate training from production and bind seniors and juniors to work together on real problems. At the fiscal level, a contribution on the automation of entry-level tasks would internalise the externality identified by \citet{Ide2026}. Finally, AI itself can be directed towards amplifying senior teaching rather than replacing juniors---the direction of technical change that \citet{Acemoglu2024} calls for. In the model these correspond, respectively, to raising $\kappa$, raising $p$, taxing reductions of $p$, and raising $\beta$; Eq.~\eqref{eq:Bmf} provides a common metric to compare them.
+
+\subsection{Conclusions}
 
 This paper contributes to the literature in three respects. First, it shows that learning efficiency can be modelled as an emergent property of encounters between workers, and that a parsimonious agent-based model reproduces a concave age--wage profile and a plausible share of learning from coworkers. Second, it shows that a reduction in meeting opportunities produces a delayed and cumulative fall in human capital---a skill cliff---whose timing is governed by the distance between the junior and senior thresholds. Third, it provides an aggregate identity that can be used to make learning efficiency endogenous in single-equation growth models.
 
-These contributions aside, the analysis leaves open several avenues for research. The next step is to introduce AI explicitly: a productivity index $A_t$ growing at rate $g$, a target that determines which workers are substituted (junior, senior, high-skilled, low-skilled, or none in the complementary case), a mapping from $A_t$ to the meeting probability and effectiveness, and an output function $Y_t = f(\sum_i h_{i,t}, A_t)$. The skill cliff hypothesis then becomes a race between the growth of AI productivity and the erosion of the knowledge it relies upon. A demographic variant based on the Italian age pyramid, where large cohorts approach retirement, will make it possible to separate the cliff generated by demography from the one added by AI.
+These contributions aside, the analysis leaves open several avenues for research. The next step is to introduce AI explicitly: a productivity index $A_t$ growing at rate $g$, a target that determines which workers are substituted (junior, senior, high-skilled, low-skilled, or none in the complementary case), a mapping from $A_t$ to the meeting probability and effectiveness, and an output function $Y_t = f(\sum_i h_{i,t}, A_t)$. The skill cliff hypothesis then becomes a race between the growth of AI productivity and the erosion of the knowledge it relies upon. A demographic variant based on the Italian age pyramid, where large cohorts approach retirement, will make it possible to separate the cliff generated by demography from the one added by AI. Finally, the erosion of skills may interact with the distribution of wealth, if access to the tools of production increasingly takes the form of recurring rents.
 
-The policy implications follow from Proposition~\ref{prop:lag}. If the costs of substituting junior work materialise only after a decade, they will not be reflected in the incentives of firms that adopt AI today. Mentoring and apprenticeship then acquire the character of a public good, whose under-provision is invisible in the data until it is too late to correct it cheaply.
+The mathematics does not say that $B$ must fall. It says what happens if it is allowed to.
 
 \section*{CRediT authorship contribution statement}
-\textbf{Federico Bassi:} \todo{da definire}. \textbf{\todo{Nome Cognome}:} Conceptualization, Methodology, Software, Writing -- original draft.
+\textbf{Vincenzo Lio:} Conceptualization, Methodology, Software, Writing -- original draft. \textbf{Federico Bassi:} \todo{to be defined}.
 
 \section*{Data availability}
 Code, configuration files and simulated data are available at \url{https://github.com/ViciusLio/skill-cliff-abm}.
@@ -223,10 +251,10 @@ Table~\ref{tab:docking} compares the vectorised model with an independent implem
 \toprule
 Statistic & NumPy & Mesa & Rel.\ diff. & $p$-value (Welch) \\
 \midrule
-Mean $h$ & 1.9900 & 1.9858 & $-0.21\%$ & 0.34 \\
-Mean junior $h$ & 1.4157 & 1.4110 & $-0.33\%$ & 0.19 \\
-Mean senior $h$ & 2.1652 & 2.1613 & $-0.18\%$ & 0.42 \\
-$B^{\mathrm{inc}}$ & 0.0444 & 0.0444 & $+0.12\%$ & 0.86 \\
+Mean $h$ & 1.9867 & 1.9827 & $-0.20\%$ & 0.35 \\
+Mean junior $h$ & 1.4185 & 1.4134 & $-0.36\%$ & 0.16 \\
+Mean senior $h$ & 2.1581 & 2.1543 & $-0.18\%$ & 0.43 \\
+$B^{\mathrm{inc}}$ & 0.0425 & 0.0425 & $-0.01\%$ & 0.98 \\
 $B^{\mathrm{aut}}$ & 0.0264 & 0.0264 & $0.00\%$ & 0.76 \\
 \bottomrule
 \end{tabular}
