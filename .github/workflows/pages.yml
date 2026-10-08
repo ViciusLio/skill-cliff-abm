@@ -4,7 +4,7 @@ name: Pages
 
 on:
   push:
-    paths: ["site/**", "paper/**", "scripts/verify_site.mjs", ".github/workflows/pages.yml"]
+    branches: [main]
   workflow_dispatch:
 
 permissions:

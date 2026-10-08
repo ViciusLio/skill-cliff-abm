@@ -20,6 +20,9 @@ for (const path of ["", "dinamica.html", "lezione.html", "paper.pdf", "data/fase
   const r = await page.request.get(base + path);
   check(r.status() === 200, `${base}${path} -> HTTP ${r.status()}`);
 }
+// Il vecchio indirizzo della lezione deve portare alla lezione.
+await page.goto(base + "presentazione.html", { waitUntil: "networkidle" });
+check(page.url().includes("lezione.html"), `presentazione.html reindirizza a ${page.url()}`);
 
 await page.goto(base, { waitUntil: "networkidle" });
 await page.waitForFunction(() => document.querySelectorAll(".js-plotly-plot").length >= 5, null, { timeout: 30000 }).catch(() => {});

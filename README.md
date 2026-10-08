@@ -5,10 +5,11 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 
 [![Apri in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ViciusLio/skill-cliff-abm?quickstart=1)
 
-- **Articolo** (bozza, in inglese): [PDF](https://viciuslio.github.io/skill-cliff-abm/paper.pdf), sorgente [`paper/main.tex`](paper/main.tex)
-- **Lezione**: [lezione.html](https://viciuslio.github.io/skill-cliff-abm/lezione.html)
+- **Articolo** (bozza, in inglese): [articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf), sorgente [`paper/main.tex`](paper/main.tex)
+- **Lezione**: [lezione](https://viciuslio.github.io/skill-cliff-abm/lezione.html)
 - **Risultati**: [report](https://viciuslio.github.io/skill-cliff-abm/) e [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html)
-- **Sintesi tecnica della fase 1**: [`report/sintesi.md`](report/sintesi.md)
+- **Sintesi tecnica della fase 1**: [sintesi](report/sintesi.md)
+- **Resoconto del 8 ottobre 2026**: [resoconto](report/resoconto_2026-10-08.md)
 
 ---
 
