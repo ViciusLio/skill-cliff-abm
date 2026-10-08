@@ -89,3 +89,16 @@ def test_capacity_rationing():
 def test_gini():
     assert gini(np.ones(10)) == pytest.approx(0.0)
     assert gini(np.array([0.0, 0.0, 0.0, 1.0])) == pytest.approx(0.75)
+
+
+def test_uids_unique_and_meeting_pairs_are_junior_senior():
+    from skillcliff.learning import role_masks
+
+    model = Model(SMALL, np.random.SeedSequence(3))
+    for _ in range(SMALL.burn_in + 5):
+        model.step()
+        pop, meet = model.pop, model.last_meet
+        assert np.unique(pop.uid).size == len(pop)
+        junior, senior = role_masks(SMALL, pop.exp)
+        assert junior[meet.learners].all() and senior[meet.partners].all()
+        assert meet.learners.size == meet.partners.size == meet.n_meetings

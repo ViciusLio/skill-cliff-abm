@@ -14,13 +14,14 @@ class Population:
     exp: np.ndarray        # int, anni di esperienza s = età - età d'ingresso
     high: np.ndarray       # bool, qualificato
     h: np.ndarray          # float, capitale umano
+    uid: np.ndarray        # int, identificativo univoco (serve solo a tracciare gli agenti)
 
     def __len__(self) -> int:
         return self.h.size
 
     def keep(self, mask: np.ndarray) -> None:
-        self.age, self.exp, self.high, self.h = (
-            self.age[mask], self.exp[mask], self.high[mask], self.h[mask]
+        self.age, self.exp, self.high, self.h, self.uid = (
+            self.age[mask], self.exp[mask], self.high[mask], self.h[mask], self.uid[mask]
         )
 
     def append(self, other: "Population") -> None:
@@ -28,6 +29,7 @@ class Population:
         self.exp = np.concatenate([self.exp, other.exp])
         self.high = np.concatenate([self.high, other.high])
         self.h = np.concatenate([self.h, other.h])
+        self.uid = np.concatenate([self.uid, other.uid])
 
 
 def entry_age(cfg: Config, high: np.ndarray) -> np.ndarray:
@@ -43,13 +45,14 @@ def draw_h0(cfg: Config, high: np.ndarray, rng: np.random.Generator) -> np.ndarr
     return base * np.exp(rng.normal(-0.5 * s * s, s, size=high.size))
 
 
-def new_entrants(cfg: Config, n: int, rng: np.random.Generator) -> Population:
+def new_entrants(cfg: Config, n: int, rng: np.random.Generator, first_uid: int = 0) -> Population:
     high = rng.random(n) < cfg.population.share_high
     return Population(
         age=entry_age(cfg, high),
         exp=np.zeros(n, dtype=np.int64),
         high=high,
         h=draw_h0(cfg, high, rng),
+        uid=np.arange(first_uid, first_uid + n, dtype=np.int64),
     )
 
 

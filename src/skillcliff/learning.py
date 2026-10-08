@@ -30,6 +30,8 @@ class MeetingOutcome:
     dh: np.ndarray          # guadagno per ciascun lavoratore (zero per i non junior)
     n_meetings: int
     p_eff: float
+    learners: np.ndarray    # indici dei junior che hanno incontrato un senior
+    partners: np.ndarray    # indici dei senior incontrati (stesso ordine)
 
 
 def meeting_gains(
@@ -56,11 +58,13 @@ def meeting_gains(
     p_eff = effective_meeting_prob(m.p * p_mult, m.kappa, j_idx.size, s_idx.size)
     dh = np.zeros_like(h)
     meet = u < p_eff
+    learners = j_idx[meet]
+    partners = np.empty(0, dtype=np.int64)
     if s_idx.size and meet.any():
-        partner = s_idx[(partner_draw[meet] * s_idx.size).astype(np.int64)]
-        learners = j_idx[meet]
-        dh[learners] = m.beta * beta_mult * np.maximum(0.0, h[partner] - h[learners])
-    return MeetingOutcome(dh=dh, n_meetings=int(meet.sum()), p_eff=p_eff)
+        partners = s_idx[(partner_draw[meet] * s_idx.size).astype(np.int64)]
+        dh[learners] = m.beta * beta_mult * np.maximum(0.0, h[partners] - h[learners])
+    return MeetingOutcome(dh=dh, n_meetings=int(meet.sum()), p_eff=p_eff,
+                          learners=learners, partners=partners)
 
 
 def autonomous_rate(cfg: Config, exp: np.ndarray) -> np.ndarray:

@@ -28,6 +28,7 @@ python scripts/run_scenario.py --name base           # 30 repliche dello scenari
 python scripts/run_scenario.py --name p03 --set meetings.p=0.3 --reps 10
 python scripts/docking.py                            # confronto NumPy vs Mesa
 python scripts/make_report.py                        # figure, numeri e dati del report (~20 s)
+python scripts/export_dynamics.py                   # dati della vista dinamica (site/dinamica.html)
 python -m http.server -d site 8000                   # report interattivo su http://localhost:8000
 ```
 

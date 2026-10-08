@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dinamica degli agenti</title>
+<meta name="description" content="Animazione degli agenti nel piano età × capitale umano, con incontri junior-senior e correnti di conoscenza.">
+<script src="plotly-loader.js"></script>
+<style>
+:root {
+  color-scheme: light;
+  --surface-0: #f4f3f0; --surface-1: #fcfcfb; --border: #e4e3df;
+  --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #77766f;
+  --junior: #eb6834; --mid: #a3a29b; --senior: #2a78d6; --link: #eb6834;
+  --seq-1: #86b6ef; --seq-2: #2a78d6; --seq-3: #0d366b;
+  --field: #52514e; --grid: #e4e3df; --accent: #2a78d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a998f;
+    --junior: #d95926; --mid: #6e6d66; --senior: #3987e5; --link: #d95926;
+    --seq-1: #b7d3f6; --seq-2: #5598e7; --seq-3: #256abf;
+    --field: #c3c2b7; --grid: #2e2e2c; --accent: #3987e5;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
+  --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a998f;
+  --junior: #d95926; --mid: #6e6d66; --senior: #3987e5; --link: #d95926;
+  --seq-1: #b7d3f6; --seq-2: #5598e7; --seq-3: #256abf;
+  --field: #c3c2b7; --grid: #2e2e2c; --accent: #3987e5;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--surface-0); color: var(--text-primary);
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 1080px; margin: 0 auto; padding: 24px 16px 64px; }
+nav { font-size: .9rem; margin-bottom: 8px; }
+a { color: var(--accent); }
+h1 { font-size: 1.6rem; margin: 0 0 4px; }
+header p { margin: 0; color: var(--text-secondary); }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin: 18px 0 12px; }
+.controls label { color: var(--text-secondary); font-size: .9rem; display: inline-flex; gap: 6px; align-items: center; }
+select, button { font: inherit; color: var(--text-primary); background: var(--surface-1);
+  border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; }
+button.primary { min-width: 92px; }
+input[type=range] { width: min(320px, 60vw); accent-color: var(--accent); }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.card h2 { font-size: 1.05rem; margin: 0 0 2px; }
+.note { margin: 0 0 8px; color: var(--text-secondary); font-size: .9rem; }
+.stage { position: relative; width: 100%; aspect-ratio: 16 / 9; min-height: 300px; }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .85rem; color: var(--text-secondary); margin-top: 8px; }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.ring { background: transparent !important; border: 2px solid; width: 10px; height: 10px; }
+.line { display: inline-block; width: 18px; height: 2px; margin-right: 6px; vertical-align: 3px; }
+.stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 12px; }
+.stat { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; }
+.stat .k { color: var(--text-secondary); font-size: .78rem; }
+.stat .v { font-size: 1.25rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.chart { width: 100%; height: 300px; }
+@media (max-width: 760px) { .stats { grid-template-columns: repeat(2, 1fr); } .stage { aspect-ratio: 4 / 5; } }
+</style>
+</head>
+<body>
+<main>
+  <nav><a href="index.html">← Risultati (medie su 30 repliche)</a></nav>
+  <header>
+    <h1>Dinamica degli agenti</h1>
+    <p>Una replica, un agente ogni sei. Ogni punto è un lavoratore: invecchia verso destra,
+      sale quando impara e scende per obsolescenza; entra a 20 o 25 anni ed esce a 65.</p>
+  </header>
+
+  <div class="controls">
+    <label>Scenario <select id="scenario"></select></label>
+    <button id="play" class="primary" type="button">▶ Avvia</button>
+    <label>Anno <input id="year" type="range" min="0" max="59" step="1" value="0"></label>
+    <label>Velocità
+      <select id="speed"><option value="1400">lenta</option><option value="700" selected>normale</option><option value="300">veloce</option></select>
+    </label>
+    <label><input id="show-links" type="checkbox" checked> incontri</label>
+    <label><input id="show-field" type="checkbox"> correnti</label>
+    <button id="theme" type="button">Tema</button>
+  </div>
+
+  <section class="stats" aria-live="polite">
+    <div class="stat"><div class="k">anno</div><div class="v" id="s-year">0</div></div>
+    <div class="stat"><div class="k">junior / senior</div><div class="v" id="s-js">–</div></div>
+    <div class="stat"><div class="k">incontri</div><div class="v" id="s-meet">–</div></div>
+    <div class="stat"><div class="k">B da incontri</div><div class="v" id="s-b">–</div></div>
+    <div class="stat"><div class="k">h junior / senior</div><div class="v" id="s-h">–</div></div>
+  </section>
+
+  <section class="card">
+    <h2>Agenti nel piano età × capitale umano</h2>
+    <p class="note" id="stage-note"></p>
+    <div class="stage"><canvas id="cv" role="img" aria-label="Animazione degli agenti per età e capitale umano"></canvas></div>
+    <div class="legend">
+      <span><span class="sw" style="background:var(--junior)"></span>junior (&lt; 5 anni di esperienza)</span>
+      <span><span class="sw" style="background:var(--mid)"></span>intermedi</span>
+      <span><span class="sw" style="background:var(--senior)"></span>senior (≥ 15 anni)</span>
+      <span><span class="sw" style="background:var(--text-secondary)"></span>qualificati</span>
+      <span><span class="sw ring" style="border-color:var(--text-secondary)"></span>non qualificati</span>
+      <span><span class="line" style="background:var(--link)"></span>incontro senior → junior (spessore ∝ Δh)</span>
+      <span><span class="line" style="background:var(--field)"></span>corrente: Δh medio annuo per cella</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Correnti di conoscenza: da quali senior impara chi</h2>
+    <p class="note">Somma annua di Δh trasferito negli incontri, per fascia di esperienza del senior
+      (tutti gli agenti, non solo il campione). La linea verticale segue l'animazione.</p>
+    <div class="chart" id="c-flows"></div>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const cv = $("cv"), ctx = cv.getContext("2d");
+let D = null, S = null, year = 0, phase = 0, playing = false, last = 0, bounds = null;
+
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+const fmt = (x, d) => x.toLocaleString("it-IT", { minimumFractionDigits: d, maximumFractionDigits: d });
+
+function computeBounds() {
+  let lo = Infinity, hi = -Infinity;
+  for (const sc of Object.values(D.scenarios)) for (const y of sc.years) for (const h of y.agents.h) { lo = Math.min(lo, h); hi = Math.max(hi, h); }
+  bounds = { a0: 19, a1: D.retirement_age + 1, h0: Math.max(0, lo - 0.1), h1: hi + 0.1 };
+}
+
+function resize() {
+  const r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  draw();
+}
+
+function frame() {
+  const r = cv.getBoundingClientRect(), m = { l: 48, r: 12, t: 10, b: 36 };
+  const W = r.width - m.l - m.r, H = r.height - m.t - m.b;
+  return { m, W, H,
+    x: (a) => m.l + (a - bounds.a0) / (bounds.a1 - bounds.a0) * W,
+    y: (h) => m.t + (1 - (h - bounds.h0) / (bounds.h1 - bounds.h0)) * H };
+}
+
+function axes(f) {
+  ctx.strokeStyle = css("--grid"); ctx.fillStyle = css("--text-secondary"); ctx.lineWidth = 1;
+  ctx.font = "12px system-ui, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "top";
+  for (let a = 20; a <= 65; a += 5) {
+    const x = f.x(a); ctx.beginPath(); ctx.moveTo(x, f.m.t); ctx.lineTo(x, f.m.t + f.H); ctx.stroke();
+    ctx.fillText(a, x, f.m.t + f.H + 6);
+  }
+  ctx.textAlign = "right"; ctx.textBaseline = "middle";
+  const step = (bounds.h1 - bounds.h0) > 2 ? 0.5 : 0.25;
+  for (let h = Math.ceil(bounds.h0 / step) * step; h <= bounds.h1; h += step) {
+    const y = f.y(h); ctx.beginPath(); ctx.moveTo(f.m.l, y); ctx.lineTo(f.m.l + f.W, y); ctx.stroke();
+    ctx.fillText(fmt(h, 1), f.m.l - 6, y);
+  }
+  ctx.save(); ctx.translate(12, f.m.t + f.H / 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = "center";
+  ctx.fillText("capitale umano h", 0, 0); ctx.restore();
+  ctx.textAlign = "right"; ctx.textBaseline = "bottom"; ctx.fillText("età", f.m.l + f.W, f.m.t + f.H + 34);
+}
+
+// Indice uid -> posizione per un anno (memorizzato).
+const idxCache = new WeakMap();
+function index(y) {
+  if (!idxCache.has(y)) { const m = new Map(); y.agents.u.forEach((u, i) => m.set(u, i)); idxCache.set(y, m); }
+  return idxCache.get(y);
+}
+
+function drawField(f, y0, y1) {
+  // Correnti: per celle (5 anni × banda di h) il Δh medio tra l'anno t e t+1 degli agenti presenti in entrambi.
+  const i1 = index(y1), nb = 12, cells = new Map();
+  const hb = (h) => Math.min(nb - 1, Math.max(0, Math.floor((h - bounds.h0) / (bounds.h1 - bounds.h0) * nb)));
+  y0.agents.u.forEach((u, i) => {
+    const j = i1.get(u); if (j === undefined) return;
+    const k = `${Math.floor(y0.agents.a[i] / 5)}|${hb(y0.agents.h[i])}`;
+    const c = cells.get(k) || { a: 0, h: 0, dh: 0, n: 0 };
+    c.a += y0.agents.a[i]; c.h += y0.agents.h[i]; c.dh += y1.agents.h[j] - y0.agents.h[i]; c.n++;
+    cells.set(k, c);
+  });
+  ctx.strokeStyle = css("--field"); ctx.fillStyle = css("--field"); ctx.lineWidth = 1.5;
+  const scale = 4; // esagerazione: frecce lunghe 4 anni
+  for (const c of cells.values()) {
+    if (c.n < 3) continue;
+    const a = c.a / c.n, h = c.h / c.n, dh = c.dh / c.n;
+    const x0 = f.x(a), y0p = f.y(h), x1 = f.x(a + scale), y1p = f.y(h + dh * scale);
+    ctx.globalAlpha = 0.85;
+    ctx.beginPath(); ctx.moveTo(x0, y0p); ctx.lineTo(x1, y1p); ctx.stroke();
+    const ang = Math.atan2(y1p - y0p, x1 - x0);
+    ctx.beginPath(); ctx.moveTo(x1, y1p);
+    ctx.lineTo(x1 - 6 * Math.cos(ang - 0.45), y1p - 6 * Math.sin(ang - 0.45));
+    ctx.lineTo(x1 - 6 * Math.cos(ang + 0.45), y1p - 6 * Math.sin(ang + 0.45)); ctx.closePath(); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function draw() {
+  if (!S) return;
+  const r = cv.getBoundingClientRect(); ctx.clearRect(0, 0, r.width, r.height);
+  const f = frame(); axes(f);
+  const Y = S.years, y0 = Y[year], y1 = Y[Math.min(year + 1, Y.length - 1)], i1 = index(y1);
+  const e = phase * phase * (3 - 2 * phase); // smoothstep
+  const colors = [css("--junior"), css("--mid"), css("--senior")];
+
+  if ($("show-field").checked && year + 1 < Y.length) drawField(f, y0, y1);
+
+  if ($("show-links").checked) {
+    const L = y0.links, i0 = index(y0), mx = Math.max(1e-6, ...L.dh);
+    ctx.strokeStyle = css("--link");
+    for (let k = 0; k < L.u.length; k++) {
+      const j = i0.get(L.u[k]); if (j === undefined) continue;
+      ctx.globalAlpha = (0.25 + 0.6 * L.dh[k] / mx) * (1 - e);
+      ctx.lineWidth = 0.5 + 2.5 * L.dh[k] / mx;
+      ctx.beginPath(); ctx.moveTo(f.x(L.sa[k]), f.y(L.sh[k])); ctx.lineTo(f.x(y0.agents.a[j]), f.y(y0.agents.h[j])); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  const A = y0.agents;
+  for (let i = 0; i < A.u.length; i++) {
+    const j = i1.get(A.u[i]);
+    let a = A.a[i], h = A.h[i], role = A.r[i], alpha = 0.9;
+    if (j !== undefined) { a += (y1.agents.a[j] - a) * e; h += (y1.agents.h[j] - h) * e; if (e > 0.5) role = y1.agents.r[j]; }
+    else { a += e; alpha = 0.9 * (1 - e); }               // in pensione: svanisce
+    drawDot(f.x(a), f.y(h), colors[role], A.q[i], alpha);
+  }
+  // Nuovi entranti: compaiono nel corso della transizione.
+  if (e > 0) {
+    const i0 = index(y0), B = y1.agents;
+    for (let j = 0; j < B.u.length; j++) if (!i0.has(B.u[j])) drawDot(f.x(B.a[j]), f.y(B.h[j]), colors[B.r[j]], B.q[j], 0.9 * e);
+  }
+}
+
+function drawDot(x, y, color, high, alpha) {
+  ctx.globalAlpha = alpha; ctx.beginPath(); ctx.arc(x, y, 3, 0, 2 * Math.PI);
+  if (high) { ctx.fillStyle = color; ctx.fill(); } else { ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.stroke(); }
+  ctx.globalAlpha = 1;
+}
+
+function updateStats() {
+  const s = S.years[year].stats;
+  $("s-year").textContent = year;
+  $("s-js").textContent = `${s.n_junior} / ${s.n_senior}`;
+  $("s-meet").textContent = s.n_meetings;
+  $("s-b").textContent = fmt(s.B_meet, 3);
+  $("s-h").textContent = `${fmt(s.mean_h_junior, 2)} / ${fmt(s.mean_h_senior, 2)}`;
+  $("year").value = year;
+  if (window.Plotly && $("c-flows").data) Plotly.relayout("c-flows", { "shapes[0].x0": year, "shapes[0].x1": year });
+}
+
+function flowsChart() {
+  const yrs = S.years.map((_, i) => i), seq = ["--seq-1", "--seq-2", "--seq-3"].map(css), grid = css("--grid");
+  const traces = D.bands.map((b, k) => ({
+    x: yrs, y: S.years.map(y => y.flows[b][0] + y.flows[b][1]), name: `senior con ${b} anni di esperienza`,
+    type: "scatter", mode: "lines", stackgroup: "f", line: { width: 2, color: seq[k] }, fillcolor: hexA(seq[k], 0.55),
+    hovertemplate: `${b} anni: %{y:.1f}<extra></extra>`,
+  }));
+  const shapes = [{ type: "line", x0: year, x1: year, yref: "paper", y0: 0, y1: 1, line: { color: css("--text-secondary"), width: 1.5 } }];
+  if (S === D.scenarios.shock_p) shapes.push({ type: "line", x0: D.shock_year, x1: D.shock_year, yref: "paper", y0: 0, y1: 1, line: { color: css("--text-muted"), width: 1, dash: "dot" } });
+  Plotly.react("c-flows", traces, {
+    paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+    font: { family: "system-ui, sans-serif", size: 12, color: css("--text-secondary") },
+    margin: { l: 56, r: 12, t: 8, b: 40 }, hovermode: "x unified", shapes,
+    xaxis: { title: { text: "anno", standoff: 4 }, gridcolor: grid, zeroline: false },
+    yaxis: { title: { text: "Δh trasferito (somma)" }, gridcolor: grid, zeroline: false, rangemode: "tozero" },
+    legend: { orientation: "h", yanchor: "bottom", y: 1.02, x: 0 },
+    hoverlabel: { bgcolor: css("--surface-1"), bordercolor: grid, font: { color: css("--text-primary") } },
+  }, { displaylogo: false, responsive: true });
+}
+
+function setScenario() {
+  S = D.scenarios[$("scenario").value];
+  $("stage-note").textContent = S === D.scenarios.shock_p
+    ? `Dall'anno ${D.shock_year} p viene dimezzato: meno linee d'incontro; i junior salgono meno e, con 10–15 anni di ritardo, lo stesso vale per chi diventa senior.`
+    : "Stato stazionario: ogni anno i junior (arancio) imparano dai senior (blu) e risalgono verso il profilo dei senior.";
+  flowsChart(); updateStats(); draw();
+}
+
+function tick(ts) {
+  if (!playing) return;
+  const dur = +$("speed").value;
+  phase += (ts - last) / dur; last = ts;
+  if (phase >= 1) {
+    phase = 0; year += 1;
+    if (year >= S.years.length - 1) { year = S.years.length - 1; togglePlay(false); }
+    updateStats();
+  }
+  draw();
+  requestAnimationFrame(tick);
+}
+
+function togglePlay(on) {
+  playing = on ?? !playing;
+  $("play").textContent = playing ? "❚❚ Pausa" : "▶ Avvia";
+  if (playing) { if (year >= S.years.length - 1) year = 0; last = performance.now(); requestAnimationFrame(tick); }
+}
+
+$("play").addEventListener("click", () => togglePlay());
+$("year").addEventListener("input", (e) => { year = +e.target.value; phase = 0; updateStats(); draw(); });
+$("scenario").addEventListener("change", setScenario);
+$("show-links").addEventListener("change", draw);
+$("show-field").addEventListener("change", draw);
+$("theme").addEventListener("click", () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
+  flowsChart(); draw();
+});
+try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (S) { flowsChart(); draw(); } });
+new ResizeObserver(resize).observe(cv);
+
+Promise.all([window.plotlyReady, fetch("data/dinamica.json").then(r => r.json())]).then(([, d]) => {
+  D = d; computeBounds();
+  $("year").max = d.scenarios.base.years.length - 1;
+  $("scenario").innerHTML = Object.entries(d.scenarios).map(([k, s]) => `<option value="${k}">${s.label}</option>`).join("");
+  setScenario(); resize();
+}).catch(err => {
+  document.querySelector("main").insertAdjacentHTML("beforeend", `<p>Impossibile caricare i dati (${err}).</p>`);
+});
+</script>
+</body>
+</html>

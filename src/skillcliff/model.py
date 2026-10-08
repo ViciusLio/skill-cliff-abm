@@ -26,6 +26,9 @@ class Model:
         self.rng_demo = np.random.default_rng(ss_demo)
         self.rng_meet = np.random.default_rng(ss_meet)
         self.pop = initial_population(cfg, np.random.default_rng(ss_init))
+        self.next_uid = len(self.pop)
+        self.last_meet = None   # esito degli incontri dell'ultimo anno (per le visualizzazioni)
+        self.last_dh_aut = None
         self.ai = ai if ai is not None else make_ai(cfg)
         self.t = -cfg.burn_in
 
@@ -38,7 +41,8 @@ class Model:
         n_before = len(pop)
         pop.keep(pop.age < cfg.population.retirement_age)
         n_new = n_entrants(cfg, n_before, len(pop))
-        pop.append(new_entrants(cfg, n_new, self.rng_demo))
+        pop.append(new_entrants(cfg, n_new, self.rng_demo, self.next_uid))
+        self.next_uid += n_new
 
         # 4. apprendimento
         junior, senior = role_masks(cfg, pop.exp)
@@ -48,6 +52,7 @@ class Model:
         h_prev = pop.h
         pop.h = h_prev + meet.dh + dh_aut
 
+        self.last_meet, self.last_dh_aut = meet, dh_aut
         rec = self._record(h_prev, meet, dh_aut, junior, senior)
         self.t += 1
         return rec
