@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Skill Cliff: la lezione</title>
-<meta name="description" content="Presentazione per un'aula universitaria: un viaggio nel tempo dal modello di Lucas alla skill cliff dell'IA.">
+<title>Skill Cliff: lezione</title>
+<meta name="description" content="Lezione: dal modello di Lucas (1988) alla skill cliff dell'IA, con i risultati del modello ad agenti.">
 <script src="plotly-loader.js"></script>
 <style>
 :root {
@@ -77,17 +77,16 @@ a { color: var(--accent); }
 </style>
 </head>
 <body>
-<div class="top"><span>La skill cliff · Bassi e [Nome Cognome]</span><a href="index.html">risultati</a></div>
+<div class="top"><span>La skill cliff · Vincenzo Lio e Federico Bassi</span><a href="index.html">risultati</a></div>
 <main class="deck" id="deck">
 
 <section class="slide"><div class="inner">
   <span class="when">Lezione</span>
   <h1>Chi insegnerà ai senior di domani?</h1>
-  <p class="lead">Un viaggio nel tempo dentro il capitale umano: da un'equazione del 1988
-    a una simulazione di sessant'anni, per capire perché l'IA potrebbe farci perdere qualcosa
-    <strong>molto dopo</strong> averlo sostituito.</p>
-  <p>Modello ad agenti · fase 1 (senza IA) · Federico Bassi e [Nome Cognome]</p>
-  <p class="src">Usa ← → (o lo swipe) per avanzare. Ogni grafico è interattivo.</p>
+  <p class="lead">Dall'equazione di Lucas del 1988 a una simulazione di sessant'anni: perché
+    l'IA potrebbe farci perdere capitale umano <strong>molto dopo</strong> aver sostituito un lavoro.</p>
+  <p>Modello ad agenti · fase 1 (senza IA) · Vincenzo Lio e Federico Bassi</p>
+  <p class="src">Frecce ← → per avanzare.</p>
 </div></section>
 
 <section class="slide"><div class="inner">
@@ -103,10 +102,10 @@ a { color: var(--accent); }
 <section class="slide"><div class="inner">
   <span class="when">1988 · Robert Lucas</span>
   <h2>L'efficienza dell'apprendimento come costante</h2>
-  <div class="eq">dh/dt = B · u · h</div>
+  <div class="eq">ḣ = B · (1 − u) · h</div>
   <p>Il capitale umano <strong>h</strong> cresce in proporzione al tempo dedicato a imparare
-    (<strong>u</strong>) e a un'efficienza <strong>B</strong>. In Lucas, <strong>B è un parametro</strong>:
-    un dato della tecnologia, come la costante di gravità.</p>
+    (<strong>1 − u</strong>, dove u è il tempo in produzione) e a un'efficienza <strong>B</strong>.
+    In Lucas, <strong>B è un parametro</strong>: Lucas lo fissa, non lo spiega.</p>
   <p>Conseguenza: se B è fisso, una tecnologia che cambia <em>come</em> si lavora non tocca
     <em>quanto</em> si impara.</p>
   <p class="src">Lucas (1988), Journal of Monetary Economics.</p>
@@ -191,8 +190,8 @@ a { color: var(--accent); }
 <section class="slide"><div class="inner">
   <span class="when">Anno 0 · regime</span>
   <h2>B non è un parametro: emerge</h2>
-  <p>Misuriamo B come crescita media del capitale umano dei junior. A regime vale circa
-    <strong>7% l'anno</strong>, e quasi due terzi vengono dagli incontri con i senior.</p>
+  <p>Misuriamo B come crescita media del capitale umano dei junior. A regime vale
+    <strong>6,9% l'anno</strong>, e il 62% viene dagli incontri con i senior.</p>
   <div class="chart" id="c-B"></div>
 </div></section>
 
@@ -203,7 +202,7 @@ a { color: var(--accent); }
     senior. Tutto il resto resta uguale, numeri casuali compresi.</p>
   <div class="timeline">
     <div class="tl hot"><b>anno 10</b>gli incontri si dimezzano</div>
-    <div class="tl hot"><b>anno 14</b>junior −5,6%</div>
+    <div class="tl hot"><b>anno 14</b>junior −5,7%</div>
     <div class="tl"><b>anni 10–20</b>senior: <strong>nessuna</strong> variazione</div>
     <div class="tl hot"><b>anno 21</b>il primo senior "impoverito"</div>
     <div class="tl hot"><b>anno 35+</b>senior −3,5%, poi −6,7%</div>
@@ -214,8 +213,8 @@ a { color: var(--accent); }
 <section class="slide"><div class="inner">
   <span class="when">Anni 10–60 · la skill cliff</span>
   <h2>Il danno scende lungo le età, come un'onda</h2>
-  <p>Capitale umano medio per classe d'età. I giovani perdono subito; le classi più anziane
-    iniziano a scendere 15, 20–25 e 30 anni dopo.</p>
+  <p>Capitale umano medio per classe d'età. I 20–29enni perdono subito; le classi successive
+    dopo circa 5, 14, 24 e 33 anni.</p>
   <div class="chart" id="c-classes"></div>
 </div></section>
 
@@ -231,9 +230,9 @@ a { color: var(--accent); }
   <span class="when">Dal micro al macro</span>
   <h2>Due proposizioni</h2>
   <div class="card" style="margin-bottom:12px"><h3>1 · B emergente</h3>
-    <div class="eq" style="font-size:1.1rem">E[B] = δ̄<sub>J</sub> − d + β · p<sup>eff</sup> · [ h̄<sup>S</sup> · mean(1/h<sup>J</sup>) − 1 + Ω ]</div>
-    <p>B dipende da quanti incontri ci sono (p<sup>eff</sup> = min(p, κS/J)) e da quanta conoscenza separa
-      le generazioni. Verificata sul modello: 0,0443 contro 0,0441 simulato.</p></div>
+    <div class="eq" style="font-size:1.1rem">E[B<sup>inc</sup>] = Σ<sub>g</sub> (J<sub>g</sub>/J) · β · p<sup>eff</sup><sub>g</sub> · [ h̄<sup>S</sup><sub>g</sub> · media(1/h<sup>J</sup><sub>g</sub>) − 1 + Ω<sub>g</sub> ]</div>
+    <p>Per ogni qualifica g, B dipende da quanti incontri ci sono (p<sup>eff</sup> = min(p, κS/J)) e da quanta
+      conoscenza separa le generazioni. Verificata sul modello: 0,0427 contro 0,0426 simulato.</p></div>
   <div class="card"><h3>2 · Il ritardo di trasmissione</h3>
     <p>Dopo una variazione permanente degli incontri, il capitale umano dei senior resta identico per
       s<sub>S</sub> − s<sub>J</sub> anni e cambia dall'anno successivo. Con 5 e 15 anni: <strong>11 anni</strong>,
@@ -259,7 +258,7 @@ a { color: var(--accent); }
     <li>Quali indicatori dovremmo guardare <em>adesso</em> per vedere una skill cliff prima che arrivi?</li>
     <li>Un'IA che fa da tutor ai junior aumenterebbe β invece di ridurre p: cambierebbe la conclusione?</li>
   </ol>
-  <p><a href="dinamica.html">→ Guarda gli agenti muoversi</a> · <a href="paper.pdf">→ Leggi l'articolo</a> ·
+  <p><a href="dinamica.html">→ Dinamica degli agenti</a> · <a href="paper.pdf">→ Articolo</a> ·
     <a href="https://github.com/ViciusLio/skill-cliff-abm">→ Il codice</a></p>
 </div></section>
 
@@ -334,7 +333,7 @@ function show(i) {
   slides.forEach((s, k) => s.classList.toggle("on", k === cur));
   $("prog").style.width = `${(cur + 1) / slides.length * 100}%`;
   $("count").textContent = `${cur + 1} / ${slides.length}`;
-  history.replaceState(null, "", `#${cur + 1}`);
+  if (location.hash !== `#${cur + 1}`) history.replaceState(null, "", `#${cur + 1}`);
   renderCharts(slides[cur]);
 }
 
@@ -361,7 +360,9 @@ $("theme").onclick = () => {
 };
 try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 
-show((parseInt(location.hash.slice(1), 10) || 1) - 1);
+const fromHash = () => (parseInt(location.hash.slice(1), 10) || 1) - 1;
+window.addEventListener("hashchange", () => { if (fromHash() !== cur) show(fromHash()); });
+show(fromHash());
 Promise.all([window.plotlyReady, fetch("data/fase1.json").then(r => r.json())])
   .then(([, d]) => { DATA = d; renderCharts(slides[cur]); })
   .catch(() => {});

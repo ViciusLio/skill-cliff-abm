@@ -1,16 +1,14 @@
 # La *skill cliff*: chi insegnerà ai senior di domani?
 
-**Un modello ad agenti sulla trasmissione di capitale umano tra generazioni e sugli effetti ritardati dell'intelligenza artificiale.**
-Federico Bassi e [Nome Cognome] — lavoro in corso.
+Modello ad agenti sulla trasmissione di capitale umano tra generazioni e sugli effetti
+ritardati dell'intelligenza artificiale. Vincenzo Lio e Federico Bassi, lavoro in corso.
 
 [![Apri in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ViciusLio/skill-cliff-abm?quickstart=1)
 
-| | |
-|---|---|
-| 📄 **Articolo (bozza)** | [PDF](https://viciuslio.github.io/skill-cliff-abm/paper.pdf) · sorgente [`paper/main.tex`](paper/main.tex) |
-| 🎓 **Presentazione** | [la lezione in HTML](https://viciuslio.github.io/skill-cliff-abm/presentazione.html) |
-| 📊 **Risultati interattivi** | [report](https://viciuslio.github.io/skill-cliff-abm/) · [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html) |
-| 🧾 **Sintesi tecnica della fase 1** | [`report/sintesi.md`](report/sintesi.md) |
+- **Articolo** (bozza, in inglese): [PDF](https://viciuslio.github.io/skill-cliff-abm/paper.pdf), sorgente [`paper/main.tex`](paper/main.tex)
+- **Lezione**: [lezione.html](https://viciuslio.github.io/skill-cliff-abm/lezione.html)
+- **Risultati**: [report](https://viciuslio.github.io/skill-cliff-abm/) e [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html)
+- **Sintesi tecnica della fase 1**: [`report/sintesi.md`](report/sintesi.md)
 
 ---
 
@@ -24,7 +22,8 @@ un'economia quando si riducono le occasioni in cui chi sa incontra chi impara?**
 ## Tesi, antitesi e risultati
 
 **L'antitesi, cioè la visione standard.** Nel modello di crescita di Lucas (1988) il capitale umano cresce come
-`dh/dt = B·u·h`, dove `B`, l'efficienza dell'apprendimento, è un **parametro**: un dato tecnologico.
+`ḣ = B(1−u)h`, dove `1−u` è il tempo dedicato a imparare e `B`, l'efficienza dell'apprendimento, è un
+**parametro**: Lucas lo fissa, non lo spiega.
 Se `B` è fisso, una tecnologia che riorganizza il lavoro non tocca la capacità di imparare.
 L'IA può sostituire alcuni lavoratori o completarli (Acemoglu 2024), ma l'effetto si misura
 oggi, sull'occupazione.
@@ -34,20 +33,21 @@ la conoscenza si trasmette incontrando chi ne sa di più, con un guadagno propor
 distanza di conoscenza. Jarosch, Oberfield e Rossi-Hansberg (2021) stimano che imparare dai
 colleghi valga il 4–9% della retribuzione. Se l'IA toglie lavoro proprio ai junior, e i primi
 dati dicono che lo fa (Brynjolfsson et al. 2025; Hosseini e Lichtinger 2025), toglie anche gli
-incontri con cui i junior imparano (Ide 2025). Il danno però non si vede subito: arriva **una
+incontri con cui i junior imparano (Ide 2026). Il danno però non si vede subito: arriva **una
 generazione professionale dopo**, quando i junior formati con meno incontri diventano i senior.
 È questa la *skill cliff*.
 
 **I risultati finora (fase 1: modello senza IA).**
 1. **Il modello è realistico dove deve esserlo.** Riproduce un profilo salariale che cresce
    lentamente e si appiattisce dopo circa 34 anni di esperienza, come nel settore privato italiano.
-   La quota di apprendimento dei junior dovuta agli incontri (4,5%) rientra nelle stime empiriche.
-2. **`B` emerge e dipende dalla storia.** Il 63% dell'apprendimento dei junior viene dagli
+   L'apprendimento dei junior dovuto agli incontri (4,3% del salario l'anno) rientra nelle stime empiriche.
+2. **`B` emerge e dipende dalla storia.** Il 62% dell'apprendimento dei junior viene dagli
    incontri con i senior. Se gli incontri calano, `B` crolla subito, risale per un po' e poi
    scende di nuovo quando i senior "impoveriti" diventano insegnanti.
 3. **Il ritardo è esatto.** Dimezzando gli incontri, il capitale umano dei senior resta
    *identico* per 10 anni e inizia a scendere all'11°, cioè dopo `s_S − s_J + 1` anni, come
-   previsto dalla Proposizione 2 dell'articolo. A regime cala del 6,7% e l'output del 7,1%.
+   previsto dalla Proposizione 2 dell'articolo (anche con soglie 10/20). A regime cala del 6,7%
+   e l'output del 7,2%.
 4. **Dal micro al macro.** Un'identità di campo medio (Proposizione 1) traduce le regole
    individuali in un'equazione aggregata per `B`, che dipende da opportunità d'incontro,
    capacità di mentoring e distribuzione della conoscenza. Si può innestare nei modelli di
@@ -59,11 +59,12 @@ e una corsa tra la crescita di `A` e l'erosione della conoscenza su cui l'IA ste
 
 ## Come leggere questo lavoro
 
-- **In 10 minuti.** La [presentazione](https://viciuslio.github.io/skill-cliff-abm/presentazione.html),
-  poi la [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html):
-  scegli lo scenario "p dimezzato", premi ▶ e guarda le linee arancioni degli incontri diradarsi.
+- **In 10 minuti.** La [lezione](https://viciuslio.github.io/skill-cliff-abm/lezione.html),
+  poi la [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html)
+  con lo scenario "p dimezzato".
 - **In un'ora.** L'[articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf): introduzione
-  (le tre lacune e i tre contributi), sezione 4 (risultati), sezione 5 (le due proposizioni).
+  (tre lacune e tre contributi), sezione 4 (risultati), sezione 5 (le due proposizioni),
+  sezione 6 (fallimento di mercato e politiche).
 - **Per verificare tutto.** La [sintesi tecnica](report/sintesi.md) con equazioni, parametri e una
   sezione *Verifiche* che dice cosa torna e cosa no. Poi apri il Codespace ed esegui
   [`notebooks/esplora_modello.ipynb`](notebooks/esplora_modello.ipynb), che ricalcola le
@@ -133,4 +134,4 @@ outputs/          risultati delle simulazioni (non versionati, tranne outputs/ex
 - **NumPy vettorizzato.** Un run con N = 5.000 e 180 anni richiede circa 0,07 s.
 - **Mesa solo come gemello.** Una seconda implementazione indipendente, con un oggetto per agente, verifica il modello (*docking*, Axtell et al. 1996).
 - **Riproducibilità.** Seed derivati per replica, stream separati per demografia e incontri, numeri casuali comuni tra scenari.
-- **Pubblicazione.** A ogni push su `main` che tocca `site/` o `paper/`, GitHub Actions compila l'articolo e pubblica il sito.
+- **Pubblicazione.** A ogni push su `main` che tocca `site/` o `paper/`, GitHub Actions compila l'articolo, pubblica il sito e poi lo verifica in un browser headless (`scripts/verify_site.mjs`): pagine raggiungibili, grafici con dati, animazione disegnata.

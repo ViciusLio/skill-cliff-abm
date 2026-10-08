@@ -4,7 +4,7 @@ name: Pages
 
 on:
   push:
-    paths: ["site/**", "paper/**", ".github/workflows/pages.yml"]
+    paths: ["site/**", "paper/**", "scripts/verify_site.mjs", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:
@@ -47,3 +47,22 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+
+  # Dopo il deploy apre il sito pubblicato in un browser headless e verifica pagine,
+  # caricamento di Plotly, grafici con dati e animazione. Riprova finché il CDN si aggiorna.
+  verify:
+    needs: deploy
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm install --no-save playwright@1.56.1 && npx playwright install --with-deps chromium
+      - name: Verifica il sito pubblicato
+        run: |
+          for i in 1 2 3 4 5 6; do
+            node scripts/verify_site.mjs "https://viciuslio.github.io/skill-cliff-abm/" && exit 0
+            echo "Tentativo $i fallito, riprovo tra 20 s"; sleep 20
+          done
+          exit 1

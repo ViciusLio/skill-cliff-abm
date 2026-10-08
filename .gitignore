@@ -24,3 +24,4 @@ paper/*.out
 paper/*.spl
 paper/*.synctex.gz
 paper/main.pdf
+node_modules/
