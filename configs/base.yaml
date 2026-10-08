@@ -1,0 +1,39 @@
+# Modello base (fase 1, senza IA). Un periodo = un anno.
+# Le scelte motivate sono discusse in report/sintesi.md.
+
+seed: 20261008          # seed radice; la replica r usa SeedSequence(seed).spawn(n_reps)[r]
+n_reps: 30              # repliche per scenario
+burn_in: 120            # anni simulati prima di registrare (porta il sistema a regime)
+T: 60                   # anni registrati
+
+population:
+  N: 5000               # lavoratori iniziali (in modalità stazionaria resta costante)
+  share_high: 0.30      # quota di qualificati tra gli entranti (~ laureati 25-34 anni in Italia)
+  entry_age:
+    low: 20
+    high: 25
+  retirement_age: 65    # uscita effettiva media in Italia ~64,8 anni (2024)
+  h0:                   # capitale umano medio all'ingresso
+    low: 1.0
+    high: 1.5
+  h0_sigma: 0.20        # dev. std. del log-rumore all'ingresso (h0 * lognormale con media 1)
+
+roles:                  # basati sugli anni di esperienza s = età - età d'ingresso
+  junior_max_exp: 5     # junior: s < 5
+  senior_min_exp: 15    # senior: s >= 15
+
+meetings:
+  p: 0.6                # prob. che un junior incontri un senior in un anno (senza vincoli)
+  kappa: 1.0            # max junior seguiti da un senior in un anno (vincolo di capacità)
+  beta: 0.10            # efficacia: dh = beta * max(0, h_senior - h_junior)
+
+learning:
+  delta0: 0.040         # apprendimento autonomo a inizio carriera
+  horizon: 50           # S in delta(s) = delta0 * max(0, 1 - s/S)
+  depreciation: 0.012   # obsolescenza d: dh_aut = (delta(s) - d) * h
+
+demography:
+  mode: stationary      # stationary (N costante, entranti = pensionati) | italy (fase successiva)
+
+ai:
+  enabled: false        # fase 2

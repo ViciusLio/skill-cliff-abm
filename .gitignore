@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+build/
+dist/
+
+# Output delle simulazioni: si versionano solo gli esempi
+outputs/*
+!outputs/examples/
+!outputs/.gitkeep
+_site/
