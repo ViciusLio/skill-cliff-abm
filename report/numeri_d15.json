@@ -6,61 +6,61 @@
  "repliche": 10,
  "H_fine_per_phi": {
   "0.00": 0.0,
-  "0.05": -0.008898935895504279,
-  "0.10": -0.01772096142995494,
-  "0.15": -0.026497416877883873,
-  "0.20": -0.03526072428155125,
-  "0.25": -0.043881900361580684,
-  "0.30": -0.05252673690651033,
-  "0.35": -0.061055983698655725,
-  "0.40": -0.06962984076085255,
-  "0.45": -0.07810702830668581,
-  "0.50": -0.08654480324225866,
-  "0.55": -0.09501391945893634,
-  "0.60": -0.1032938933765587
+  "0.05": -0.008957331263546031,
+  "0.10": -0.017910850018683533,
+  "0.15": -0.026763128964130467,
+  "0.20": -0.035592681852139485,
+  "0.25": -0.04440820640476739,
+  "0.30": -0.05314364941286409,
+  "0.35": -0.06187733995555722,
+  "0.40": -0.07050064353215879,
+  "0.45": -0.07908519216254761,
+  "0.50": -0.08754548759384817,
+  "0.55": -0.09603659735848302,
+  "0.60": -0.10445652596952704
  },
  "pianificatore": {
   "rho=0.97,orizzonte=10": {
    "phi_ottimo": 0.251,
    "eccesso_di_automazione": 0.049000000000000044,
-   "perdita_di_benessere_scelta_impresa": 0.00040007888164306227,
-   "valore_ottimo": 0.010639732197250007,
-   "valore_scelta_impresa": 0.01023539658344852
+   "perdita_di_benessere_scelta_impresa": 0.00039966579520700485,
+   "valore_ottimo": 0.01058504319013287,
+   "valore_scelta_impresa": 0.010181146915221984
   },
   "rho=0.97,orizzonte=25": {
-   "phi_ottimo": 0.187,
-   "eccesso_di_automazione": 0.11300000000000004,
-   "perdita_di_benessere_scelta_impresa": 0.002210620711076916,
-   "valore_ottimo": 0.005918182024019281,
-   "valore_scelta_impresa": 0.0036944784571881772
+   "phi_ottimo": 0.185,
+   "eccesso_di_automazione": 0.11500000000000005,
+   "perdita_di_benessere_scelta_impresa": 0.002261476176731003,
+   "valore_ottimo": 0.00584146311976852,
+   "valore_scelta_impresa": 0.003566776613354916
   },
   "rho=0.97,orizzonte=50": {
-   "phi_ottimo": 0.092,
-   "eccesso_di_automazione": 0.20800000000000005,
-   "perdita_di_benessere_scelta_impresa": 0.007425597274614337,
-   "valore_ottimo": 0.0014473605416749358,
-   "valore_scelta_impresa": -0.00598898424943306
+   "phi_ottimo": 0.088,
+   "eccesso_di_automazione": 0.21200000000000005,
+   "perdita_di_benessere_scelta_impresa": 0.007617429180560742,
+   "valore_ottimo": 0.0013951408587467018,
+   "valore_scelta_impresa": -0.0062329157085024844
   },
   "rho=0.99,orizzonte=10": {
-   "phi_ottimo": 0.25,
-   "eccesso_di_automazione": 0.050000000000000044,
-   "perdita_di_benessere_scelta_impresa": 0.00042692877381156347,
-   "valore_ottimo": 0.010510470346116962,
-   "valore_scelta_impresa": 0.010079054350088379
+   "phi_ottimo": 0.249,
+   "eccesso_di_automazione": 0.051000000000000045,
+   "perdita_di_benessere_scelta_impresa": 0.00042667408294394527,
+   "valore_ottimo": 0.01045335848313833,
+   "valore_scelta_impresa": 0.01002222422304988
   },
   "rho=0.99,orizzonte=25": {
-   "phi_ottimo": 0.17500000000000002,
-   "eccesso_di_automazione": 0.12500000000000003,
-   "perdita_di_benessere_scelta_impresa": 0.0026654558127027217,
-   "valore_ottimo": 0.005248278148550112,
-   "valore_scelta_impresa": 0.0025688332823496918
+   "phi_ottimo": 0.17300000000000001,
+   "eccesso_di_automazione": 0.12700000000000003,
+   "perdita_di_benessere_scelta_impresa": 0.0027288114211597714,
+   "valore_ottimo": 0.005170439968153806,
+   "valore_scelta_impresa": 0.0024275193913565474
   },
   "rho=0.99,orizzonte=50": {
    "phi_ottimo": 0.045,
    "eccesso_di_automazione": 0.25500000000000006,
-   "perdita_di_benessere_scelta_impresa": 0.011119645064359363,
-   "valore_ottimo": 0.0003577710990212424,
-   "valore_scelta_impresa": -0.010765852252973551
+   "perdita_di_benessere_scelta_impresa": 0.011416678402120572,
+   "valore_ottimo": 0.0003542564161138628,
+   "valore_scelta_impresa": -0.011066466417581355
   }
  }
 }

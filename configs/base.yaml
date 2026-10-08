@@ -3,7 +3,7 @@
 
 seed: 20261008          # seed radice; la replica r usa SeedSequence(seed).spawn(n_reps)[r]
 n_reps: 30              # repliche per scenario
-burn_in: 120            # anni simulati prima di registrare (porta il sistema a regime)
+burn_in: 300            # anni simulati prima di registrare: con 120 restava una deriva dello 0,4% nei livelli
 T: 60                   # anni registrati
 
 population:

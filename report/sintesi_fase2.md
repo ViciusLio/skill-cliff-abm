@@ -65,12 +65,12 @@ Variazioni rispetto allo scenario senza IA, a fine orizzonte (50 anni dopo l'int
 
 | Bersaglio | H | h senior | B da incontri | Y (θ = 0,02) | Gini | Anni al primo effetto sui senior |
 |---|---|---|---|---|---|---|
-| junior | −5,2% | −4,5% | −45% | +1,0% | 0,163 | 12 |
-| non qualificati | −3,2% | −2,8% | −31% | +3,1% | 0,170 | 12 |
+| junior | −5,2% | −4,5% | −45% | +0,9% | 0,163 | 12 |
+| non qualificati | −3,3% | −2,9% | −31% | +3,0% | 0,170 | 12 |
 | qualificati | −2,0% | −1,7% | −13% | +4,4% | 0,148 | 12 |
-| senior | −0,1% | 0,0% | −2% | +6,4% | 0,155 | 42 |
+| senior | −0,1% | 0,0% | −2% | +6,4% | 0,155 | 44 |
 | complementare | +5,2% | +4,3% | +45% | +12,0% | 0,150 | 12 |
-| junior, non occupati (D13) | −10,1% | −8,8% | −46% | −4,3% | 0,169 | 12 |
+| junior, non occupati (D13) | −10,2% | −8,8% | −46% | −4,3% | 0,170 | 12 |
 
 *Senza IA il Gini è 0,155. Nella variante D13, B da incontri è la media su tutti i junior, compresi i non occupati.*
 
@@ -78,15 +78,15 @@ Variazioni rispetto allo scenario senza IA, a fine orizzonte (50 anni dopo l'int
 2. **Sostituire i senior conta solo se i mentori sono scarsi.** Con κ = 0,2 e S/J ≈ 5,7 ci sono più mentori potenziali di quanti ne servano: il vincolo si attiva dopo circa 30 anni e l'effetto a fine orizzonte è quasi nullo. Con κ = 0,1, dove la capacità è già al limite, la stessa sostituzione costa −4,8% di capitale umano, quasi quanto sostituire i junior (sez. 4.3).
 3. **Bersagliare i non qualificati costa più che bersagliare i qualificati, e aumenta la disuguaglianza.** Il Gini sale a 0,170 se l'IA sostituisce i non qualificati e scende a 0,148 se sostituisce i qualificati. Il motivo principale è il peso: i non qualificati sono il 70% degli entranti.
 4. **L'IA complementare è lo specchio della sostituzione dei junior.** Con la stessa intensità $\varphi$, H sale del 5,2% e l'output del 12%.
-5. **Se i junior sostituiti restano senza lavoro (D13) il danno raddoppia.** H scende del 10,1% e i senior dell'8,8%. Con θ = 0,02 l'output finisce sotto lo scenario senza IA (−4,3%): la soglia di pareggio sale da 0,017 a circa 0,035.
+5. **Se i junior sostituiti restano senza lavoro (D13) il danno raddoppia.** H scende del 10,2% e i senior dell'8,8%. Con θ = 0,02 l'output finisce sotto lo scenario senza IA (−4,3%): la soglia di pareggio sale da 0,017 a circa 0,035.
 
 ### 4.3 Sensibilità a κ per il bersaglio senior (D14)
 
 | κ | p effettiva senza IA | H a fine orizzonte | h senior | Primo effetto su H |
 |---|---|---|---|---|
 | 0,05 | 0,29 (vincolo attivo) | −2,3% | −2,0% | subito |
-| 0,1 | 0,57 (vincolo appena attivo) | −4,8% | −4,1% | subito |
-| 0,2 | 0,60 (vincolo inattivo) | −0,1% | 0,0% | dopo 31 anni |
+| 0,1 | 0,57 (vincolo appena attivo) | −4,8% | −4,2% | subito |
+| 0,2 | 0,60 (vincolo inattivo) | −0,1% | 0,0% | dopo 33 anni |
 
 Con κ = 0,05 la perdita è minore che con 0,1 perché gli incontri sono già pochi senza IA: c'è meno da perdere.
 Il dato empirico che servirebbe è quanti senior fanno davvero da mentori.
@@ -95,9 +95,9 @@ Il dato empirico che servirebbe è quanti senior fanno davvero da mentori.
 
 ![La corsa](fig/fig8_corsa.png)
 
-Con θ = 0,02 (Acemoglu) e bersaglio junior, **la perdita di capitale umano si mangia circa l'85% del guadagno di produttività dell'IA**:
+Con θ = 0,02 (Acemoglu) e bersaglio junior, **la perdita di capitale umano si mangia circa l'86% del guadagno di produttività dell'IA**:
 - senza perdita di H l'output sarebbe +6,5% a fine orizzonte;
-- con la skill cliff è +1,0%, quasi fermo (+0,6% / +0,7%) tra 20 e 30 anni dopo l'introduzione.
+- con la skill cliff è +0,9%, quasi fermo (+0,6%) tra 20 e 30 anni dopo l'introduzione.
 
 ![Mappa della corsa](fig/fig9_mappa_corsa.png)
 
@@ -106,9 +106,9 @@ Con θ = 0,02 (Acemoglu) e bersaglio junior, **la perdita di capitale umano si m
 | 1% | −2,3% | 0,037 |
 | 2% | −4,0% | 0,025 |
 | 3% | −5,2% | 0,017 |
-| 4% | −6,1% | 0,011 |
+| 4% | −6,2% | 0,011 |
 | 5% | −6,9% | 0,007 |
-| 6% | −7,4% | 0,005 |
+| 6% | −7,5% | 0,005 |
 
 - **IA più veloce, perdita più grande.** Una crescita più rapida di A automatizza prima e aumenta la perdita di capitale umano.
 - **Ma anche guadagno più grande.** Con A esponenziale, il guadagno di output cresce più in fretta della perdita, che si satura con $\varphi_{\max}$; la soglia θ per andare in pari quindi scende.
@@ -131,10 +131,10 @@ con guadagno pieno dell'automazione π = 0,10 e costo di adozione c = 1/3.
 
 | ρ | Orizzonte | φ ottimo | Eccesso di automazione | Valore della scelta dell'impresa | Valore dell'ottimo |
 |---|---|---|---|---|---|
-| 0,97 | 10 anni | 0,25 | 0,05 | +1,02% | +1,06% |
-| 0,97 | 25 anni | 0,19 | 0,11 | +0,37% | +0,59% |
-| 0,97 | 50 anni | 0,09 | 0,21 | **−0,60%** | +0,14% |
-| 0,99 | 50 anni | 0,05 | 0,26 | **−1,08%** | +0,04% |
+| 0,97 | 10 anni | 0,251 | 0,049 | +1,02% | +1,06% |
+| 0,97 | 25 anni | 0,185 | 0,115 | +0,36% | +0,58% |
+| 0,97 | 50 anni | 0,088 | 0,212 | **−0,62%** | +0,14% |
+| 0,99 | 50 anni | 0,045 | 0,255 | **−1,11%** | +0,04% |
 
 *Valori: output netto scontato rispetto a nessuna automazione.*
 
@@ -159,7 +159,7 @@ con guadagno pieno dell'automazione π = 0,10 e costo di adozione c = 1/3.
 6. **θ e g sono incerti.** Per questo sono esplorati su griglia; la stima di Acemoglu è prudente, altre sono molto più alte.
 
 **Stabilità numerica (controlli dell'8 ottobre)**
-- **Burn-in.** 120 anni non bastano del tutto: la convergenza è lenta perché ogni generazione impara dalla precedente. Con 300 anni l'h dei senior è più alto dello 0,4% e la deriva residua scende da +1,0·10⁻⁴ a −0,9·10⁻⁵ l'anno (relativa). I confronti tra scenari cambiano pochissimo (H con bersaglio junior: −5,20% con 120 anni, −5,26% con 300, −5,23% con 480). **Da fare:** portare il burn-in a 300 anni e rigenerare i numeri.
+- **Burn-in (risolto).** Con 120 anni la convergenza non era completa, perché ogni generazione impara dalla precedente: restava una deriva relativa di +1,0·10⁻⁴ l'anno e i livelli erano più bassi dello 0,4%. Il burn-in è ora di 300 anni (deriva −0,9·10⁻⁵ l'anno) e tutti i numeri sono stati rigenerati. I confronti tra scenari erano già robusti (H con bersaglio junior: −5,20% con 120 anni, −5,24% con 300, −5,23% con 480).
 - **Esistenza dello stato stazionario.** Con parametri estremi (p = 1, κ = 1, β = 0,5) il capitale umano cresce senza limite: gli incontri diventano un motore di crescita endogena alla Lucas. Con la calibrazione di base l'economia è stazionaria. La soglia tra i due regimi va caratterizzata (analiticamente con la Proposizione 1, o numericamente su una griglia di p e β).
 - **Robustezza dei risultati.** Invarianza alla scala (5 mila – 24 milioni), docking con Mesa, seed diversi (IC al 95% molto stretti), soglie 10/20: le conclusioni qualitative non cambiano.
 
@@ -171,11 +171,11 @@ Il modello è **invariante alla scala**: gli agenti interagiscono attraverso est
 
 | N | Repliche | Tempo | B | B da incontri | h senior | Gini |
 |---|---|---|---|---|---|---|
-| 5.000 | 30 | 0,4 s | 0,06903 | 0,04263 | 2,1568 | 0,1549 |
-| 50.000 | 30 | 2,6 s | 0,06898 | 0,04258 | 2,1566 | 0,1547 |
-| 500.000 | 10 | 11,4 s | 0,06898 | 0,04258 | 2,1570 | 0,1548 |
-| 5.000.000 | 3 | 75 s | 0,06899 | 0,04259 | 2,1569 | 0,1548 |
-| **24.000.000** (occupati in Italia) | 1 | 589 s, 2,5 GB | 0,06899 | 0,04259 | 2,1569 | 0,1548 |
+| 5.000 | 30 | 0,6 s | 0,06933 | 0,04293 | 2,1667 | 0,1550 |
+| 50.000 | 30 | 4,2 s | 0,06934 | 0,04294 | 2,1653 | 0,1548 |
+| 500.000 | 10 | 19 s | 0,06935 | 0,04295 | 2,1659 | 0,1549 |
+| 5.000.000 | 3 | 137 s | 0,06933 | 0,04293 | 2,1654 | 0,1548 |
+| **24.000.000** (occupati in Italia) | 1 | in aggiornamento con burn-in di 300 anni (con 120 anni: 589 s, 2,5 GB, stessi valori alla quarta cifra) | | | | |
 
 Tempi con 4 core: le repliche girano in parallelo, quindi la riga da 24 milioni (una sola replica) ha usato un solo core.
 Conclusione: 5.000 agenti sono un campione sufficiente per le medie, 50.000 restringono gli intervalli

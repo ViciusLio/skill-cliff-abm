@@ -10,6 +10,8 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 - **Risultati**: [report](https://viciuslio.github.io/skill-cliff-abm/) e [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html)
 - **Fase 2 (IA)**: [risultati interattivi](https://viciuslio.github.io/skill-cliff-abm/fase2.html) e [sintesi](report/sintesi_fase2.md)
 - **Sintesi tecnica della fase 1**: [sintesi](report/sintesi.md)
+- **Descrizione standard del modello (protocollo ODD)**: appendice A dell'[articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf)
+- **Nota sulla calibrazione** (traccia per la discussione): [nota](report/nota_calibrazione.md)
 - **Resoconto dell'8 ottobre 2026**: [resoconto](report/resoconto_2026-10-08.md)
 
 ---
@@ -64,8 +66,8 @@ complementare, rende più efficace l'insegnamento. Risultati, 50 anni dopo l'int
    mentoring abbondante, −4,8% di capitale umano se è già al limite.
 3. **Sostituire i non qualificati aumenta la disuguaglianza** (Gini da 0,155 a 0,170).
 4. **La corsa:** con la stima prudente di Acemoglu (θ = 0,02) la perdita di capitale umano si mangia
-   circa l'85% del guadagno di produttività dell'IA.
-5. **Se i junior sostituiti restano senza lavoro** il danno raddoppia (capitale umano −10,1%) e
+   circa l'86% del guadagno di produttività dell'IA.
+5. **Se i junior sostituiti restano senza lavoro** il danno raddoppia (capitale umano −10,2%) e
    l'output finisce sotto lo scenario senza IA.
 6. **Le imprese automatizzano troppo.** Un'impresa che non vede la perdita futura di capitale umano
    automatizza il 30% dei compiti junior; su un orizzonte di 50 anni l'ottimo sociale è il 9%, e la
@@ -78,8 +80,9 @@ complementare, rende più efficace l'insegnamento. Risultati, 50 anni dopo l'int
   poi la [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html)
   con lo scenario "p dimezzato".
 - **In un'ora.** L'[articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf): introduzione
-  (tre lacune e tre contributi), sezione 4 (risultati), sezione 5 (le due proposizioni),
-  sezione 6 (fallimento di mercato e politiche).
+  (tre lacune e quattro contributi), sezione 4 (risultati), sezione 5 (le due proposizioni),
+  sezione 6 (l'IA: bersagli, corsa, impresa contro pianificatore), sezione 7 (fallimento di
+  mercato e politiche). L'appendice A descrive il modello con il protocollo ODD.
 - **Per verificare tutto.** La [sintesi tecnica](report/sintesi.md) con equazioni, parametri e una
   sezione *Verifiche* che dice cosa torna e cosa no. Poi apri il Codespace ed esegui
   [`notebooks/esplora_modello.ipynb`](notebooks/esplora_modello.ipynb), che ricalcola le
@@ -98,10 +101,10 @@ i test. Quindi:
 ```bash
 make help        # elenco dei comandi
 make test        # test: invarianti, riproducibilità, IA, docking con Mesa
-make report      # fase 1: figure, numeri e dati del sito (~10 s con 4 core)
-make fase2       # fase 2: scenari IA, corsa, sensibilità (~35 s con 4 core)
-make automazione # D15: automazione dell'impresa contro ottimo sociale (~15 s)
-make scala       # invarianza alla scala, fino a 5 milioni di agenti (~1,5 min)
+make report      # fase 1: figure, numeri e dati del sito (~15 s con 4 core)
+make fase2       # fase 2: scenari IA, corsa, sensibilità (~2 min con 4 core)
+make automazione # D15: automazione dell'impresa contro ottimo sociale (~30 s)
+make scala       # invarianza alla scala, fino a 5 milioni di agenti (~3 min)
 make paper       # compila paper/main.pdf
 make site        # sito in locale sulla porta 8000 (si apre da solo)
 ```
@@ -159,8 +162,9 @@ outputs/          risultati delle simulazioni (non versionati, tranne outputs/ex
 
 ### Scelte tecniche
 
-- **NumPy vettorizzato.** Un run (120 anni di burn-in e 60 registrati) richiede 0,04 s con N = 5.000 e 0,3 s con N = 50.000; durante il burn-in le metriche non vengono calcolate.
-- **Repliche in parallelo.** Le repliche girano su tutti i core (`SKILLCLIFF_WORKERS` per limitarli); ogni replica ha il proprio seed, quindi il risultato non dipende dal numero di processi. 30 repliche con N = 50.000 su 4 core: circa 3 s.
+- **NumPy vettorizzato.** Un run (300 anni di burn-in e 60 registrati) richiede circa 0,07 s con N = 5.000 e 0,5 s con N = 50.000; durante il burn-in le metriche non vengono calcolate.
+- **Burn-in di 300 anni.** Ogni generazione impara dalla precedente, quindi la convergenza è lenta: con 120 anni restava una deriva dello 0,4% nei livelli (i confronti tra scenari non cambiavano). Con 300 la deriva residua è sotto 10⁻⁵ l'anno.
+- **Repliche in parallelo.** Le repliche girano su tutti i core (`SKILLCLIFF_WORKERS` per limitarli); ogni replica ha il proprio seed, quindi il risultato non dipende dal numero di processi. 30 repliche con N = 50.000 su 4 core: circa 5 s.
 - **Invarianza alla scala.** Gli agenti si incontrano per estrazione casuale dentro gruppi grandi, non lungo reti locali: da 5 mila a 24 milioni di agenti (gli occupati italiani) i risultati coincidono alla quarta cifra. N riduce solo il rumore; la fase 1 usa 5.000 agenti, la fase 2 50.000.
 - **Mesa solo come gemello.** Una seconda implementazione indipendente, con un oggetto per agente, verifica il modello (*docking*, Axtell et al. 1996); è circa 10 volte più lenta e non si usa per le analisi.
 - **Riproducibilità.** Seed derivati per replica; stream separati per demografia, incontri e IA; numeri casuali comuni tra scenari, quindi prima dell'arrivo dell'IA ogni scenario è identico al bit allo scenario senza IA.

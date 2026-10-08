@@ -66,7 +66,7 @@ class AICfg:
 class Config:
     seed: int = 20261008
     n_reps: int = 30
-    burn_in: int = 120
+    burn_in: int = 300
     T: int = 60
     population: PopulationCfg = field(default_factory=PopulationCfg)
     roles: RolesCfg = field(default_factory=RolesCfg)

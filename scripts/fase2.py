@@ -126,7 +126,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default=str(ROOT / "configs" / "base.yaml"))
     ap.add_argument("--reps", type=int, default=30)
-    ap.add_argument("--race-reps", type=int, default=10)
+    ap.add_argument("--race-reps", type=int, default=30)
     ap.add_argument("--N", type=int, default=50_000)
     args = ap.parse_args()
     t0 = time.perf_counter()

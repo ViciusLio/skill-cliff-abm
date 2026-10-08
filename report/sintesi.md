@@ -51,7 +51,7 @@ $$B_t = \underbrace{\tfrac{1}{J_t}\textstyle\sum_{j}\tfrac{\Delta h^{\text{inc}}
 - La replica *r* usa `SeedSequence(seed).spawn(30)[r]`.
 - Gli stream per demografia e incontri sono separati.
 - Gli scenari con lo stesso seed condividono le estrazioni casuali.
-- Burn-in di 120 anni, poi 60 anni registrati; intervalli di confidenza (IC) al 95% con t di Student tra repliche.
+- Burn-in di 300 anni, poi 60 anni registrati; intervalli di confidenza (IC) al 95% con t di Student tra repliche. (Con 120 anni, il valore iniziale, restava una deriva dello 0,4% nei livelli; i confronti tra scenari non cambiavano.)
 
 ## 3. Parametri
 
@@ -79,18 +79,18 @@ $$B_t = \underbrace{\tfrac{1}{J_t}\textstyle\sum_{j}\tfrac{\Delta h^{\text{inc}}
 (a) Stato stazionario. (b) **Esperimento di meccanismo, non uno scenario IA**: dall'anno 10 la probabilità d'incontro *p* viene dimezzata, per isolare il canale su cui agirà l'IA.
 
 - **Junior:** −5,7% di h dopo 4 anni.
-- **Senior:** variazione **esattamente nulla per 10 anni**; primo effetto all'**11° anno**, come previsto dalla Proposizione 2 (sez. 5); −3,5% dopo 25 anni; −6,7% a regime.
+- **Senior:** variazione **esattamente nulla per 10 anni**; primo effetto all'**11° anno**, come previsto dalla Proposizione 2 (sez. 5); −3,6% dopo 25 anni; −6,7% a regime.
 - **Output:** −7,2% a regime.
-- **Classi d'età:** il calo supera lo 0,5% subito per i 20–29enni e dopo circa 5, 14, 24 e 33 anni per le classi successive (30–39, 40–49, 50–59, 60–64).
+- **Classi d'età:** il calo supera lo 0,5% subito per i 20–29enni e dopo circa 4, 14, 24 e 33 anni per le classi successive (30–39, 40–49, 50–59, 60–64).
 
 ### 4.2 B emergente
 
 ![B emergente](fig/fig2_B_emergente.png)
 
-**A regime:** $B$ = 0,0690 (IC [0,0689; 0,0691]). Di questo, $B^{inc}$ = 0,0426 (62%) e $B^{aut}$ = 0,0264.
+**A regime:** $B$ = 0,0693 (IC [0,0692; 0,0694]). Di questo, $B^{inc}$ = 0,0429 (62%) e $B^{aut}$ = 0,0264.
 
 **Dopo lo shock**, $B^{inc}$ si dimezza (da 0,043 a 0,021) e poi segue due fasi:
-- **sale** fino a 0,024 nei 5–20 anni successivi, perché i junior partono più in basso e il divario da colmare è più grande;
+- **sale** fino a 0,025 nei 5–20 anni successivi, perché i junior partono più in basso e il divario da colmare è più grande;
 - **scende** a 0,020 cinquant'anni dopo, quando i senior formati con meno incontri diventano gli insegnanti.
 
 B ha quindi memoria della storia degli incontri: è una variabile di stato, non una costante.
@@ -101,33 +101,33 @@ B ha quindi memoria della storia degli incontri: è una variabile di stato, non 
 
 | | Picco (età / esperienza) | Picco / ingresso | Calo finale dal picco |
 |---|---|---|---|
-| Non qualificati | 54 / 34 anni | 1,83 | −3,8% |
-| Qualificati | 59 / 34 anni | 1,83 | −0,9% |
+| Non qualificati | 54 / 34 anni | 1,84 | −3,6% |
+| Qualificati | 60 / 35 anni | 1,84 | −0,8% |
 
 ### 4.4 Disuguaglianza
 
 ![Gini](fig/fig4_gini.png)
 
-Il Gini dei salari a regime è 0,155 (IC [0,1545; 0,1554]) e sale a 0,165 dopo il dimezzamento degli incontri: gli incontri comprimono la disuguaglianza.
+Il Gini dei salari a regime è 0,155 (IC [0,1547; 0,1553]) e sale a 0,165 dopo il dimezzamento degli incontri: gli incontri comprimono la disuguaglianza.
 
 ### 4.5 Sensibilità a p e κ
 
 ![Sensibilità](fig/fig5_sensibilita_p_kappa.png)
 
 - $B^{inc}$ cresce in modo più che lineare con *p* finché il vincolo $p > \kappa S/J$ non diventa attivo.
-- A regime $S/J = 5{,}70$: con $\kappa=0{,}2$ il vincolo non è attivo e lo diventerebbe solo se $S/J$ scendesse sotto 3.
+- A regime $S/J = 5{,}71$: con $\kappa=0{,}2$ il vincolo non è attivo e lo diventerebbe solo se $S/J$ scendesse sotto 3.
 
 ### 4.6 Robustezza: soglie 10/20 (decisione D5)
 
 | | Base 5/15 | Robustezza 10/20 |
 |---|---|---|
-| $B$ | 0,0690 | 0,0562 |
-| $B^{inc}$ | 0,0426 | 0,0318 |
-| Picco / ingresso (non qual. / qual.) | 1,83 / 1,83 | 2,03 / 1,94 |
-| Esperienza al picco | 34 anni | 34 anni |
+| $B$ | 0,0693 | 0,0574 |
+| $B^{inc}$ | 0,0429 | 0,0330 |
+| Picco / ingresso (non qual. / qual.) | 1,84 / 1,84 | 2,08 / 1,95 |
+| Esperienza al picco | 34–35 anni | 34 anni |
 | Ritardo previsto / osservato | 11 / 11 | 11 / 11 |
-| h senior a regime, p dimezzato | −6,7% | −6,4% |
-| Output a regime, p dimezzato | −7,2% | −7,0% |
+| h senior a regime, p dimezzato | −6,7% | −6,6% |
+| Output a regime, p dimezzato | −7,2% | −7,2% |
 
 - Il ritardo dipende dalla **distanza** tra le soglie ($s_S - s_J + 1$), non dal loro livello: con 5/15 e con 10/20 è sempre 11 anni.
 - Gli effetti a regime cambiano poco.
@@ -139,11 +139,11 @@ Gemello in Mesa 3.5 (`src/skillcliff/mesa_twin.py`), scritto indipendentemente c
 
 | Metrica | NumPy | Mesa | Diff. | p (Welch) |
 |---|---|---|---|---|
-| h medio | 1,9867 | 1,9827 | −0,20% | 0,35 |
-| h junior | 1,4185 | 1,4134 | −0,36% | 0,16 |
-| h senior | 2,1581 | 2,1543 | −0,18% | 0,43 |
-| $B^{inc}$ | 0,0425 | 0,0425 | −0,01% | 0,98 |
-| $B^{aut}$ | 0,0264 | 0,0264 | 0,00% | 0,76 |
+| h medio | 1,9907 | 1,9897 | −0,05% | 0,82 |
+| h junior | 1,4166 | 1,4150 | −0,11% | 0,66 |
+| h senior | 2,1641 | 2,1630 | −0,05% | 0,82 |
+| $B^{inc}$ | 0,0428 | 0,0429 | +0,27% | 0,59 |
+| $B^{aut}$ | 0,0264 | 0,0264 | 0,00% | 0,86 |
 
 Nessuna differenza è significativa.
 
@@ -154,8 +154,8 @@ Nessuna differenza è significativa.
 $$\mathbb E[B^{inc}_t] = \sum_g \frac{J_g}{J}\,\beta\,p^{\text{eff}}_{g,t}\left[\bar h^S_{g,t}\;\overline{h^{-1}}^{\,J}_{g,t} - 1 + \Omega_{g,t}\right],\qquad \Omega_{g,t} = \frac{1}{J_g S_g}\sum_{j,k\in g}\frac{\max(0,h_j-h_k)}{h_j}\ge 0.$$
 
 - La dimostrazione usa $\max(0,x) = x + \max(0,-x)$.
-- Verifica numerica: l'identità dà **0,0427** contro **0,0426** simulato.
-- Usare il rapporto delle medie ($\bar h^S/\bar h^J$) al posto della media degli inversi sottostima B del 10% (0,0385): la dispersione dei junior conta.
+- Verifica numerica: l'identità dà **0,0437** contro **0,0434** simulato.
+- Usare il rapporto delle medie ($\bar h^S/\bar h^J$) al posto della media degli inversi sottostima B di circa il 9% (0,0395): la dispersione dei junior conta.
 
 **Proposizione 2 (ritardo di trasmissione).** Se le opportunità d'incontro cambiano in modo permanente all'anno $t_0$ e i senior non imparano dagli incontri, l'h medio dei senior resta invariato fino a $t_0 + s_S - s_J$ e cambia da $t_0 + s_S - s_J + 1$.
 
@@ -165,7 +165,7 @@ $$\mathbb E[B^{inc}_t] = \sum_g \frac{J_g}{J}\,\beta\,p^{\text{eff}}_{g,t}\left[
 ## 6. Verifiche
 
 **Riprodotto**
-- **Profilo salariale.** Concavo, che sale lentamente e si appiattisce (picco a 34 anni di esperienza, calo finale tra −1% e −4%): coerente con il settore privato italiano.
+- **Profilo salariale.** Concavo, che sale lentamente e si appiattisce (picco a 34–35 anni di esperienza, calo finale tra −1% e −4%): coerente con il settore privato italiano.
 - **Apprendimento dai colleghi.** $B^{inc}$ = 4,3% del salario dei junior l'anno, dentro l'intervallo 4–9% di Jarosch et al. (2021); la mappatura è solo indicativa (vedi sotto).
 - **B emergente con memoria.** Dipende da *p*, κ, β e dalla distribuzione di *h*.
 - **Ritardo esatto.** Previsto e osservato coincidono (11 anni), e la Proposizione 1 è verificata numericamente.
@@ -178,7 +178,7 @@ $$\mathbb E[B^{inc}_t] = \sum_g \frac{J_g}{J}\,\beta\,p^{\text{eff}}_{g,t}\left[
   - ogni incontro avviene tra un junior e un senior della stessa qualifica.
 
 **Non torna**
-1. **Profili per qualifica uguali (1,83 e 1,83).** Lagakos et al. (2018) trovano profili più ripidi per chi ha istruzione alta. Con D1 la pendenza invertita è sparita ma non si è rovesciata. Per riprodurla servirebbe un apprendimento autonomo diverso per qualifica (D2), che per ora escludiamo per tenere il modello essenziale.
+1. **Profili per qualifica uguali (1,84 e 1,84).** Lagakos et al. (2018) trovano profili più ripidi per chi ha istruzione alta. Con D1 la pendenza invertita è sparita ma non si è rovesciata. Per riprodurla servirebbe un apprendimento autonomo diverso per qualifica (D2), che per ora escludiamo per tenere il modello essenziale.
 2. **Gini basso (0,155).** Nei dati è circa 0,3 (ordine di grandezza da verificare su INPS): nel modello il salario dipende solo da *h*. Non è un obiettivo di calibrazione (D3).
 3. **Nessuna crescita di lungo periodo.** Con $h_0$ fisso l'economia è stazionaria: c'è B, non c'è crescita endogena alla Lucas.
 4. **Nessuna scogliera spontanea nel caso base.** Con demografia stazionaria S/J è costante e κ non è mai attivo: la skill cliff richiede uno shock (l'IA, oppure la piramide demografica italiana).
