@@ -10,7 +10,7 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 - **Risultati**: [report](https://viciuslio.github.io/skill-cliff-abm/) e [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html)
 - **Fase 2 (IA)**: [risultati interattivi](https://viciuslio.github.io/skill-cliff-abm/fase2.html) e [sintesi](report/sintesi_fase2.md)
 - **Sintesi tecnica della fase 1**: [sintesi](report/sintesi.md)
-- **Resoconto del 8 ottobre 2026**: [resoconto](report/resoconto_2026-10-08.md)
+- **Resoconto dell'8 ottobre 2026**: [resoconto](report/resoconto_2026-10-08.md)
 
 ---
 
@@ -60,10 +60,13 @@ dei compiti del bersaglio (junior, senior, qualificati, non qualificati) oppure,
 complementare, rende più efficace l'insegnamento. Risultati, 50 anni dopo l'introduzione:
 1. **Sostituire i junior è il caso peggiore:** capitale umano −5,2%, apprendimento da incontri −45%;
    sui senior l'effetto arriva dopo 12 anni.
-2. **Sostituire i senior quasi non conta** finché c'è capacità di mentoring in eccesso.
+2. **Sostituire i senior conta solo se i mentori sono scarsi:** quasi nessun effetto con capacità di
+   mentoring abbondante, −4,8% di capitale umano se è già al limite.
 3. **Sostituire i non qualificati aumenta la disuguaglianza** (Gini da 0,155 a 0,170).
 4. **La corsa:** con la stima prudente di Acemoglu (θ = 0,02) la perdita di capitale umano si mangia
    circa l'85% del guadagno di produttività dell'IA.
+5. **Se i junior sostituiti restano senza lavoro** il danno raddoppia (capitale umano −10,1%) e
+   l'output finisce sotto lo scenario senza IA.
 
 ## Come leggere questo lavoro
 
@@ -85,19 +88,22 @@ complementare, rende più efficace l'insegnamento. Risultati, 50 anni dopo l'int
 ### Avvio rapido in Codespaces (consigliato)
 
 Pulsante qui sopra, oppure *Code → Codespaces → Create codespace on main*. Al primo avvio
-(circa 3–4 minuti) il devcontainer installa Python, il pacchetto, Jupyter e LaTeX, poi lancia
+(qualche minuto) il devcontainer installa Python, il pacchetto, Jupyter e LaTeX, poi lancia
 i test. Quindi:
 
 ```bash
 make help        # elenco dei comandi
-make test        # test: invarianti, riproducibilità, docking con Mesa
-make report      # rigenera figure, numeri e dati del sito (~20 s)
-make fase2       # esperimenti della fase 2 (~30 s con 4 core)
+make test        # test: invarianti, riproducibilità, IA, docking con Mesa
+make report      # fase 1: figure, numeri e dati del sito (~10 s con 4 core)
+make fase2       # fase 2: scenari IA, corsa, sensibilità (~35 s con 4 core)
+make scala       # invarianza alla scala, fino a 5 milioni di agenti (~1,5 min)
 make paper       # compila paper/main.pdf
 make site        # sito in locale sulla porta 8000 (si apre da solo)
 ```
 
 Il Codespace usa la quota gratuita dell'account GitHub di chi lo apre (circa 120 ore-core al mese).
+Alla creazione si possono scegliere più core: le repliche girano in parallelo su tutti quelli disponibili
+(o su `SKILLCLIFF_WORKERS`), quindi i tempi scendono quasi in proporzione.
 
 ### Installazione locale
 
@@ -126,21 +132,30 @@ src/skillcliff/   config.py      parametri (dataclass da YAML)
                   model.py       dinamica annuale
                   metrics.py     metriche, Gini, IC tra repliche
                   experiment.py  repliche con seed derivati, salvataggio
-                  ai.py          aggancio per la fase 2 (e l'esperimento di meccanismo)
+                  ai.py          IA (fase 2): A(t), bersagli, non occupazione, output;
+                                 esperimento di meccanismo "p dimezzato"
                   mesa_twin.py   gemello Mesa (solo docking)
 configs/          parametri YAML
-scripts/          scenari, docking, report, vista dinamica
+scripts/          run_scenario.py   repliche di uno scenario con parametri da riga di comando
+                  make_report.py    fase 1: figure, numeri, dati del sito
+                  fase2.py          fase 2: scenari IA, corsa, sensibilità a kappa
+                  scale_check.py    invarianza alla scala (fino a 24 milioni di agenti)
+                  docking.py        confronto NumPy vs Mesa
+                  export_dynamics.py  dati della vista dinamica
+                  verify_site.mjs   verifica del sito in un browser headless
 notebooks/        esplorazione interattiva
 tests/            pytest
 paper/            articolo LaTeX (elsarticle) e figure in inglese
-report/           sintesi tecnica e figure in italiano
-site/             sito pubblicato su GitHub Pages
+report/           sintesi delle fasi, resoconto, numeri chiave (numeri_*.json), figure in italiano
+site/             sito pubblicato su GitHub Pages: index (fase 1), dinamica, fase2, lezione
 outputs/          risultati delle simulazioni (non versionati, tranne outputs/examples)
 ```
 
 ### Scelte tecniche
 
-- **NumPy vettorizzato.** Un run con N = 5.000 e 180 anni richiede circa 0,07 s.
-- **Mesa solo come gemello.** Una seconda implementazione indipendente, con un oggetto per agente, verifica il modello (*docking*, Axtell et al. 1996).
-- **Riproducibilità.** Seed derivati per replica, stream separati per demografia e incontri, numeri casuali comuni tra scenari.
-- **Pubblicazione.** A ogni push su `main` che tocca `site/` o `paper/`, GitHub Actions compila l'articolo, pubblica il sito e poi lo verifica in un browser headless (`scripts/verify_site.mjs`): pagine raggiungibili, grafici con dati, animazione disegnata.
+- **NumPy vettorizzato.** Un run (120 anni di burn-in e 60 registrati) richiede 0,04 s con N = 5.000 e 0,3 s con N = 50.000; durante il burn-in le metriche non vengono calcolate.
+- **Repliche in parallelo.** Le repliche girano su tutti i core (`SKILLCLIFF_WORKERS` per limitarli); ogni replica ha il proprio seed, quindi il risultato non dipende dal numero di processi. 30 repliche con N = 50.000 su 4 core: circa 3 s.
+- **Invarianza alla scala.** Gli agenti si incontrano per estrazione casuale dentro gruppi grandi, non lungo reti locali: da 5 mila a 24 milioni di agenti (gli occupati italiani) i risultati coincidono alla quarta cifra. N riduce solo il rumore; la fase 1 usa 5.000 agenti, la fase 2 50.000.
+- **Mesa solo come gemello.** Una seconda implementazione indipendente, con un oggetto per agente, verifica il modello (*docking*, Axtell et al. 1996); è circa 10 volte più lenta e non si usa per le analisi.
+- **Riproducibilità.** Seed derivati per replica; stream separati per demografia, incontri e IA; numeri casuali comuni tra scenari, quindi prima dell'arrivo dell'IA ogni scenario è identico al bit allo scenario senza IA.
+- **Integrazione continua.** A ogni push i test girano su Python 3.11 e 3.13. A ogni push su `main` (o a mano da *Actions → Pages → Run workflow*) GitHub Actions compila l'articolo, pubblica il sito e poi lo verifica in un browser headless (`scripts/verify_site.mjs`): pagine raggiungibili, grafici con dati, animazione disegnata, reindirizzamento dei vecchi indirizzi.

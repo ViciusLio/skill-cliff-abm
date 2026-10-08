@@ -37,6 +37,12 @@ $$Y_t = H_t\,\big[1 + \theta\,(A_t - 1)\big].$$
 
 θ non entra nella dinamica degli agenti: la "corsa" si calcola quindi per qualsiasi θ a partire da $H_t$ e $A_t$, senza nuove simulazioni.
 
+**Variante "junior non occupati" (D13).** Con `ai.displacement` la sostituzione dei junior non riduce p: ogni anno
+una quota $\varphi_t$ dei junior del gruppo colpito è senza lavoro. Un junior non occupato non incontra senior e non
+impara sul lavoro; resta solo l'obsolescenza, $\Delta h_{i,t} = -d\,h_{i,t}$. I suoi compiti li svolge l'IA, quindi
+l'output corrente non cambia: la perdita passa solo per il capitale umano. Le estrazioni per la non occupazione
+usano un flusso di numeri casuali dedicato, così gli altri flussi restano allineati con lo scenario senza IA.
+
 ## 3. Parametri
 
 | Parametro | Valore | Criterio |
@@ -64,13 +70,26 @@ Variazioni rispetto allo scenario senza IA, a fine orizzonte (50 anni dopo l'int
 | qualificati | −2,0% | −1,7% | −13% | +4,4% | 0,148 | 12 |
 | senior | −0,1% | 0,0% | −2% | +6,4% | 0,155 | 42 |
 | complementare | +5,2% | +4,3% | +45% | +12,0% | 0,150 | 12 |
+| junior, non occupati (D13) | −10,1% | −8,8% | −46% | −4,3% | 0,169 | 12 |
 
-*Senza IA il Gini è 0,155.*
+*Senza IA il Gini è 0,155. Nella variante D13, B da incontri è la media su tutti i junior, compresi i non occupati.*
 
 1. **Sostituire i junior è il caso peggiore.** H scende del 5,2% e l'apprendimento da incontri quasi si dimezza. Il primo effetto sui senior arriva **12 anni** dopo l'introduzione: un anno perché l'IA inizi ad agire, più gli 11 anni della Proposizione 2.
-2. **Sostituire i senior quasi non conta, finché la capacità di mentoring è in eccesso.** Con S/J ≈ 5,7 ci sono più mentori potenziali di quanti ne servano; il vincolo si attiva solo quando $\varphi$ è alto, dopo circa 30 anni. Il risultato dipende da κ (vedi sez. 5).
+2. **Sostituire i senior conta solo se i mentori sono scarsi.** Con κ = 0,2 e S/J ≈ 5,7 ci sono più mentori potenziali di quanti ne servano: il vincolo si attiva dopo circa 30 anni e l'effetto a fine orizzonte è quasi nullo. Con κ = 0,1, dove la capacità è già al limite, la stessa sostituzione costa −4,8% di capitale umano, quasi quanto sostituire i junior (sez. 4.3).
 3. **Bersagliare i non qualificati costa più che bersagliare i qualificati, e aumenta la disuguaglianza.** Il Gini sale a 0,170 se l'IA sostituisce i non qualificati e scende a 0,148 se sostituisce i qualificati. Il motivo principale è il peso: i non qualificati sono il 70% degli entranti.
 4. **L'IA complementare è lo specchio della sostituzione dei junior.** Con la stessa intensità $\varphi$, H sale del 5,2% e l'output del 12%.
+5. **Se i junior sostituiti restano senza lavoro (D13) il danno raddoppia.** H scende del 10,1% e i senior dell'8,8%. Con θ = 0,02 l'output finisce sotto lo scenario senza IA (−4,3%): la soglia di pareggio sale da 0,017 a circa 0,035.
+
+### 4.3 Sensibilità a κ per il bersaglio senior (D14)
+
+| κ | p effettiva senza IA | H a fine orizzonte | h senior | Primo effetto su H |
+|---|---|---|---|---|
+| 0,05 | 0,29 (vincolo attivo) | −2,3% | −2,0% | subito |
+| 0,1 | 0,57 (vincolo appena attivo) | −4,8% | −4,1% | subito |
+| 0,2 | 0,60 (vincolo inattivo) | −0,1% | 0,0% | dopo 31 anni |
+
+Con κ = 0,05 la perdita è minore che con 0,1 perché gli incontri sono già pochi senza IA: c'è meno da perdere.
+Il dato empirico che servirebbe è quanti senior fanno davvero da mentori.
 
 ### 4.2 La corsa
 
@@ -104,9 +123,9 @@ Con θ = 0,02 (Acemoglu) e bersaglio junior, **la perdita di capitale umano si m
 - **Formule:** A, φ e Y seguono le formule (test).
 
 **Cosa non torna o va discusso**
-1. **Il risultato sui senior dipende da κ.** Con κ = 0,2 la capacità di mentoring è abbondante. Con κ più basso (meno senior disposti a insegnare) sostituire i senior diventerebbe costoso: va mostrata la sensibilità.
+1. **Il risultato sui senior dipende da κ** (sez. 4.3). Senza una misura empirica della capacità di mentoring, il bersaglio senior va presentato come un intervallo: da quasi nullo a −4,8%.
 2. **A cresce senza limiti.** Con A esponenziale e θ > 0 l'IA vince sempre nel lunghissimo periodo; la corsa è interessante sull'orizzonte di una o due generazioni, non all'infinito.
-3. **La sostituzione agisce solo sugli incontri.** I junior sostituiti restano nella forza lavoro e continuano a imparare da soli. Un canale occupazionale (junior senza lavoro che non producono e non incontrano) renderebbe gli effetti più forti.
+3. **Due modi di sostituire i junior.** Nella versione base restano occupati e incontrano meno; nella variante D13 restano senza lavoro e il danno raddoppia. La realtà sta probabilmente in mezzo: chi non entra in un'impresa esposta trova spesso lavoro altrove, con meno apprendimento.
 4. **L'IA è esogena.** Nessuna impresa sceglie se automatizzare. Il fallimento di mercato di Ide (automazione socialmente eccessiva) richiede una scelta d'impresa: è il passo successivo.
 5. **Il caso complementare è simmetrico per costruzione** (β × (1+φ)). Non c'è il calo di sforzo dei co-pilot descritto da Ide, che lo renderebbe meno favorevole.
 6. **θ e g sono incerti.** Per questo sono esplorati su griglia; la stima di Acemoglu è prudente, altre sono molto più alte.
@@ -129,7 +148,7 @@ Tempi con 4 core: le repliche girano in parallelo, quindi la riga da 24 milioni 
 Conclusione: 5.000 agenti sono un campione sufficiente per le medie, 50.000 restringono gli intervalli
 di confidenza per i confronti tra scenari; la scala reale è possibile ma non cambia i risultati.
 
-## 7. Decisioni da confermare (formato D: opzione raccomandata e implementata per prima)
+## 7. Decisioni (formato D: opzione raccomandata per prima)
 
 - **D11 – Come l'IA riduce gli incontri.**
   - **A (implementata):** moltiplicatore $(1-\varphi_t)$ con $\varphi = \varphi_{\max}(1-1/A)$.
@@ -137,10 +156,7 @@ di confidenza per i confronti tra scenari; la scala reale è possibile ma non ca
 - **D12 – Output.**
   - **A (implementata):** $Y = H(1+\theta(A-1))$, una sola forma per tutti i bersagli.
   - B: forme diverse per sostituzione e complementarità (task-based alla Acemoglu).
-- **D13 – Junior sostituiti.**
-  - **A (implementata per ora):** restano occupati ma incontrano meno.
-  - B (raccomandata come estensione): una quota diventa non occupata, non produce e non incontra.
-- **D14 – Sensibilità a κ per il bersaglio senior.**
-  - **A (raccomandata):** la aggiungo (κ = 0,05; 0,1; 0,2).
+- **D13 – Junior sostituiti.** Fatto: la versione base (restano occupati, incontrano meno) resta il riferimento; la variante "non occupati" (`ai.displacement`) è implementata, testata e riportata accanto (sez. 4.1).
+- **D14 – Sensibilità a κ per il bersaglio senior.** Fatta (sez. 4.3).
 - **D15 – Scelta d'impresa sull'automazione** (per misurare l'automazione socialmente eccessiva di Ide).
   - **A (raccomandata):** dopo la revisione di questa sintesi.

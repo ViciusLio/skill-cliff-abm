@@ -61,3 +61,38 @@ def test_skill_targets_hit_only_their_group():
 def test_skill_targets_require_same_qual():
     with pytest.raises(ValueError):
         AI(with_ai("qualificati", AI_CFG.with_overrides({"meetings.same_qual": False})))
+
+
+# --- D13: junior sostituiti non occupati ------------------------------------
+
+def test_displacement_share_and_no_learning_for_nonemployed():
+    from skillcliff.model import Model
+
+    cfg = with_ai("junior").with_overrides({"ai.displacement": True})
+    m = Model(cfg, np.random.SeedSequence(5))
+    for _ in range(cfg.burn_in):
+        m.step(record=False)
+    shares = []
+    for _ in range(cfg.T):
+        rec = m.step()
+        phi = m.ai.automation_share(m.t - 1)
+        shares.append((rec["n_nonemployed"], phi * rec["n_junior"]))
+        h_prev = m.pop.h - m.last_meet.dh - m.last_dh_aut
+        junior = m.pop.exp < cfg.roles.junior_max_exp
+        # nessun incontro e solo obsolescenza (un junior occupato ha sempre delta(s) > d)
+        out = junior & (m.last_meet.dh == 0) & np.isclose(m.last_dh_aut, -cfg.learning.depreciation * h_prev)
+        if rec["n_nonemployed"]:
+            assert out.sum() >= rec["n_nonemployed"]       # i non occupati perdono solo per obsolescenza
+    obs, exp_ = np.array(shares).T
+    assert obs[: cfg.ai.start + 1].sum() == 0
+    np.testing.assert_allclose(obs[-10:].sum(), exp_[-10:].sum(), rtol=0.15)
+
+
+def test_displacement_identical_before_start_and_keeps_senior_lag():
+    base = run(AI_CFG)
+    ai = run(with_ai("junior").with_overrides({"ai.displacement": True}))
+    s = AI_CFG.ai.start
+    lag = AI_CFG.roles.senior_min_exp - AI_CFG.roles.junior_max_exp
+    np.testing.assert_array_equal(base["H"][: s + 1], ai["H"][: s + 1])
+    np.testing.assert_array_equal(base["mean_h_senior"][: s + lag], ai["mean_h_senior"][: s + lag])
+    assert ai["mean_h_junior"][s + 3] < base["mean_h_junior"][s + 3]

@@ -11,7 +11,7 @@
   color-scheme: light;
   --surface-0: #f4f3f0; --surface-1: #fcfcfb; --border: #e4e3df;
   --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #77766f;
-  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4; --s6: #008300;
   --grid: #e4e3df; --accent: #2a78d6;
 }
 @media (prefers-color-scheme: dark) {
@@ -19,7 +19,7 @@
     color-scheme: dark;
     --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
     --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a998f;
-    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300;
     --grid: #2e2e2c; --accent: #3987e5;
   }
 }
@@ -27,7 +27,7 @@
   color-scheme: dark;
   --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
   --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a998f;
-  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300;
   --grid: #2e2e2c; --accent: #3987e5;
 }
 * { box-sizing: border-box; }
@@ -71,7 +71,8 @@ th { color: var(--text-secondary); font-weight: 600; }
   <section class="card">
     <h2>Chi viene sostituito conta</h2>
     <p class="note">Variazione rispetto allo scenario senza IA. Il bersaglio decide quali incontri si riducono:
-      meno lavoro junior (p), meno senior che fanno da mentori (κ), o un'IA che rende l'insegnamento più efficace (β).</p>
+      meno lavoro junior (p), meno senior che fanno da mentori (κ), o un'IA che rende l'insegnamento più efficace (β).
+      Nella variante "non occupati" i junior sostituiti restano senza lavoro: non incontrano e non imparano sul lavoro.</p>
     <div class="controls">
       <label>Grandezza
         <select id="metric">
@@ -108,7 +109,7 @@ const $ = (id) => document.getElementById(id);
 const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const pct = (x, d = 1) => (x >= 0 ? "+" : "") + (100 * x).toLocaleString("it-IT", { minimumFractionDigits: d, maximumFractionDigits: d }) + "%";
 let D = null;
-const COLORS = { junior: "--s1", senior: "--s2", qualificati: "--s3", non_qualificati: "--s4", complementare: "--s5" };
+const COLORS = { junior: "--s1", senior: "--s2", qualificati: "--s3", non_qualificati: "--s4", complementare: "--s5", junior_non_occupati: "--s6" };
 
 function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
 function band(x, s, color, name, f = (v) => 100 * v) {

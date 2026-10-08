@@ -10,10 +10,17 @@ Il bersaglio decide quali parametri degli incontri vengono ridotti (o aumentati)
   qualificati      p e kappa del gruppo H * (1 - phi)
   non_qualificati  p e kappa del gruppo L * (1 - phi)
   complementare    beta * (1 + phi) per entrambe               (l'IA rende più efficace l'insegnamento)
+
+Con ai.displacement (decisione D13) i bersagli junior, qualificati e non_qualificati non riducono p:
+ogni anno una quota phi dei junior del gruppo colpito è non occupata. Un junior non occupato non
+incontra senior e non impara sul lavoro (resta solo l'obsolescenza d); i suoi compiti li svolge
+l'IA, quindi l'output corrente non cambia e la perdita passa solo per il suo capitale umano.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
+
+import numpy as np
 
 from skillcliff.config import Config
 
@@ -49,6 +56,14 @@ class NoAI:
     def output(self, t: int, sum_h: float) -> float:
         return sum_h
 
+    def nonemployed(self, t: int, junior: np.ndarray, high: np.ndarray, rng) -> np.ndarray | None:
+        """Maschera dei junior non occupati nell'anno t (None: nessuno)."""
+        return None
+
+
+# Gruppi di junior colpiti dalla non occupazione (D13), per bersaglio: (L, H).
+DISPLACED_GROUPS = {"junior": (True, True), "qualificati": (False, True), "non_qualificati": (True, False)}
+
 
 class AI(NoAI):
     def __init__(self, cfg: Config) -> None:
@@ -69,6 +84,11 @@ class AI(NoAI):
     def meeting_modifiers(self, t: int) -> MeetingModifiers:
         phi = self.automation_share(t)
         cut, both = 1.0 - phi, (1.0 - phi, 1.0 - phi)
+        if self.a.displacement and self.a.target in DISPLACED_GROUPS:
+            # i junior colpiti escono dal pool (vedi nonemployed); restano i tagli sui mentori
+            return {"junior": NEUTRAL,
+                    "qualificati": MeetingModifiers(kappa=(1.0, cut)),
+                    "non_qualificati": MeetingModifiers(kappa=(cut, 1.0))}[self.a.target]
         return {
             "junior": MeetingModifiers(p=both),
             "senior": MeetingModifiers(kappa=both),
@@ -79,6 +99,14 @@ class AI(NoAI):
 
     def output(self, t: int, sum_h: float) -> float:
         return sum_h * (1.0 + self.a.theta * (self.productivity(t) - 1.0))
+
+    def nonemployed(self, t: int, junior: np.ndarray, high: np.ndarray, rng) -> np.ndarray | None:
+        if not (self.a.displacement and self.a.target in DISPLACED_GROUPS):
+            return None
+        hit_low, hit_high = DISPLACED_GROUPS[self.a.target]
+        in_group = np.where(high, hit_high, hit_low)
+        u = rng.random(junior.size)          # estratto per tutti: numeri casuali allineati tra anni
+        return junior & in_group & (u < self.automation_share(t))
 
 
 class MeetingShock(NoAI):

@@ -45,8 +45,8 @@ await page.goto(base + "fase2.html", { waitUntil: "networkidle" });
 await page.waitForTimeout(800);
 const f2 = await plotTraces(page, ".chart");
 // ogni serie è una linea più la sua banda di confidenza
-check(f2.length === 2 && f2[0] === 10 && f2[1] === 4, `fase2: bersagli (5 serie) e corsa (2 serie) con dati (${f2})`);
-check((await page.$$eval("#t-targets tbody tr", (r) => r.length)) === 5, "fase2: tabella dei 5 bersagli");
+check(f2.length === 2 && f2[0] === 12 && f2[1] === 4, `fase2: scenari (6 serie) e corsa (2 serie) con dati (${f2})`);
+check((await page.$$eval("#t-targets tbody tr", (r) => r.length)) === 6, "fase2: tabella dei 6 scenari");
 await page.$eval("#theta", (el) => { el.value = "0.2"; el.dispatchEvent(new Event("input")); });
 check((await page.$eval("#v-y", (e) => e.textContent)).startsWith("+"), "fase2: con θ = 0,2 l'output a fine orizzonte cresce");
 

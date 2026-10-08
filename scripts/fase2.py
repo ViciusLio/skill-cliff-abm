@@ -25,7 +25,11 @@ from skillcliff.experiment import run_replications, save_results  # noqa: E402
 from skillcliff.metrics import mean_ci  # noqa: E402
 
 YELLOW, MAGENTA = "#eda100", "#e87ba4"
-TARGET_COLORS = dict(zip(TARGETS, (BLUE, ORANGE, AQUA, YELLOW, MAGENTA)))
+GREEN = "#008300"
+# Scenari: i 5 bersagli più la variante D13 (junior sostituiti non occupati).
+SCENARIOS = TARGETS + ("junior_non_occupati",)
+TARGET_COLORS = dict(zip(SCENARIOS, (BLUE, ORANGE, AQUA, YELLOW, MAGENTA, GREEN)))
+KAPPA_GRID = (0.05, 0.1, 0.2)
 G_GRID = (0.01, 0.02, 0.03, 0.04, 0.05, 0.06)
 THETA_GRID = (0.0, 0.01, 0.02, 0.05, 0.1, 0.2)
 THETA_LINES = (0.0, 0.02, 0.05, 0.1)
@@ -34,7 +38,8 @@ LABELS = {
     "it": {
         "dir": ROOT / "report" / "fig", "year": "anno",
         "targets": {"junior": "junior", "senior": "senior", "qualificati": "qualificati",
-                    "non_qualificati": "non qualificati", "complementare": "complementare"},
+                    "non_qualificati": "non qualificati", "complementare": "complementare",
+                    "junior_non_occupati": "junior, non occupati (D13)"},
         "H": "Capitale umano aggregato H rispetto a nessuna IA", "senior": "h medio dei senior rispetto a nessuna IA",
         "rel": "variazione %", "race": "La corsa: output Y rispetto a nessuna IA (bersaglio junior, g = 3%)",
         "map": "Output a fine orizzonte rispetto a nessuna IA (bersaglio junior)",
@@ -44,7 +49,8 @@ LABELS = {
     "en": {
         "dir": ROOT / "paper" / "fig", "year": "year",
         "targets": {"junior": "junior", "senior": "senior", "qualificati": "high-skilled",
-                    "non_qualificati": "low-skilled", "complementare": "complementary"},
+                    "non_qualificati": "low-skilled", "complementare": "complementary",
+                    "junior_non_occupati": "junior, non-employed"},
         "H": "Aggregate human capital H relative to no AI", "senior": "Mean senior h relative to no AI",
         "rel": "% change", "race": "The race: output Y relative to no AI (junior target, g = 3%)",
         "map": "End-of-horizon output relative to no AI (junior target)",
@@ -80,7 +86,7 @@ def save(fig, L, i):
 def figures(L, years, start, scen, base, race_rel, A_path, num):
     for i, key, title in ((0, "H", L["H"]), (1, "mean_h_senior", L["senior"])):
         fig, ax = plt.subplots(figsize=(7.2, 4))
-        for t in TARGETS:
+        for t in SCENARIOS:
             band(ax, years, 100 * rel(scen[t], base, key), TARGET_COLORS[t], L["targets"][t])
         ax.axvline(start, color=INK2, linewidth=1, linestyle=":")
         ax.axhline(0, color=INK2, linewidth=.8)
@@ -132,9 +138,10 @@ def main() -> None:
 
     base = run_replications(cfg, args.reps)
     scen = {t: run_replications(on(t), args.reps) for t in TARGETS}
+    scen["junior_non_occupati"] = run_replications(on("junior", displacement=True), args.reps)
     save_results(ROOT / "outputs" / "fase2" / "base.npz", cfg, base)
     for t, r in scen.items():
-        save_results(ROOT / "outputs" / "fase2" / f"{t}.npz", on(t), r)
+        save_results(ROOT / "outputs" / "fase2" / f"{t}.npz", cfg, r)
 
     # La corsa (bersaglio junior): theta non entra nella dinamica, quindi Y/Y_base si calcola
     # per qualsiasi theta da H/H_base e da A(t).
@@ -166,13 +173,24 @@ def main() -> None:
                 "primo_effetto_senior_anni_dopo": first_effect(scen[t], base, "mean_h_senior", start),
                 "primo_effetto_H_anni_dopo": first_effect(scen[t], base, "H", start),
             }
-            for t in TARGETS
+            for t in SCENARIOS
         },
         "gini_base_fine": ci(base["gini_w"][:, -5:].mean(1)),
         "corsa": {"g": list(G_GRID), "theta": list(THETA_GRID), "mappa_Y_fine": mappa,
                   "theta_pareggio_fine": breakeven,
                   "H_fine_per_g": {f"{g:.2f}": ci(race_rel[g][:, end]) for g in G_GRID}},
     }
+    # D14: il bersaglio senior conta solo se la capacità di mentoring diventa scarsa.
+    sens_k = {}
+    for k in KAPPA_GRID:
+        ck = cfg.with_overrides({"meetings.kappa": k})
+        bk = run_replications(ck, args.race_reps)
+        sk = run_replications(ck.with_overrides({"ai.enabled": True, "ai.target": "senior"}), args.race_reps)
+        sens_k[str(k)] = {"H_fine": ci(rel(sk, bk, "H")[:, end]),
+                          "h_senior_fine": ci(rel(sk, bk, "mean_h_senior")[:, end]),
+                          "primo_effetto_H_anni_dopo": first_effect(sk, bk, "H", start),
+                          "p_eff_base": float(bk["p_eff"].mean())}
+    num["sensibilita_kappa_senior"] = sens_k
     (ROOT / "report" / "numeri_fase2.json").write_text(json.dumps(num, indent=1, ensure_ascii=False))
 
     for L in LABELS.values():
@@ -186,7 +204,7 @@ def main() -> None:
         "years": years.tolist(), "start": start, "numbers": num,
         "labels": LABELS["it"]["targets"],
         "targets": {t: {k: series(rel(scen[t], base, k)) for k in ("H", "mean_h_senior", "mean_h_junior", "B_meet")}
-                    for t in TARGETS},
+                    for t in SCENARIOS},
         "race": {f"{g:.2f}": {"H": series(race_rel[g]), "A": np.round(A_path[g], 6).tolist()} for g in G_GRID},
     }
     (ROOT / "site" / "data" / "fase2.json").write_text(json.dumps(site, ensure_ascii=False))

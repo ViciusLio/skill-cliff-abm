@@ -59,6 +59,7 @@ class AICfg:
     g: float = 0.03             # crescita annua della produttività dell'IA A(t)
     phi_max: float = 0.6        # quota massima dei compiti del bersaglio automatizzabile
     theta: float = 0.02         # Y = H * (1 + theta * (A - 1))
+    displacement: bool = False  # D13: i junior sostituiti diventano non occupati (invece di incontrare meno)
 
 
 @dataclass(frozen=True)

@@ -511,7 +511,7 @@ const charts = {
   },
   "c-targets": () => {
     const col = { junior: "--series-1", senior: "--series-2", qualificati: "--series-3", non_qualificati: "--series-4", complementare: "--series-5" };
-    const tr = Object.entries(F2.targets).flatMap(([t, s]) => band(F2.years, s.H, css(col[t]), F2.labels[t], pct));
+    const tr = Object.entries(F2.targets).filter(([t]) => t in col).flatMap(([t, s]) => band(F2.years, s.H, css(col[t]), F2.labels[t], pct));
     return [tr, layout("anno", "H, variazione % rispetto a nessuna IA", { shapes: vline(F2.start) })];
   },
   "c-race": () => {

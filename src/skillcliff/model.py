@@ -22,9 +22,11 @@ class Model:
     def __init__(self, cfg: Config, seed_seq: np.random.SeedSequence, ai=None) -> None:
         self.cfg = cfg
         # Stream separati: le estrazioni demografiche non dipendono da quelle degli incontri.
-        ss_init, ss_demo, ss_meet = seed_seq.spawn(3)
+        # Il quarto stream serve solo all'IA (non occupazione): i primi tre restano identici.
+        ss_init, ss_demo, ss_meet, ss_ai = seed_seq.spawn(4)
         self.rng_demo = np.random.default_rng(ss_demo)
         self.rng_meet = np.random.default_rng(ss_meet)
+        self.rng_ai = np.random.default_rng(ss_ai)
         self.pop = initial_population(cfg, np.random.default_rng(ss_init))
         self.next_uid = len(self.pop)
         self.last_meet = None   # esito degli incontri dell'ultimo anno (per le visualizzazioni)
@@ -48,8 +50,13 @@ class Model:
         # 4. apprendimento
         junior, senior = role_masks(cfg, pop.exp)
         mods = self.ai.meeting_modifiers(self.t)
-        meet = meeting_gains(cfg, pop.h, junior, senior, self.rng_meet, mods, pop.high)
+        out = self.ai.nonemployed(self.t, junior, pop.high, self.rng_ai)
+        seekers = junior if out is None else junior & ~out      # i non occupati non incontrano
+        meet = meeting_gains(cfg, pop.h, seekers, senior, self.rng_meet, mods, pop.high)
         dh_aut = autonomous_gains(cfg, pop.h, pop.exp)
+        if out is not None:                                       # niente apprendimento sul lavoro
+            dh_aut[out] = -cfg.learning.depreciation * pop.h[out]
+        self.n_out = 0 if out is None else int(out.sum())
         h_prev = pop.h
         pop.h = h_prev + meet.dh + dh_aut
 
@@ -70,6 +77,7 @@ class Model:
             "n_mid": int(mid.sum()),
             "n_senior": int(senior.sum()),
             "n_meetings": meet.n_meetings,
+            "n_nonemployed": self.n_out,
             "p_eff": meet.p_eff,
             "H": float(pop.h.sum()),
             "Y": self.ai.output(self.t, float(pop.h.sum())),
@@ -96,7 +104,7 @@ ARRAYS = ("h_by_age", "n_by_age", "h_by_age_high", "h_by_age_low")
 def run_model(cfg: Config, seed_seq: np.random.SeedSequence, ai=None) -> dict[str, np.ndarray]:
     """Burn-in e poi T anni registrati. Ritorna serie di lunghezza T (o T x età).
 
-    `ai` sostituisce il modulo IA di default (oggetto con meeting_multipliers e output);
+    `ai` sostituisce il modulo IA di default (oggetto con meeting_modifiers, output e nonemployed);
     serve per esperimenti di meccanismo e, nella fase 2, per gli scenari.
     """
     model = Model(cfg, seed_seq, ai)
