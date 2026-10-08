@@ -105,6 +105,7 @@ make report      # fase 1: figure, numeri e dati del sito (~15 s con 4 core)
 make fase2       # fase 2: scenari IA, corsa, sensibilità (~2 min con 4 core)
 make automazione # D15: automazione dell'impresa contro ottimo sociale (~30 s)
 make scala       # invarianza alla scala, fino a 5 milioni di agenti (~3 min)
+make docking     # NumPy contro Mesa: test di differenza e di equivalenza (~1 min)
 make paper       # compila paper/main.pdf
 make site        # sito in locale sulla porta 8000 (si apre da solo)
 ```
@@ -166,6 +167,6 @@ outputs/          risultati delle simulazioni (non versionati, tranne outputs/ex
 - **Burn-in di 300 anni.** Ogni generazione impara dalla precedente, quindi la convergenza è lenta: con 120 anni restava una deriva dello 0,4% nei livelli (i confronti tra scenari non cambiavano). Con 300 la deriva residua è sotto 10⁻⁵ l'anno.
 - **Repliche in parallelo.** Le repliche girano su tutti i core (`SKILLCLIFF_WORKERS` per limitarli); ogni replica ha il proprio seed, quindi il risultato non dipende dal numero di processi. 30 repliche con N = 50.000 su 4 core: circa 5 s.
 - **Invarianza alla scala.** Gli agenti si incontrano per estrazione casuale dentro gruppi grandi, non lungo reti locali: da 5 mila a 24 milioni di agenti (gli occupati italiani) i risultati coincidono alla quarta cifra. N riduce solo il rumore; la fase 1 usa 5.000 agenti, la fase 2 50.000.
-- **Mesa solo come gemello.** Una seconda implementazione indipendente, con un oggetto per agente, verifica il modello (*docking*, Axtell et al. 1996); è circa 10 volte più lenta e non si usa per le analisi.
+- **Mesa solo come gemello.** Una seconda implementazione indipendente, con un oggetto per agente, verifica il modello (*docking*, Axtell et al. 1996): con 5.000 agenti e 30 repliche un test di equivalenza dimostra che le due versioni coincidono entro ±1% (in pratica entro ±0,4%). A parità di core Mesa è circa 15–20 volte più lenta, quindi non si usa per le analisi.
 - **Riproducibilità.** Seed derivati per replica; stream separati per demografia, incontri e IA; numeri casuali comuni tra scenari, quindi prima dell'arrivo dell'IA ogni scenario è identico al bit allo scenario senza IA.
 - **Integrazione continua.** A ogni push i test girano su Python 3.11 e 3.13. A ogni push su `main` (o a mano da *Actions → Pages → Run workflow*) GitHub Actions compila l'articolo, pubblica il sito e poi lo verifica in un browser headless (`scripts/verify_site.mjs`): pagine raggiungibili, grafici con dati, animazione disegnata, reindirizzamento dei vecchi indirizzi.

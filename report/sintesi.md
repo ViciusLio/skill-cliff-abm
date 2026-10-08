@@ -135,17 +135,23 @@ Il Gini dei salari a regime è 0,155 (IC [0,1547; 0,1553]) e sale a 0,165 dopo i
 
 ### 4.7 Docking NumPy ↔ Mesa
 
-Gemello in Mesa 3.5 (`src/skillcliff/mesa_twin.py`), scritto indipendentemente con un oggetto per agente; N = 1.000, 20 repliche ciascuno:
+Gemello in Mesa 3.5 (`src/skillcliff/mesa_twin.py`), scritto indipendentemente con un oggetto per agente;
+N = 5.000 e 30 repliche ciascuno, come nella fase 1 (`make docking`).
 
-| Metrica | NumPy | Mesa | Diff. | p (Welch) |
-|---|---|---|---|---|
-| h medio | 1,9907 | 1,9897 | −0,05% | 0,82 |
-| h junior | 1,4166 | 1,4150 | −0,11% | 0,66 |
-| h senior | 2,1641 | 2,1630 | −0,05% | 0,82 |
-| $B^{inc}$ | 0,0428 | 0,0429 | +0,27% | 0,59 |
-| $B^{aut}$ | 0,0264 | 0,0264 | 0,00% | 0,86 |
+| Metrica | NumPy | Mesa | Diff. | p (Welch) | IC 90% della diff. | p (equivalenza ±1%) |
+|---|---|---|---|---|---|---|
+| h medio | 1,9929 | 1,9920 | −0,04% | 0,56 | [−0,17%; +0,08%] | < 0,001 |
+| h junior | 1,4184 | 1,4179 | −0,04% | 0,64 | [−0,17%; +0,10%] | < 0,001 |
+| h senior | 2,1667 | 2,1657 | −0,05% | 0,55 | [−0,19%; +0,09%] | < 0,001 |
+| $B^{inc}$ | 0,0429 | 0,0429 | −0,06% | 0,75 | [−0,36%; +0,24%] | < 0,001 |
+| $B^{aut}$ | 0,0264 | 0,0264 | 0,00% | 0,32 | [−0,00%; +0,00%] | < 0,001 |
 
-Nessuna differenza è significativa.
+**Come leggere i due p-value.**
+- **Test di Welch.** Ipotesi nulla: "le due implementazioni hanno la stessa media". Un p **grande** significa che non c'è alcun segnale di differenza, ed è quello che vogliamo. Un p < 0,05 indicherebbe un bug.
+- **Test di equivalenza (TOST).** Non trovare differenze non dimostra l'uguaglianza, quindi serve un secondo test. Qui l'ipotesi nulla è "la differenza supera ±1% della media", e un p **piccolo** dimostra l'equivalenza.
+- **Il margine.** Il ±1% è scelto ben sotto l'effetto più piccolo che interpretiamo (circa −2%); il livello di significatività resta il 5% standard. L'IC al 90% mostra il margine più stretto entro cui l'equivalenza regge: qui ±0,4%.
+
+Con N = 1.000 e 20 repliche (la configurazione precedente) l'equivalenza entro ±1% era dimostrata per quattro statistiche su cinque. Per $B^{inc}$ non lo era (IC fino a +1,1%), perché con un centinaio di junior la stima è rumorosa: per questo il docking ora usa la scala della fase 1.
 
 ## 5. Dal micro al macro: due proposizioni
 
@@ -169,6 +175,7 @@ $$\mathbb E[B^{inc}_t] = \sum_g \frac{J_g}{J}\,\beta\,p^{\text{eff}}_{g,t}\left[
 - **Apprendimento dai colleghi.** $B^{inc}$ = 4,3% del salario dei junior l'anno, dentro l'intervallo 4–9% di Jarosch et al. (2021); la mappatura è solo indicativa (vedi sotto).
 - **B emergente con memoria.** Dipende da *p*, κ, β e dalla distribuzione di *h*.
 - **Ritardo esatto.** Previsto e osservato coincidono (11 anni), e la Proposizione 1 è verificata numericamente.
+- **Docking con Mesa:** equivalenza statistica entro ±1% per tutte le grandezze (sez. 4.7).
 - **Invarianti** (test automatici):
   - N conservato e $h\ge0$;
   - *p*=0 ⇒ nessun apprendimento da incontri;

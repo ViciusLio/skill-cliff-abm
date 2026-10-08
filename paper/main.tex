@@ -118,7 +118,7 @@ which corresponds to $\dot h/h = B(1-u)$ in Eq.~\eqref{eq:lucas} with the time d
 
 \subsection{Calibration and implementation}
 
-Table~\ref{tab:params} reports the parameter values. Demographic parameters reflect the Italian labour market; $\beta$ is chosen so that $B^{\mathrm{inc}}$ falls within the range estimated by \citet{Jarosch2021}; $(\delta_0,S_h,d)$ are chosen to produce an age--wage profile that rises slowly, peaks late and declines only mildly, as in the Italian private sector. The model is implemented in vectorised Python; each run includes a burn-in of 300 years, and statistics are averaged over 30 replications with independent seeds and 95\% confidence intervals. Scenarios share random numbers replication by replication. An independent re-implementation of the same rules with one object per agent in Mesa yields statistically indistinguishable results (Appendix~\ref{app:docking}), a form of model docking \citep{Axtell1996}. A complete description following the ODD protocol is given in Appendix~\ref{app:odd}. Code and data are available at \url{https://github.com/ViciusLio/skill-cliff-abm}.
+Table~\ref{tab:params} reports the parameter values. Demographic parameters reflect the Italian labour market; $\beta$ is chosen so that $B^{\mathrm{inc}}$ falls within the range estimated by \citet{Jarosch2021}; $(\delta_0,S_h,d)$ are chosen to produce an age--wage profile that rises slowly, peaks late and declines only mildly, as in the Italian private sector. The model is implemented in vectorised Python; each run includes a burn-in of 300 years, and statistics are averaged over 30 replications with independent seeds and 95\% confidence intervals. Scenarios share random numbers replication by replication. An independent re-implementation of the same rules with one object per agent in Mesa yields results that are statistically equivalent within $\pm1$ per cent (Appendix~\ref{app:docking}), a form of model docking \citep{Axtell1996}. A complete description following the ODD protocol is given in Appendix~\ref{app:odd}. Code and data are available at \url{https://github.com/ViciusLio/skill-cliff-abm}.
 
 \begin{table}[t]\centering\small
 \caption{Parameters of the baseline model.}\label{tab:params}
@@ -351,25 +351,26 @@ The model uses no time series as input. Parameters are read from a configuration
 \emph{Entry}: Eq.~\eqref{eq:entry}, with entry age 20 or 25 by qualification. \emph{Meetings}: Eqs.~\eqref{eq:peff} and \eqref{eq:meeting}, applied within each qualification group; the senior is drawn uniformly. \emph{Autonomous learning and obsolescence}: Eq.~\eqref{eq:aut}. \emph{Output and wages}: $Y_t=\sum_i h_{i,t}$ and $w_i=h_i$ without AI; Eq.~\eqref{eq:aiY} with AI. \emph{AI}: Eq.~\eqref{eq:ai} and the multipliers described in Section~\ref{sec:ai}; in the non-employment variant a targeted junior is non-employed with probability $\varphi_t$, independently each year. \emph{Firm versus planner}: Eq.~\eqref{eq:d15}, evaluated on a grid of automated shares.
 
 \subsection{Implementation and verification}
-The model is written in Python with vectorised NumPy operations (one array per state variable). An automated test suite checks, among other things, that the number of agents is conserved, that human capital is never negative, that $p=0$ implies no learning from meetings, that runs with the same seed are identical, that every meeting pairs a junior with a senior of the same qualification, and that all AI scenarios coincide with the scenario without AI before $t_0$. An independent object-based implementation in Mesa reproduces the results (Appendix~\ref{app:docking}). Code, configuration and data are available at \url{https://github.com/ViciusLio/skill-cliff-abm}.
+The model is written in Python with vectorised NumPy operations (one array per state variable). An automated test suite checks, among other things, that the number of agents is conserved, that human capital is never negative, that $p=0$ implies no learning from meetings, that runs with the same seed are identical, that every meeting pairs a junior with a senior of the same qualification, and that all AI scenarios coincide with the scenario without AI before $t_0$. An independent object-based implementation in Mesa reproduces the results within $\pm1$ per cent (Appendix~\ref{app:docking}). Code, configuration and data are available at \url{https://github.com/ViciusLio/skill-cliff-abm}.
 
 \section{Docking with an independent implementation}\label{app:docking}
 
-Table~\ref{tab:docking} compares the vectorised model with an independent implementation in Mesa (one object per agent) with $N=1{,}000$ and 20 replications each. No difference is statistically significant.
+Table~\ref{tab:docking} compares the vectorised model with an independent implementation in Mesa (one object per agent), with $N=5{,}000$ and 30 replications each, as in Phase~1. Two tests are reported for each statistic. The Welch test has the null hypothesis that the two implementations have the same mean: a \emph{large} $p$-value means that no difference is detected. Since failing to detect a difference does not prove equivalence, we also run an equivalence test (two one-sided tests, TOST) with a margin of $\pm1$ per cent of the mean, chosen to be well below the smallest effect we interpret (about $-2$ per cent): here the null hypothesis is that the difference exceeds the margin, and a \emph{small} $p$-value demonstrates equivalence. The 90 per cent confidence interval of the relative difference shows the narrowest margin within which equivalence holds at the 5 per cent level.
 
 \begin{table}[h]\centering\small
-\caption{Docking: vectorised (NumPy) vs.\ object-based (Mesa) implementation.}\label{tab:docking}
-\begin{tabular}{lrrrr}
+\caption{Docking: vectorised (NumPy) vs.\ object-based (Mesa) implementation ($N=5{,}000$, 30 replications each).}\label{tab:docking}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}lrrrrrr@{}}
 \toprule
-Statistic & NumPy & Mesa & Rel.\ diff. & $p$-value (Welch) \\
+Statistic & NumPy & Mesa & Rel.\ diff. & $p$ (Welch) & 90\% CI rel.\ diff. & $p$ (TOST, $\pm1\%$) \\
 \midrule
-Mean $h$ & 1.9907 & 1.9897 & $-0.05\%$ & 0.82 \\
-Mean junior $h$ & 1.4166 & 1.4150 & $-0.11\%$ & 0.66 \\
-Mean senior $h$ & 2.1641 & 2.1630 & $-0.05\%$ & 0.82 \\
-$B^{\mathrm{inc}}$ & 0.0428 & 0.0429 & $+0.27\%$ & 0.59 \\
-$B^{\mathrm{aut}}$ & 0.0264 & 0.0264 & $0.00\%$ & 0.86 \\
+Mean $h$ & 1.9929 & 1.9920 & $-0.04\%$ & 0.56 & $[-0.17\%, +0.08\%]$ & $<0.001$ \\
+Mean junior $h$ & 1.4184 & 1.4179 & $-0.04\%$ & 0.64 & $[-0.17\%, +0.10\%]$ & $<0.001$ \\
+Mean senior $h$ & 2.1667 & 2.1657 & $-0.05\%$ & 0.55 & $[-0.19\%, +0.09\%]$ & $<0.001$ \\
+$B^{\mathrm{inc}}$ & 0.0429 & 0.0429 & $-0.06\%$ & 0.75 & $[-0.36\%, +0.24\%]$ & $<0.001$ \\
+$B^{\mathrm{aut}}$ & 0.0264 & 0.0264 & $0.00\%$ & 0.32 & $[-0.00\%, +0.00\%]$ & $<0.001$ \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table}
 
 \bibliographystyle{elsarticle-harv}
