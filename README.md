@@ -1,7 +1,7 @@
 # La *skill cliff*: chi insegnerà ai senior di domani?
 
 Modello ad agenti sulla trasmissione di capitale umano tra generazioni e sugli effetti
-ritardati dell'intelligenza artificiale. Vincenzo Lio e Federico Bassi, lavoro in corso.
+ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro in corso.
 
 [![Apri in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ViciusLio/skill-cliff-abm?quickstart=1)
 

@@ -1,6 +1,6 @@
 # Sintesi — Fase 1: modello base senza IA
 
-*Vincenzo Lio e Federico Bassi. Numeri generati da `python scripts/make_report.py`
+*Federico Bassi e Vincenzo Lio. Numeri generati da `python scripts/make_report.py`
 (30 repliche per scenario, seed radice 20261008) e salvati in `report/numeri_fase1.json`.*
 
 ## 1. Cosa fa il modello
