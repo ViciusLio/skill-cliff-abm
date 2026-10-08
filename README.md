@@ -1,41 +1,113 @@
-# skill-cliff-abm
+# La *skill cliff*: chi insegnerà ai senior di domani?
 
-Modello ad agenti sulla trasmissione di capitale umano tra lavoratori senior e junior
-e sull'effetto dell'IA (ipotesi della *skill cliff*).
+**Un modello ad agenti sulla trasmissione di capitale umano tra generazioni e sugli effetti ritardati dell'intelligenza artificiale.**
+Federico Bassi e [Nome Cognome] — lavoro in corso.
 
-- **Fase 1** (completata, in revisione): modello base senza IA → [`report/sintesi.md`](report/sintesi.md)
-- **Fase 2** (da fare): IA con produttività A(t) e target di sostituzione
+[![Apri in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ViciusLio/skill-cliff-abm?quickstart=1)
 
-## Installazione
+| | |
+|---|---|
+| 📄 **Articolo (bozza)** | [PDF](https://viciuslio.github.io/skill-cliff-abm/paper.pdf) · sorgente [`paper/main.tex`](paper/main.tex) |
+| 🎓 **Presentazione** | [la lezione in HTML](https://viciuslio.github.io/skill-cliff-abm/presentazione.html) |
+| 📊 **Risultati interattivi** | [report](https://viciuslio.github.io/skill-cliff-abm/) · [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html) |
+| 🧾 **Sintesi tecnica della fase 1** | [`report/sintesi.md`](report/sintesi.md) |
 
-Serve Python ≥ 3.11.
+---
+
+## La domanda
+
+Quando un'impresa affida all'IA il lavoro che prima faceva un junior, risparmia un salario oggi.
+Ma quel junior, lavorando accanto a un senior, avrebbe imparato qualcosa, e fra quindici anni
+sarebbe diventato a sua volta il senior che insegna. **Che cosa succede al capitale umano di
+un'economia quando si riducono le occasioni in cui chi sa incontra chi impara?**
+
+## Tesi, antitesi e risultati
+
+**L'antitesi, cioè la visione standard.** Nel modello di crescita di Lucas (1988) il capitale umano cresce come
+`dh/dt = B·u·h`, dove `B`, l'efficienza dell'apprendimento, è un **parametro**: un dato tecnologico.
+Se `B` è fisso, una tecnologia che riorganizza il lavoro non tocca la capacità di imparare.
+L'IA può sostituire alcuni lavoratori o completarli (Acemoglu 2024), ma l'effetto si misura
+oggi, sull'occupazione.
+
+**La tesi.** `B` non è un parametro: **emerge dagli incontri**. Lucas e Moll (2014) mostrano che
+la conoscenza si trasmette incontrando chi ne sa di più, con un guadagno proporzionale alla
+distanza di conoscenza. Jarosch, Oberfield e Rossi-Hansberg (2021) stimano che imparare dai
+colleghi valga il 4–9% della retribuzione. Se l'IA toglie lavoro proprio ai junior, e i primi
+dati dicono che lo fa (Brynjolfsson et al. 2025; Hosseini e Lichtinger 2025), toglie anche gli
+incontri con cui i junior imparano (Ide 2025). Il danno però non si vede subito: arriva **una
+generazione professionale dopo**, quando i junior formati con meno incontri diventano i senior.
+È questa la *skill cliff*.
+
+**I risultati finora (fase 1: modello senza IA).**
+1. **Il modello è realistico dove deve esserlo.** Riproduce un profilo salariale che cresce
+   lentamente e si appiattisce dopo circa 34 anni di esperienza, come nel settore privato italiano.
+   La quota di apprendimento dei junior dovuta agli incontri (4,5%) rientra nelle stime empiriche.
+2. **`B` emerge e dipende dalla storia.** Il 63% dell'apprendimento dei junior viene dagli
+   incontri con i senior. Se gli incontri calano, `B` crolla subito, risale per un po' e poi
+   scende di nuovo quando i senior "impoveriti" diventano insegnanti.
+3. **Il ritardo è esatto.** Dimezzando gli incontri, il capitale umano dei senior resta
+   *identico* per 10 anni e inizia a scendere all'11°, cioè dopo `s_S − s_J + 1` anni, come
+   previsto dalla Proposizione 2 dell'articolo. A regime cala del 6,7% e l'output del 7,1%.
+4. **Dal micro al macro.** Un'identità di campo medio (Proposizione 1) traduce le regole
+   individuali in un'equazione aggregata per `B`, che dipende da opportunità d'incontro,
+   capacità di mentoring e distribuzione della conoscenza. Si può innestare nei modelli di
+   crescita a una equazione.
+
+**Prossimo passo (fase 2).** Introdurre l'IA: una produttività `A(t)` che cresce al tasso `g`,
+un bersaglio di sostituzione (junior, senior, qualificati, non qualificati o complementare)
+e una corsa tra la crescita di `A` e l'erosione della conoscenza su cui l'IA stessa si appoggia.
+
+## Come leggere questo lavoro
+
+- **In 10 minuti.** La [presentazione](https://viciuslio.github.io/skill-cliff-abm/presentazione.html),
+  poi la [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html):
+  scegli lo scenario "p dimezzato", premi ▶ e guarda le linee arancioni degli incontri diradarsi.
+- **In un'ora.** L'[articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf): introduzione
+  (le tre lacune e i tre contributi), sezione 4 (risultati), sezione 5 (le due proposizioni).
+- **Per verificare tutto.** La [sintesi tecnica](report/sintesi.md) con equazioni, parametri e una
+  sezione *Verifiche* che dice cosa torna e cosa no. Poi apri il Codespace ed esegui
+  [`notebooks/esplora_modello.ipynb`](notebooks/esplora_modello.ipynb), che ricalcola le
+  proposizioni a partire dal codice.
+
+---
+
+## Per chi lavora sul codice
+
+### Avvio rapido in Codespaces (consigliato)
+
+Pulsante qui sopra, oppure *Code → Codespaces → Create codespace on main*. Al primo avvio
+(circa 3–4 minuti) il devcontainer installa Python, il pacchetto, Jupyter e LaTeX, poi lancia
+i test. Quindi:
+
+```bash
+make help        # elenco dei comandi
+make test        # test: invarianti, riproducibilità, docking con Mesa
+make report      # rigenera figure, numeri e dati del sito (~20 s)
+make paper       # compila paper/main.pdf
+make site        # sito in locale sulla porta 8000 (si apre da solo)
+```
+
+Il Codespace usa la quota gratuita dell'account GitHub di chi lo apre (circa 120 ore-core al mese).
+
+### Installazione locale
+
+Serve Python ≥ 3.11 (LaTeX solo per l'articolo).
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"          # modello e test
-pip install -e ".[dev,mesa]"     # anche il gemello Mesa per il docking
+pip install -e ".[dev,mesa]"
+make test
 ```
 
-### In alternativa: GitHub Codespaces
+### Parametri e scenari
 
-*Code → Codespaces → Create codespace on …*. Il devcontainer installa tutto e lancia i test.
-
-## Esecuzione
+I parametri sono in [`configs/base.yaml`](configs/base.yaml). Da riga di comando si sovrascrivono con:
 
 ```bash
-pytest -q                                            # test
-python scripts/run_scenario.py --name base           # 30 repliche dello scenario base
 python scripts/run_scenario.py --name p03 --set meetings.p=0.3 --reps 10
-python scripts/docking.py                            # confronto NumPy vs Mesa
-python scripts/make_report.py                        # figure, numeri e dati del report (~20 s)
-python scripts/export_dynamics.py                   # dati della vista dinamica (site/dinamica.html)
-python -m http.server -d site 8000                   # report interattivo su http://localhost:8000
 ```
 
-I parametri sono in [`configs/base.yaml`](configs/base.yaml). Si sovrascrivono da riga di comando
-con `--set sezione.parametro=valore`.
-
-## Struttura
+### Struttura
 
 ```
 src/skillcliff/   config.py      parametri (dataclass da YAML)
@@ -44,27 +116,21 @@ src/skillcliff/   config.py      parametri (dataclass da YAML)
                   model.py       dinamica annuale
                   metrics.py     metriche, Gini, IC tra repliche
                   experiment.py  repliche con seed derivati, salvataggio
-                  ai.py          aggancio per la fase 2
+                  ai.py          aggancio per la fase 2 (e l'esperimento di meccanismo)
                   mesa_twin.py   gemello Mesa (solo docking)
 configs/          parametri YAML
-scripts/          esecuzione scenari, docking, report
+scripts/          scenari, docking, report, vista dinamica
+notebooks/        esplorazione interattiva
 tests/            pytest
-report/           sintesi.md e figure
-site/             report interattivo (GitHub Pages)
+paper/            articolo LaTeX (elsarticle) e figure in inglese
+report/           sintesi tecnica e figure in italiano
+site/             sito pubblicato su GitHub Pages
 outputs/          risultati delle simulazioni (non versionati, tranne outputs/examples)
 ```
 
-## Scelte tecniche
+### Scelte tecniche
 
 - **NumPy vettorizzato.** Un run con N = 5.000 e 180 anni richiede circa 0,07 s.
-- **Mesa solo come gemello.** Una seconda implementazione indipendente, con un oggetto per agente, serve a verificare il modello vettorizzato (docking, Axtell et al. 1996). È circa 10 volte più lenta, quindi non si usa per le analisi.
-- **Riproducibilità.**
-  - La replica *r* usa `SeedSequence(seed).spawn(n_reps)[r]`.
-  - Gli stream per demografia e incontri sono separati.
-  - A parità di seed gli scenari condividono le estrazioni casuali (common random numbers).
-
-## Report interattivo (GitHub Pages)
-
-Il workflow `.github/workflows/pages.yml` pubblica `site/` a ogni push sul branch di default che modifica `site/`
-(i dati si rigenerano in locale con `scripts/make_report.py` e si versionano).
-Va attivato una sola volta in *Settings → Pages → Build and deployment → Source: GitHub Actions*.
+- **Mesa solo come gemello.** Una seconda implementazione indipendente, con un oggetto per agente, verifica il modello (*docking*, Axtell et al. 1996).
+- **Riproducibilità.** Seed derivati per replica, stream separati per demografia e incontri, numeri casuali comuni tra scenari.
+- **Pubblicazione.** A ogni push su `main` che tocca `site/` o `paper/`, GitHub Actions compila l'articolo e pubblica il sito.

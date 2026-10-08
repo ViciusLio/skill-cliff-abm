@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skill Cliff: la lezione</title>
+<meta name="description" content="Presentazione per un'aula universitaria: un viaggio nel tempo dal modello di Lucas alla skill cliff dell'IA.">
+<script src="plotly-loader.js"></script>
+<style>
+:root {
+  color-scheme: light;
+  --surface-0: #f4f3f0; --surface-1: #fcfcfb; --border: #e4e3df;
+  --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #77766f;
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a;
+  --seq-1: #86b6ef; --seq-2: #5598e7; --seq-3: #2a78d6; --seq-4: #1c5cab; --seq-5: #0d366b;
+  --grid: #e4e3df; --accent: #2a78d6; --accent-soft: #e6effb;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a998f;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+    --seq-1: #b7d3f6; --seq-2: #86b6ef; --seq-3: #5598e7; --seq-4: #3987e5; --seq-5: #256abf;
+    --grid: #2e2e2c; --accent: #3987e5; --accent-soft: #1b2a3d;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
+  --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a998f;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+  --seq-1: #b7d3f6; --seq-2: #86b6ef; --seq-3: #5598e7; --seq-4: #3987e5; --seq-5: #256abf;
+  --grid: #2e2e2c; --accent: #3987e5; --accent-soft: #1b2a3d;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--surface-0); color: var(--text-primary); overflow: hidden;
+  font: 18px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.deck { position: relative; height: 100%; }
+section.slide { position: absolute; inset: 0; display: none; padding: 56px 16px 72px; overflow-y: auto; }
+section.slide.on { display: block; animation: in .35s ease; }
+@keyframes in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.inner { max-width: 1000px; margin: 0 auto; }
+.when { display: inline-block; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 3px 12px; margin-bottom: 14px; }
+h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.15; margin: 0 0 12px; }
+h2 { font-size: clamp(1.4rem, 3vw, 2rem); line-height: 1.2; margin: 0 0 14px; }
+p, li { color: var(--text-secondary); }
+strong { color: var(--text-primary); }
+.lead { font-size: 1.15rem; }
+.eq { font-family: "Cambria Math", "STIX Two Math", Georgia, serif; font-size: 1.35rem; color: var(--text-primary);
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin: 14px 0; overflow-x: auto; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+.card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+.card p { margin: 0; font-size: .95rem; }
+.big { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.chart { width: 100%; height: min(52vh, 420px); }
+.timeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 18px 0; }
+.tl { border-top: 3px solid var(--border); padding-top: 8px; font-size: .9rem; color: var(--text-secondary); }
+.tl b { display: block; color: var(--text-primary); }
+.tl.hot { border-color: var(--series-2); }
+.q { border-left: 4px solid var(--accent); padding: 4px 0 4px 14px; margin: 14px 0; font-style: italic; color: var(--text-primary); }
+.src { font-size: .8rem; color: var(--text-muted); margin-top: 14px; }
+a { color: var(--accent); }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; background: color-mix(in srgb, var(--surface-0) 92%, transparent); border-top: 1px solid var(--border); }
+.bar button { font: inherit; font-size: .9rem; color: var(--text-primary); background: var(--surface-1);
+  border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.progress { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.progress div { height: 100%; background: var(--accent); width: 0; transition: width .3s; }
+.count { font-size: .85rem; color: var(--text-muted); font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; }
+.top { position: fixed; top: 0; left: 0; right: 0; padding: 12px 16px; font-size: .85rem; color: var(--text-muted);
+  display: flex; justify-content: space-between; }
+@media (max-width: 760px) { .two, .timeline { grid-template-columns: 1fr; } body { font-size: 16px; } }
+</style>
+</head>
+<body>
+<div class="top"><span>La skill cliff · Bassi e [Nome Cognome]</span><a href="index.html">risultati</a></div>
+<main class="deck" id="deck">
+
+<section class="slide"><div class="inner">
+  <span class="when">Lezione</span>
+  <h1>Chi insegnerà ai senior di domani?</h1>
+  <p class="lead">Un viaggio nel tempo dentro il capitale umano: da un'equazione del 1988
+    a una simulazione di sessant'anni, per capire perché l'IA potrebbe farci perdere qualcosa
+    <strong>molto dopo</strong> averlo sostituito.</p>
+  <p>Modello ad agenti · fase 1 (senza IA) · Federico Bassi e [Nome Cognome]</p>
+  <p class="src">Usa ← → (o lo swipe) per avanzare. Ogni grafico è interattivo.</p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">Un'esperienza comune</span>
+  <h2>Il primo lavoro</h2>
+  <p class="lead">Pensate al vostro primo lavoro, o a quello che farete. Quanto di ciò che
+    saprete fare a quarant'anni l'avrete imparato da un manuale, e quanto da <strong>una persona
+    più esperta seduta accanto a voi</strong>?</p>
+  <p class="q">Se quella persona non ha più un junior accanto, perché il lavoro del junior lo fa
+    l'IA, cosa succede fra quindici anni, quando toccherebbe al junior insegnare?</p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">1988 · Robert Lucas</span>
+  <h2>L'efficienza dell'apprendimento come costante</h2>
+  <div class="eq">dh/dt = B · u · h</div>
+  <p>Il capitale umano <strong>h</strong> cresce in proporzione al tempo dedicato a imparare
+    (<strong>u</strong>) e a un'efficienza <strong>B</strong>. In Lucas, <strong>B è un parametro</strong>:
+    un dato della tecnologia, come la costante di gravità.</p>
+  <p>Conseguenza: se B è fisso, una tecnologia che cambia <em>come</em> si lavora non tocca
+    <em>quanto</em> si impara.</p>
+  <p class="src">Lucas (1988), Journal of Monetary Economics.</p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">2014 · Lucas e Moll</span>
+  <h2>La conoscenza viaggia negli incontri</h2>
+  <p>Ventisei anni dopo, Lucas stesso, con Benjamin Moll, sostituisce il parametro con un processo:
+    gli agenti si <strong>incontrano</strong> e chi sa di meno impara da chi sa di più.</p>
+  <div class="eq">Δh<sub>junior</sub> = β · max(0, h<sub>senior</sub> − h<sub>junior</sub>)</div>
+  <p>Il guadagno è proporzionale alla <strong>distanza di conoscenza</strong>. L'efficienza
+    dell'apprendimento dipende allora da <em>chi incontri</em> e da <em>quanto spesso</em>.</p>
+  <p class="src">Lucas e Moll (2014), Journal of Political Economy.</p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">2021 · i dati</span>
+  <h2>Si impara davvero dai colleghi</h2>
+  <div class="two">
+    <div class="card"><div class="big">4–9%</div><p>della retribuzione è, in valore, apprendimento dai colleghi
+      (dati amministrativi tedeschi).</p></div>
+    <div class="card"><div class="big">↑</div><p>Si impara soprattutto da chi <strong>ne sa di più</strong>: chi ha
+      colleghi meglio pagati vede crescere più in fretta il proprio salario.</p></div>
+  </div>
+  <p class="src">Jarosch, Oberfield e Rossi-Hansberg (2021), Econometrica.</p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">2025 · arriva l'IA</span>
+  <h2>I primi segnali colpiscono i junior</h2>
+  <div class="two">
+    <div class="card"><div class="big">−13/16%</div><p>occupati di 22–25 anni nelle occupazioni esposte all'IA,
+      rispetto ai lavoratori esperti (USA, dati ADP).</p></div>
+    <div class="card"><div class="big">junior ↓</div><p>Nelle imprese che adottano l'IA generativa calano le assunzioni
+      junior; i senior restano stabili.</p></div>
+  </div>
+  <p>Queste stime misurano l'effetto <strong>oggi</strong>, sull'occupazione. Il capitale umano dei
+    senior <strong>del 2040</strong> non si può ancora osservare.</p>
+  <p class="src">Brynjolfsson, Chandar e Chen (2025); Hosseini e Lichtinger (2025).</p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">Il dibattito</span>
+  <h2>Tesi e antitesi</h2>
+  <div class="two">
+    <div class="card"><h3>Antitesi</h3><p>B è un parametro. L'IA sostituisce o completa il lavoro
+      (Acemoglu 2024): conta l'effetto sulla produttività e sull'occupazione di oggi.
+      La capacità di imparare resta quella.</p></div>
+    <div class="card"><h3>Tesi</h3><p>B emerge dagli incontri. Se l'IA toglie lavoro ai junior,
+      toglie anche gli incontri con cui imparano. Il danno arriva <strong>dopo una generazione
+      professionale</strong>: la <em>skill cliff</em>.</p></div>
+  </div>
+  <p class="q">Per decidere chi ha ragione serve un esperimento che non possiamo fare nella realtà.
+    Lo facciamo in un'economia artificiale.</p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">Il laboratorio</span>
+  <h2>Un'economia di 5.000 lavoratori</h2>
+  <p>Ogni anno i lavoratori invecchiano: i non qualificati entrano a 20 anni, i laureati a 25, e
+    tutti escono a 65. Ogni lavoratore ha un capitale umano <strong>h</strong>, e il ruolo dipende
+    dall'<strong>esperienza</strong>, non dall'età:</p>
+  <div class="two">
+    <div class="card"><h3 style="color:var(--series-2)">Junior · meno di 5 anni</h3>
+      <p>Con probabilità p incontra un senior e impara β per la distanza di conoscenza.</p></div>
+    <div class="card"><h3 style="color:var(--series-1)">Senior · 15 anni e oltre</h3>
+      <p>Insegna senza perdere nulla; ognuno può seguire al massimo κ junior l'anno.</p></div>
+  </div>
+  <p>Tutti imparano anche da soli, sempre meno con l'età, e perdono ogni anno una piccola
+    parte di ciò che sanno (obsolescenza). Salario = capitale umano.</p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">Tarato sulla realtà italiana</span>
+  <h2>Il primo test: il profilo dei salari</h2>
+  <p>Nel settore privato italiano i salari salgono lentamente e poi si appiattiscono. Il modello
+    lo riproduce senza imporlo: picco dopo circa 34 anni di esperienza, calo finale lieve.</p>
+  <div class="chart" id="c-profile"></div>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">Anno 0 · regime</span>
+  <h2>B non è un parametro: emerge</h2>
+  <p>Misuriamo B come crescita media del capitale umano dei junior. A regime vale circa
+    <strong>7% l'anno</strong>, e quasi due terzi vengono dagli incontri con i senior.</p>
+  <div class="chart" id="c-B"></div>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">Anno 10 · l'esperimento</span>
+  <h2>Dimezziamo gli incontri</h2>
+  <p>Non è ancora l'IA: dall'anno 10 dimezziamo solo la probabilità che un junior incontri un
+    senior. Tutto il resto resta uguale, numeri casuali compresi.</p>
+  <div class="timeline">
+    <div class="tl hot"><b>anno 10</b>gli incontri si dimezzano</div>
+    <div class="tl hot"><b>anno 14</b>junior −5,6%</div>
+    <div class="tl"><b>anni 10–20</b>senior: <strong>nessuna</strong> variazione</div>
+    <div class="tl hot"><b>anno 21</b>il primo senior "impoverito"</div>
+    <div class="tl hot"><b>anno 35+</b>senior −3,5%, poi −6,7%</div>
+  </div>
+  <p class="q">Per dieci anni ogni indicatore sui senior direbbe che non è successo niente.</p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">Anni 10–60 · la skill cliff</span>
+  <h2>Il danno scende lungo le età, come un'onda</h2>
+  <p>Capitale umano medio per classe d'età. I giovani perdono subito; le classi più anziane
+    iniziano a scendere 15, 20–25 e 30 anni dopo.</p>
+  <div class="chart" id="c-classes"></div>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">Anni 10–60 · B ha memoria</span>
+  <h2>L'efficienza dell'apprendimento eredita la storia</h2>
+  <p>Gli incontri si dimezzano e B crolla subito. Poi risale un po', perché i junior partono più in
+    basso e hanno più da imparare. Infine scende ancora, quando i nuovi senior hanno meno da insegnare.</p>
+  <div class="chart" id="c-Bshock"></div>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">Dal micro al macro</span>
+  <h2>Due proposizioni</h2>
+  <div class="card" style="margin-bottom:12px"><h3>1 · B emergente</h3>
+    <div class="eq" style="font-size:1.1rem">E[B] = δ̄<sub>J</sub> − d + β · p<sup>eff</sup> · [ h̄<sup>S</sup> · mean(1/h<sup>J</sup>) − 1 + Ω ]</div>
+    <p>B dipende da quanti incontri ci sono (p<sup>eff</sup> = min(p, κS/J)) e da quanta conoscenza separa
+      le generazioni. Verificata sul modello: 0,0443 contro 0,0441 simulato.</p></div>
+  <div class="card"><h3>2 · Il ritardo di trasmissione</h3>
+    <p>Dopo una variazione permanente degli incontri, il capitale umano dei senior resta identico per
+      s<sub>S</sub> − s<sub>J</sub> anni e cambia dall'anno successivo. Con 5 e 15 anni: <strong>11 anni</strong>,
+      esattamente come nella simulazione.</p></div>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">Domani · fase 2</span>
+  <h2>La corsa</h2>
+  <p>Ora entra l'IA: una produttività <strong>A(t)</strong> che cresce al tasso g, e un bersaglio che decide
+    chi viene sostituito (junior, senior, qualificati, non qualificati) o se l'IA è complementare.</p>
+  <p class="q">La skill cliff diventa una corsa: l'IA cresce più in fretta di quanto eroda la conoscenza
+    su cui si appoggia?</p>
+  <p>Seguirà un caso italiano con la vera piramide per età, in cui le grandi coorti degli anni '60
+    vanno in pensione proprio ora: per separare la scogliera demografica da quella dell'IA.</p>
+</div></section>
+
+<section class="slide"><div class="inner">
+  <span class="when">In aula</span>
+  <h2>Domande per la discussione</h2>
+  <ol>
+    <li>Se il costo arriva dopo dieci anni, chi ha l'incentivo a pagarlo oggi? Il mentoring è un <strong>bene pubblico</strong>?</li>
+    <li>Quali indicatori dovremmo guardare <em>adesso</em> per vedere una skill cliff prima che arrivi?</li>
+    <li>Un'IA che fa da tutor ai junior aumenterebbe β invece di ridurre p: cambierebbe la conclusione?</li>
+  </ol>
+  <p><a href="dinamica.html">→ Guarda gli agenti muoversi</a> · <a href="paper.pdf">→ Leggi l'articolo</a> ·
+    <a href="https://github.com/ViciusLio/skill-cliff-abm">→ Il codice</a></p>
+</div></section>
+
+</main>
+<div class="bar">
+  <button id="prev" type="button" aria-label="Diapositiva precedente">←</button>
+  <button id="next" type="button" aria-label="Diapositiva successiva">→</button>
+  <div class="progress"><div id="prog"></div></div>
+  <span class="count" id="count"></span>
+  <button id="theme" type="button">Tema</button>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const slides = [...document.querySelectorAll("section.slide")];
+let cur = 0, DATA = null;
+
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function band(x, s, color, name) {
+  return [
+    { x: x.concat([...x].reverse()), y: s.hi.concat([...s.lo].reverse()), fill: "toself", fillcolor: hexA(color, .18),
+      line: { width: 0 }, hoverinfo: "skip", showlegend: false, type: "scatter" },
+    { x, y: s.m, name, type: "scatter", mode: "lines", line: { color, width: 2.5 }, hovertemplate: `${name}: %{y:.3f}<extra></extra>` },
+  ];
+}
+function layout(xt, yt, extra = {}) {
+  const g = css("--grid");
+  return Object.assign({
+    paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+    font: { family: "system-ui, sans-serif", size: 13, color: css("--text-secondary") },
+    margin: { l: 56, r: 12, t: 8, b: 44 }, hovermode: "x unified",
+    xaxis: { title: { text: xt, standoff: 4 }, gridcolor: g, zeroline: false },
+    yaxis: { title: { text: yt }, gridcolor: g, zeroline: false },
+    legend: { orientation: "h", yanchor: "bottom", y: 1.02, x: 0 },
+    hoverlabel: { bgcolor: css("--surface-1"), bordercolor: g, font: { color: css("--text-primary") } },
+  }, extra);
+}
+const shock = () => [{ type: "line", x0: 10, x1: 10, yref: "paper", y0: 0, y1: 1, line: { color: css("--text-muted"), width: 1, dash: "dot" } }];
+const CFG = { displaylogo: false, responsive: true, displayModeBar: false };
+
+const charts = {
+  "c-profile": () => {
+    const p = DATA.scenarios.base.profile;
+    return [[...band(p.low.age, p.low, css("--series-1"), "non qualificati"), ...band(p.high.age, p.high, css("--series-2"), "qualificati")],
+      layout("età", "salario (= h)")];
+  },
+  "c-B": () => {
+    const s = DATA.scenarios.base.series, y = DATA.years;
+    return [[...band(y, s.B, css("--series-1"), "B totale"), ...band(y, s.B_meet, css("--series-2"), "da incontri"),
+      ...band(y, s.B_aut, css("--series-3"), "autonomo")], layout("anno", "crescita annua di h dei junior", { yaxis: { rangemode: "tozero", gridcolor: css("--grid") } })];
+  },
+  "c-classes": () => {
+    const seq = ["--seq-1", "--seq-2", "--seq-3", "--seq-4", "--seq-5"].map(css);
+    const tr = Object.entries(DATA.scenarios.shock_p.classes).flatMap(([k, s], i) => band(DATA.years, s, seq[i], `${k} anni`));
+    return [tr, layout("anno", "h medio", { shapes: shock() })];
+  },
+  "c-Bshock": () => {
+    const s = DATA.scenarios.shock_p.series, b = DATA.scenarios.base.series, y = DATA.years;
+    return [[...band(y, b.B_meet, css("--text-muted"), "da incontri, base"), ...band(y, s.B_meet, css("--series-2"), "da incontri, p dimezzato")],
+      layout("anno", "B da incontri", { shapes: shock(), yaxis: { rangemode: "tozero", gridcolor: css("--grid") } })];
+  },
+};
+
+function renderCharts(slide) {
+  if (!DATA || !window.Plotly) return;
+  slide.querySelectorAll(".chart").forEach((el) => { const [t, l] = charts[el.id](); Plotly.react(el, t, l, CFG); });
+}
+
+function show(i) {
+  cur = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((s, k) => s.classList.toggle("on", k === cur));
+  $("prog").style.width = `${(cur + 1) / slides.length * 100}%`;
+  $("count").textContent = `${cur + 1} / ${slides.length}`;
+  history.replaceState(null, "", `#${cur + 1}`);
+  renderCharts(slides[cur]);
+}
+
+$("prev").onclick = () => show(cur - 1);
+$("next").onclick = () => show(cur + 1);
+document.addEventListener("keydown", (e) => {
+  if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); show(cur + 1); }
+  if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); show(cur - 1); }
+  if (e.key === "Home") show(0);
+  if (e.key === "End") show(slides.length - 1);
+});
+let tx = null;
+document.addEventListener("touchstart", (e) => { tx = e.touches[0].clientX; }, { passive: true });
+document.addEventListener("touchend", (e) => {
+  if (tx === null) return; const dx = e.changedTouches[0].clientX - tx; tx = null;
+  if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1));
+});
+$("theme").onclick = () => {
+  const r = document.documentElement;
+  const dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("theme", r.dataset.theme); } catch (e) {}
+  renderCharts(slides[cur]);
+};
+try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+
+show((parseInt(location.hash.slice(1), 10) || 1) - 1);
+Promise.all([window.plotlyReady, fetch("data/fase1.json").then(r => r.json())])
+  .then(([, d]) => { DATA = d; renderCharts(slides[cur]); })
+  .catch(() => {});
+</script>
+</body>
+</html>
