@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fase 2: l'IA</title>
+<meta name="description" content="Fase 2 del modello: bersagli della sostituzione e corsa tra produttività dell'IA e capitale umano.">
+<script src="plotly-loader.js"></script>
+<style>
+:root {
+  color-scheme: light;
+  --surface-0: #f4f3f0; --surface-1: #fcfcfb; --border: #e4e3df;
+  --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #77766f;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
+  --grid: #e4e3df; --accent: #2a78d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a998f;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+    --grid: #2e2e2c; --accent: #3987e5;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
+  --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a998f;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+  --grid: #2e2e2c; --accent: #3987e5;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--surface-0); color: var(--text-primary);
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 1080px; margin: 0 auto; padding: 24px 16px 64px; }
+nav { font-size: .9rem; margin-bottom: 8px; }
+a { color: var(--accent); }
+h1 { font-size: 1.6rem; margin: 0 0 4px; }
+header p { margin: 0; color: var(--text-secondary); }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin: 16px 0; }
+.card h2 { font-size: 1.05rem; margin: 0 0 2px; }
+.note { margin: 0 0 8px; color: var(--text-secondary); font-size: .9rem; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: 8px 0; }
+.controls label { color: var(--text-secondary); font-size: .9rem; display: inline-flex; flex-wrap: wrap; gap: 8px; align-items: center; max-width: 100%; }
+select { font: inherit; color: var(--text-primary); background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; }
+input[type=range] { width: min(260px, 55vw); accent-color: var(--accent); }
+output { font-variant-numeric: tabular-nums; color: var(--text-primary); min-width: 3.5em; display: inline-block; }
+.chart { width: 100%; height: 380px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+.tile .k { color: var(--text-secondary); font-size: .82rem; }
+.tile .v { font-size: 1.4rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--text-secondary); font-weight: 600; }
+.tablewrap { overflow-x: auto; }
+@media (max-width: 760px) { .tiles { grid-template-columns: 1fr; } .chart { height: 320px; } }
+</style>
+</head>
+<body>
+<main>
+  <nav><a href="index.html">← Fase 1</a> · <a href="dinamica.html">Dinamica</a> · <a href="lezione.html">Lezione</a></nav>
+  <header>
+    <h1>Fase 2: l'IA</h1>
+    <p>Medie su 30 repliche (N = 50.000), bande = IC 95%. Ogni scenario usa gli stessi numeri casuali
+      dello scenario senza IA: le differenze sono dovute solo all'IA. L'IA arriva all'anno 10.</p>
+  </header>
+
+  <section class="card">
+    <h2>Chi viene sostituito conta</h2>
+    <p class="note">Variazione rispetto allo scenario senza IA. Il bersaglio decide quali incontri si riducono:
+      meno lavoro junior (p), meno senior che fanno da mentori (κ), o un'IA che rende l'insegnamento più efficace (β).</p>
+    <div class="controls">
+      <label>Grandezza
+        <select id="metric">
+          <option value="H">capitale umano aggregato H</option>
+          <option value="mean_h_senior">h medio dei senior</option>
+          <option value="mean_h_junior">h medio dei junior</option>
+          <option value="B_meet">B da incontri</option>
+        </select>
+      </label>
+    </div>
+    <div class="chart" id="c-targets"></div>
+    <div class="tablewrap"><table id="t-targets"></table></div>
+  </section>
+
+  <section class="card">
+    <h2>La corsa: produttività dell'IA contro capitale umano</h2>
+    <p class="note">Bersaglio junior. Y = H · (1 + θ(A − 1)): l'IA aggiunge output in proporzione a θ, mentre la
+      sostituzione dei junior riduce H. θ = 0,02 corrisponde a +0,7% di produttività in dieci anni (Acemoglu 2024).</p>
+    <div class="controls">
+      <label>g, crescita di A <input id="g" type="range" min="0" max="5" step="1" value="2"><output id="g-out"></output></label>
+      <label>θ, peso dell'IA <input id="theta" type="range" min="0" max="0.2" step="0.005" value="0.02"><output id="theta-out"></output></label>
+    </div>
+    <div class="tiles">
+      <div class="tile"><div class="k">Y a fine orizzonte</div><div class="v" id="v-y"></div></div>
+      <div class="tile"><div class="k">H a fine orizzonte</div><div class="v" id="v-h"></div></div>
+      <div class="tile"><div class="k">θ di pareggio</div><div class="v" id="v-be"></div></div>
+    </div>
+    <div class="chart" id="c-race"></div>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const pct = (x, d = 1) => (x >= 0 ? "+" : "") + (100 * x).toLocaleString("it-IT", { minimumFractionDigits: d, maximumFractionDigits: d }) + "%";
+let D = null;
+const COLORS = { junior: "--s1", senior: "--s2", qualificati: "--s3", non_qualificati: "--s4", complementare: "--s5" };
+
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function band(x, s, color, name, f = (v) => 100 * v) {
+  const m = s.m.map(f), lo = s.lo.map(f), hi = s.hi.map(f);
+  return [
+    { x: x.concat([...x].reverse()), y: hi.concat([...lo].reverse()), fill: "toself", fillcolor: hexA(color, .18),
+      line: { width: 0 }, hoverinfo: "skip", showlegend: false, type: "scatter" },
+    { x, y: m, name, type: "scatter", mode: "lines", line: { color, width: 2 }, hovertemplate: `${name}: %{y:.2f}%<extra></extra>` },
+  ];
+}
+function layout(yt) {
+  const g = css("--grid");
+  return {
+    paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+    font: { family: "system-ui, sans-serif", size: 12, color: css("--text-secondary") },
+    margin: { l: 56, r: 12, t: 8, b: 44 }, hovermode: "x unified",
+    xaxis: { title: { text: "anno", standoff: 4 }, gridcolor: g, zeroline: false },
+    yaxis: { title: { text: yt }, gridcolor: g, zeroline: true, zerolinecolor: css("--text-muted") },
+    legend: { orientation: "h", yanchor: "bottom", y: 1.02, x: 0 },
+    shapes: [{ type: "line", x0: D.start, x1: D.start, yref: "paper", y0: 0, y1: 1, line: { color: css("--text-muted"), width: 1, dash: "dot" } }],
+    hoverlabel: { bgcolor: css("--surface-1"), bordercolor: g, font: { color: css("--text-primary") } },
+  };
+}
+const CFG = { displaylogo: false, responsive: true };
+
+function renderTargets() {
+  const k = $("metric").value;
+  const tr = Object.entries(D.targets).flatMap(([t, s]) => band(D.years, s[k], css(COLORS[t]), D.labels[t]));
+  Plotly.react("c-targets", tr, layout("variazione % rispetto a nessuna IA"), CFG);
+  const S = D.numbers.scenari;
+  const rows = Object.keys(D.targets).map(t => {
+    const s = S[t];
+    return `<tr><td>${D.labels[t]}</td><td>${pct(s.H_fine.media)}</td><td>${pct(s.h_senior_fine.media)}</td>
+      <td>${pct(s.B_inc_fine.media, 0)}</td><td>${pct(s["Y_fine_theta_0.02"].media)}</td><td>${s.gini_fine.media.toFixed(3).replace(".", ",")}</td>
+      <td>${s.primo_effetto_senior_anni_dopo ?? "–"}</td></tr>`;
+  }).join("");
+  $("t-targets").innerHTML = `<thead><tr><th>bersaglio</th><th>H</th><th>h senior</th><th>B da incontri</th>
+    <th>Y (θ = 0,02)</th><th>Gini</th><th>anni al primo effetto sui senior</th></tr></thead><tbody>${rows}</tbody>`;
+}
+
+function renderRace() {
+  const gs = Object.keys(D.race), gk = gs[+$("g").value], th = +$("theta").value;
+  $("g-out").textContent = (100 * +gk).toFixed(0) + "%";
+  $("theta-out").textContent = th.toFixed(3).replace(".", ",");
+  const r = D.race[gk], A = r.A, end = A.length - 1;
+  const y = (v, i) => (1 + v) * (1 + th * (A[i] - 1)) - 1;
+  const Y = { m: r.H.m.map(y), lo: r.H.lo.map(y), hi: r.H.hi.map(y) };
+  const tr = [...band(D.years, r.H, css("--text-muted"), "H (capitale umano)"), ...band(D.years, Y, css("--s1"), "Y (output)")];
+  Plotly.react("c-race", tr, layout("variazione % rispetto a nessuna IA"), CFG);
+  $("v-y").textContent = pct(Y.m[end]);
+  $("v-h").textContent = pct(r.H.m[end]);
+  $("v-be").textContent = ((1 / (1 + r.H.m[end]) - 1) / (A[end] - 1)).toFixed(3).replace(".", ",");
+}
+
+Promise.all([window.plotlyReady, fetch("data/fase2.json").then(r => r.json())]).then(([, d]) => {
+  D = d;
+  $("metric").addEventListener("change", renderTargets);
+  $("g").addEventListener("input", renderRace);
+  $("theta").addEventListener("input", renderRace);
+  renderTargets(); renderRace();
+}).catch(err => document.querySelector("main").insertAdjacentHTML("beforeend", `<p>Impossibile caricare i dati (${err}).</p>`));
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (D) { renderTargets(); renderRace(); } });
+</script>
+</body>
+</html>

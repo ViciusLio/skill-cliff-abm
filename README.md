@@ -8,6 +8,7 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 - **Articolo** (bozza, in inglese): [articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf), sorgente [`paper/main.tex`](paper/main.tex)
 - **Lezione**: [lezione](https://viciuslio.github.io/skill-cliff-abm/lezione.html)
 - **Risultati**: [report](https://viciuslio.github.io/skill-cliff-abm/) e [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html)
+- **Fase 2 (IA)**: [risultati interattivi](https://viciuslio.github.io/skill-cliff-abm/fase2.html) e [sintesi](report/sintesi_fase2.md)
 - **Sintesi tecnica della fase 1**: [sintesi](report/sintesi.md)
 - **Resoconto del 8 ottobre 2026**: [resoconto](report/resoconto_2026-10-08.md)
 
@@ -54,9 +55,15 @@ generazione professionale dopo**, quando i junior formati con meno incontri dive
    capacità di mentoring e distribuzione della conoscenza. Si può innestare nei modelli di
    crescita a una equazione.
 
-**Prossimo passo (fase 2).** Introdurre l'IA: una produttività `A(t)` che cresce al tasso `g`,
-un bersaglio di sostituzione (junior, senior, qualificati, non qualificati o complementare)
-e una corsa tra la crescita di `A` e l'erosione della conoscenza su cui l'IA stessa si appoggia.
+**Fase 2: l'IA.** Una produttività `A(t)` che cresce al tasso `g` automatizza una quota crescente
+dei compiti del bersaglio (junior, senior, qualificati, non qualificati) oppure, nel caso
+complementare, rende più efficace l'insegnamento. Risultati, 50 anni dopo l'introduzione:
+1. **Sostituire i junior è il caso peggiore:** capitale umano −5,2%, apprendimento da incontri −45%;
+   sui senior l'effetto arriva dopo 12 anni.
+2. **Sostituire i senior quasi non conta** finché c'è capacità di mentoring in eccesso.
+3. **Sostituire i non qualificati aumenta la disuguaglianza** (Gini da 0,155 a 0,170).
+4. **La corsa:** con la stima prudente di Acemoglu (θ = 0,02) la perdita di capitale umano si mangia
+   circa l'85% del guadagno di produttività dell'IA.
 
 ## Come leggere questo lavoro
 
@@ -85,6 +92,7 @@ i test. Quindi:
 make help        # elenco dei comandi
 make test        # test: invarianti, riproducibilità, docking con Mesa
 make report      # rigenera figure, numeri e dati del sito (~20 s)
+make fase2       # esperimenti della fase 2 (~30 s con 4 core)
 make paper       # compila paper/main.pdf
 make site        # sito in locale sulla porta 8000 (si apre da solo)
 ```

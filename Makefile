@@ -1,7 +1,7 @@
 # Comandi principali del progetto. `make help` per l'elenco.
 PY ?= python
 
-.PHONY: help install test report docking dynamics paper site all clean
+.PHONY: help install test report fase2 scala docking dynamics paper site all clean
 
 help:            ## mostra questo elenco
 	@grep -E '^[a-z]+:.*## ' Makefile | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -15,6 +15,12 @@ test:            ## esegue i test (invarianti, riproducibilità, docking)
 report:          ## rigenera figure, numeri chiave e dati del sito (~20 s)
 	$(PY) scripts/make_report.py
 
+fase2:           ## esperimenti della fase 2 (IA): bersagli e corsa
+	$(PY) scripts/fase2.py
+
+scala:           ## verifica dell'invarianza alla scala (fino a 5 milioni di agenti)
+	$(PY) scripts/scale_check.py
+
 docking:         ## confronto statistico NumPy vs Mesa
 	$(PY) scripts/docking.py
 
@@ -27,7 +33,7 @@ paper:           ## compila l'articolo in paper/main.pdf
 site:            ## serve il sito in locale su http://localhost:8000
 	$(PY) -m http.server -d site 8000
 
-all: test docking report dynamics paper  ## tutta la pipeline
+all: test docking report fase2 dynamics paper  ## tutta la pipeline
 
 clean:           ## rimuove i file intermedi di LaTeX
 	cd paper && latexmk -c

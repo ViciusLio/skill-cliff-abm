@@ -16,7 +16,7 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 const errors = [];
 page.on("pageerror", (e) => errors.push(String(e)));
 
-for (const path of ["", "dinamica.html", "lezione.html", "paper.pdf", "data/fase1.json", "data/dinamica.json", "plotly-loader.js"]) {
+for (const path of ["", "dinamica.html", "lezione.html", "fase2.html", "paper.pdf", "data/fase1.json", "data/dinamica.json", "data/fase2.json", "plotly-loader.js"]) {
   const r = await page.request.get(base + path);
   check(r.status() === 200, `${base}${path} -> HTTP ${r.status()}`);
 }
@@ -40,6 +40,15 @@ const ink = await page.$eval("#cv", (cv) => {
 check(ink > 5000, `dinamica: canvas disegnato (${ink} pixel)`);
 const flows = await plotTraces(page, "#c-flows");
 check(flows[0] === 3, `dinamica: grafico dei flussi con 3 serie (${flows})`);
+
+await page.goto(base + "fase2.html", { waitUntil: "networkidle" });
+await page.waitForTimeout(800);
+const f2 = await plotTraces(page, ".chart");
+// ogni serie è una linea più la sua banda di confidenza
+check(f2.length === 2 && f2[0] === 10 && f2[1] === 4, `fase2: bersagli (5 serie) e corsa (2 serie) con dati (${f2})`);
+check((await page.$$eval("#t-targets tbody tr", (r) => r.length)) === 5, "fase2: tabella dei 5 bersagli");
+await page.$eval("#theta", (el) => { el.value = "0.2"; el.dispatchEvent(new Event("input")); });
+check((await page.$eval("#v-y", (e) => e.textContent)).startsWith("+"), "fase2: con θ = 0,2 l'output a fine orizzonte cresce");
 
 for (const [slide, id] of [[9, "c-profile"], [10, "c-B"], [12, "c-classes"], [13, "c-Bshock"]]) {
   await page.goto(`${base}lezione.html#${slide}`, { waitUntil: "networkidle" });
