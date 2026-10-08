@@ -24,7 +24,7 @@ roles:                  # basati sugli anni di esperienza s = età - età d'ingr
 
 meetings:
   p: 0.6                # prob. che un junior incontri un senior in un anno (senza vincoli)
-  kappa: 1.0            # max junior seguiti da un senior in un anno (vincolo di capacità)
+  kappa: 0.20           # capacità: junior seguibili da un senior in un anno (1 senior su 5 fa da mentore)
   beta: 0.10            # efficacia: dh = beta * max(0, h_senior - h_junior)
 
 learning:

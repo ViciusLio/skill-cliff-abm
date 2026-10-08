@@ -34,7 +34,7 @@ class RolesCfg:
 @dataclass(frozen=True)
 class MeetingsCfg:
     p: float = 0.6
-    kappa: float = 1.0
+    kappa: float = 0.20
     beta: float = 0.10
 
 
