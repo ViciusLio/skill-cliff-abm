@@ -35,11 +35,12 @@ $\varphi$ parte da zero, cresce con A e si satura a $\varphi_{\max}$. Poiché $A
 Con il margine "posto" i junior colpiti diventano non occupati (D13) e i senior colpiti escono:
 $\kappa \times (1-\varphi_t)$, meno mentori.
 
-**Output.** Con $H_t = \sum_i h_{i,t}$:
+**Output, salari e familiarità con l'IA (D18, sez. 9).** Con $H_t = \sum_i h_{i,t}$ e $F_t$ la familiarità media,
+pesata con h, di chi lavora con l'IA:
 
-$$Y_t = H_t\,\big[1 + \theta\,(A_t - 1)\big].$$
+$$Y_t = H_t\,\big[1 + \theta\,(A_t - 1)\,F_t\big].$$
 
-θ non entra nella dinamica degli agenti: la "corsa" si calcola quindi per qualsiasi θ a partire da $H_t$ e $A_t$, senza nuove simulazioni.
+θ e la familiarità non entrano nella dinamica di h: la "corsa" si calcola quindi per qualsiasi θ a partire da $H_t$, $A_t$ e $F_t$, senza nuove simulazioni.
 
 **Junior che perdono il posto (D13, ora `ai.margin_junior: posto`).** La sostituzione dei junior non riduce p: ogni anno
 una quota $\varphi_t$ dei junior del gruppo colpito è senza lavoro. Un junior non occupato non incontra senior e non
@@ -56,6 +57,7 @@ Con D19 l'anno da non occupato non conta come esperienza (sez. 8).
 | $g$ | 3% (griglia 1–6%) | crescita della produttività dell'IA; arbitraria, quindi esplorata |
 | $\varphi_{\max}$ | 0,6 | dopo 10 anni $\varphi$ = 0,15, coerente con il −13/16% di occupati di 22–25 anni nelle occupazioni esposte (Brynjolfsson et al. 2025) |
 | $\theta$ | 0,02 (griglia 0–0,2) | +0,7% di produttività in 10 anni, come la stima prudente di Acemoglu (2024) |
+| $\gamma$ | 0,1 (griglia 0,05–1) | aggiornamento annuo della familiarità con l'IA (D18): metà del ritardo recuperata in circa 7 anni; arbitrario, quindi esplorato |
 | N | 50.000 | il modello è invariante alla scala (sez. 6) |
 
 ## 4. Risultati
@@ -68,21 +70,24 @@ Con D19 l'anno da non occupato non conta come esperienza (sez. 8).
 
 Variazioni rispetto allo scenario senza IA, a fine orizzonte (50 anni dopo l'introduzione):
 
-| Scenario | H | h senior | B da incontri | Y (θ = 0,02) | Gini | Anni al primo effetto sui senior |
-|---|---|---|---|---|---|---|
-| junior, compiti (p ↓) | −5,2% | −4,5% | −45% | +0,9% | 0,163 | 12 |
-| junior, posto (non occupati) | −5,7% | −1,9% | −44% | +0,4% | 0,168 | 12 |
-| senior, compiti (β ↓) | −5,2% | −4,5% | −45% | +0,9% | 0,161 | 12 |
-| senior, posto (κ ↓) | −0,1% | 0,0% | −2% | +6,4% | 0,155 | 44 |
-| non qualificati (p e β del gruppo L ↓) | −5,5% | −5,0% | −49% | +0,7% | 0,180 | 12 |
-| qualificati (p e β del gruppo H ↓) | −3,3% | −2,9% | −21% | +3,0% | 0,144 | 12 |
-| complementare (β ↑) | +5,2% | +4,3% | +45% | +12,0% | 0,150 | 12 |
+| Scenario | H | h senior | B da incontri | Y (θ = 0,02) dopo 10 anni | Y (θ = 0,02) | Gini dei salari | Anni al primo effetto sui senior |
+|---|---|---|---|---|---|---|---|
+| junior, compiti (p ↓) | −5,2% | −4,5% | −45% | +0,22% | +0,9% | 0,167 | 12 |
+| junior, posto (non occupati) | −5,7% | −1,9% | −44% | +0,06% | +0,4% | 0,173 | 12 |
+| senior, compiti (β ↓) | −5,2% | −4,5% | −45% | +0,35% | +0,9% | 0,155 | 12 |
+| senior, posto (κ ↓) | −0,1% | 0,0% | −2% | +0,62% | +6,4% | 0,149 | 44 |
+| non qualificati (p e β del gruppo L ↓) | −5,5% | −5,0% | −49% | +0,18% | +0,7% | 0,169 | 12 |
+| qualificati (p e β del gruppo H ↓) | −3,3% | −2,9% | −21% | +0,30% | +3,0% | 0,153 | 12 |
+| complementare (β ↑) | +5,2% | +4,3% | +45% | +0,76% | +12,0% | 0,150 | 12 |
 
-*Senza IA il Gini è 0,155. Per i junior che perdono il posto, B da incontri è la media su tutti i junior, compresi i non occupati.*
+*Senza IA il Gini è 0,155. Con D18 il salario include il guadagno dell'IA per chi la usa (sez. 9); la rendita che va a chi
+possiede l'IA non entra nel Gini. A fine orizzonte tutti sono entrati dopo l'arrivo dell'IA, quindi la familiarità è piena
+e Y è lo stesso che senza D18. Per i junior che perdono il posto, B da incontri è la media su tutti i junior, compresi i
+non occupati.*
 
-1. **Sostituire i compiti dei junior o quelli dei senior costa lo stesso.** H scende del 5,2% in entrambi i casi e l'apprendimento da incontri quasi si dimezza: p e β entrano come prodotto nella Proposizione 1. Cambia solo la distribuzione: il Gini è 0,163 se l'IA toglie incontri ai junior, 0,161 se toglie efficacia ai senior (sez. 8). Il primo effetto sui senior arriva **12 anni** dopo l'introduzione: un anno perché l'IA inizi ad agire, più gli 11 anni della Proposizione 2.
+1. **Sostituire i compiti dei junior o quelli dei senior costa lo stesso.** H scende del 5,2% in entrambi i casi e l'apprendimento da incontri quasi si dimezza: p e β entrano come prodotto nella Proposizione 1. Cambiano la distribuzione e i tempi. Il Gini dei salari è 0,167 se l'IA toglie compiti ai junior e 0,155 se li toglie ai senior: in parte per la dispersione dell'apprendimento (sez. 8), soprattutto perché il guadagno dell'IA va a chi la usa, cioè ai lavoratori più esperti nel primo caso e ai meno esperti nel secondo (sez. 9). Dopo 10 anni l'output è +0,22% contro +0,35%: chi usa l'IA al posto dei senior è entrato dopo il suo arrivo e la conosce meglio. Il primo effetto sui senior arriva **12 anni** dopo l'introduzione: un anno perché l'IA inizi ad agire, più gli 11 anni della Proposizione 2.
 2. **I senior che perdono il posto contano solo se i mentori sono scarsi.** Con κ = 0,2 e S/J ≈ 5,7 ci sono più mentori potenziali di quanti ne servano: il vincolo si attiva dopo circa 30 anni e l'effetto a fine orizzonte è quasi nullo. Con κ = 0,1, dove la capacità è già al limite, la stessa sostituzione costa −4,8% di capitale umano, quasi quanto sostituire i compiti (sez. 4.3).
-3. **Bersagliare i non qualificati costa più che bersagliare i qualificati, e aumenta la disuguaglianza.** Il Gini sale a 0,180 se l'IA sostituisce i non qualificati e scende a 0,144 se sostituisce i qualificati. Il motivo principale è il peso: i non qualificati sono il 70% degli entranti. Questi due scenari tagliano insieme p e β del gruppo, quindi l'apprendimento da incontri del gruppo scala con $(1-\varphi)^2$: i non qualificati perdono più del bersaglio junior (−5,5% contro −5,2%).
+3. **Bersagliare i non qualificati costa più che bersagliare i qualificati, e aumenta la disuguaglianza.** Il Gini dei salari sale a 0,169 se l'IA sostituisce i non qualificati e scende a 0,153 se sostituisce i qualificati (0,180 e 0,144 nel Gini del capitale umano, senza il guadagno dell'IA nei salari). Il motivo principale è il peso: i non qualificati sono il 70% degli entranti. Questi due scenari tagliano insieme p e β del gruppo, quindi l'apprendimento da incontri del gruppo scala con $(1-\varphi)^2$: i non qualificati perdono più del bersaglio junior (−5,5% contro −5,2%).
 4. **L'IA complementare è lo specchio della sostituzione dei compiti.** Con la stessa intensità $\varphi$, H sale del 5,2% e l'output del 12%.
 5. **Se i junior perdono il posto, la formazione è rinviata, non persa.** Con D19 un anno da non occupato non conta come esperienza: il junior resta junior finché non ha lavorato 5 anni. H scende del 5,7%, poco più che con la perdita di compiti; a fine orizzonte i junior sono 10.200 invece di 5.800 e i senior 29.300 invece di 32.800 (N = 50.000). L'h medio dei senior cala solo dell'1,9% perché chi arriva a senior ha avuto la formazione completa, solo più tardi: il costo è nelle carriere più brevi. Con θ = 0,02 l'output resta sopra lo scenario senza IA (+0,4%); la soglia di pareggio è 0,019 (0,017 con la perdita di compiti). Prima di D19 lo stesso scenario dava −10,2%.
 
@@ -104,6 +109,9 @@ Il dato empirico che servirebbe è quanti senior fanno davvero da mentori.
 Con θ = 0,02 (Acemoglu) e bersaglio junior, **la perdita di capitale umano si mangia circa l'86% del guadagno di produttività dell'IA**:
 - senza perdita di H l'output sarebbe +6,5% a fine orizzonte;
 - con la skill cliff è +0,9%, quasi fermo (+0,6%) tra 20 e 30 anni dopo l'introduzione.
+
+Con D18 il guadagno dei primi anni è più piccolo, perché chi usa l'IA la conosce poco, e la quota assorbita è più alta
+prima che dopo: **55% dopo 10 anni, 73% dopo 25, 86% dopo 50** (`corsa.assorbimento` in `numeri_fase2.json`).
 
 ![Mappa della corsa](fig/fig9_mappa_corsa.png)
 
@@ -201,9 +209,9 @@ di confidenza per i confronti tra scenari; la scala reale è possibile ma non ca
 - **D15 – Scelta d'impresa sull'automazione.** Fatto (sez. 4.4): l'eccesso di automazione va da 0,05 (orizzonte di 10 anni) a 0,21 (50 anni).
 - **D16 – Che cosa vuol dire "sostituire".** **A (implementata):** tabella 2×2 esplicita, margine "compiti" o "posto" per junior e senior (sez. 8).
 - **D17 – Compiti dei senior.** **A (implementata):** β ↓; κ resta solo nel margine "posto". L'equivalenza media con p è un risultato (sez. 8).
-- **D18 – Produttività e familiarità con l'IA.** Da decidere.
+- **D18 – Produttività e familiarità con l'IA.** **A (implementata):** familiarità legata all'anno d'ingresso con aggiornamento γ per gli occupati, output pesato per la familiarità di chi usa l'IA, salari con il guadagno dell'IA, risultati a 10, 25 e 50 anni (sez. 9).
 - **D19 – Esperienza solo da occupati.** **A (implementata)** (sez. 8).
-- **D20 – Mentore stabile.** Da decidere.
+- **D20 – Mentore stabile.** **A (implementata come variante):** λ empirico, β ricalibrato, docking esteso (sez. 10).
 
 ## 8. Revisione dei meccanismi: D16, D17, D19
 
@@ -241,7 +249,10 @@ qualificati e non qualificati di prima = `margin_junior: compiti`, `margin_senio
 | | junior, compiti (p ↓) | senior, compiti (β ↓) | differenza (IC 95%) |
 |---|---|---|---|
 | H | −5,24% | −5,24% | 0,002 punti [−0,007; +0,011] |
-| Gini | 0,1635 | 0,1610 | 0,0024 [0,0024; 0,0025] |
+| Gini senza D18 (salario = h) | 0,1635 | 0,1610 | 0,0025 |
+| Gini dei salari con D18 | 0,1667 | 0,1549 | 0,0118 [0,0117; 0,0118] |
+
+La riga senza D18 isola la dispersione dell'apprendimento; con D18 si aggiunge chi riceve il guadagno dell'IA (sez. 9).
 
 Lo stesso risultato con uno shock secco (`make simmetria`, 10 repliche, N = 5.000): p dimezzato H −8,73%, Gini 0,165;
 β dimezzato H −8,77%, Gini 0,162. Meno incontri: alcuni junior imparano e altri no. Meno efficacia: imparano tutti un po' meno.
@@ -254,7 +265,7 @@ Lo stesso risultato con uno shock secco (`make simmetria`, 10 repliche, N = 5.00
 | h senior | −8,8% | −1,9% |
 | B da incontri | −46% | −44% |
 | Y (θ = 0,02) | −4,3% | +0,4% |
-| Gini | 0,170 | 0,168 |
+| Gini (salario = h, prima di D18) | 0,170 | 0,168 |
 | θ di pareggio | 0,035 circa | 0,019 |
 
 Prima di D19 un junior rimasto fuori per 5 anni diventava "intermedio" senza aver mai incontrato un senior, e
@@ -284,5 +295,89 @@ prima di passare oltre, ma lo fa più tardi e con meno anni di carriera davanti.
 3. **Gli scenari per qualifica sono cambiati** (qualificati −2,0% → −3,3%, non qualificati −3,3% → −5,5%; Gini 0,148 →
    0,144 e 0,170 → 0,180), perché con il margine "compiti" tagliano p e β del gruppo, non più p e κ. Il taglio doppio
    pesa $(1-\varphi)^2$ sull'apprendimento del gruppo: confrontarli con il bersaglio junior richiede attenzione.
-4. **L'output del margine "compiti" è lo stesso per junior e senior.** La differenza di produttività che Federico
-   suggerisce (junior formati all'IA, senior meno abituati) è D18, non ancora implementata.
+4. **L'output del margine "compiti" era lo stesso per junior e senior.** La differenza di produttività che Federico
+   suggerisce (junior formati all'IA, senior meno abituati) è D18: vedi sez. 9.
+
+## 9. Familiarità con l'IA e produttività (D18)
+
+### 9.1 Equazioni come implementate (`src/skillcliff/ai.py`, `model.py`)
+
+**Familiarità.** Ogni lavoratore ha $f_i \in [0,1]$. Prima dell'IA $f = 0$ per tutti. Chi entra a $t \ge t_0$ ha
+$f = 1$ (formato con l'IA); per chi c'era, ogni anno da occupato con l'IA già arrivata:
+
+$$f_{i,t+1} = f_{i,t} + \gamma\,(1 - f_{i,t}).$$
+
+**Utenti dell'IA.** $U_t$ sono gli occupati che lavorano con l'IA sui compiti del bersaglio: i non junior se il
+bersaglio è junior, i non senior se è senior, gli occupati del gruppo per qualificati e non qualificati, tutti per
+l'IA complementare.
+
+**Output, salari, rendita.** Con $H_U = \sum_{i\in U} h_i$ e $F_t = \sum_{i\in U} h_i f_i / H_U$:
+
+$$Y_t = H_t\,[1 + \theta(A_t-1)F_t],\qquad w_i = h_i\,[1 + \theta(A_t-1)f_i]\ (i\in U),\quad w_i = h_i\ \text{altrimenti},$$
+
+$$R_t = Y_t - \textstyle\sum_i w_i = \theta(A_t-1)\,F_t\,(H_t - H_U) \ge 0 .$$
+
+$R$ è la rendita dell'IA: il guadagno sui compiti che l'IA svolge al posto del bersaglio va a chi la possiede, non ai
+salari. Con `ai.familiarity: false` si torna a $F = 1$ e $w = h$ (versione precedente, bit per bit).
+
+**Una scelta da confermare.** Nella proposta di D18 il guadagno era $\theta(A-1)\sum_{i\in U} h_i f_i$, cioè
+proporzionale al capitale umano degli utenti. Qui è $\theta(A-1)\,H\,F$: la familiarità pesa come media, il livello
+resta proporzionale a tutto H. Il motivo: con la somma il guadagno dipenderebbe soprattutto da quanto pesano gli utenti
+in H (circa il 90% di H se il bersaglio sono i junior, molto meno se sono i senior), non dalla familiarità; θ non
+sarebbe più la stima di Acemoglu per l'intera economia. Con $f = 1$ la nostra forma restituisce esattamente la
+versione precedente.
+
+### 9.2 Numeri (N = 50.000, 30 repliche, θ = 0,02, g = 3%)
+
+**Output rispetto a nessuna IA, per orizzonte dopo l'introduzione:**
+
+| Scenario | 10 anni | 25 anni | 50 anni | F dopo 10 anni |
+|---|---|---|---|---|
+| junior, compiti | +0,22% | +0,56% | +0,93% | 0,70 |
+| senior, compiti | +0,35% | +0,64% | +0,93% | 0,89 |
+| senza D18 (entrambi) | +0,42% | +0,64% | +0,93% | 1 |
+
+**Sensibilità a γ** (output dopo 10 anni; 10 anni / 25 anni):
+
+| γ | junior, compiti | senior, compiti |
+|---|---|---|
+| 0,05 | +0,07% / +0,34% | +0,30% / +0,64% |
+| 0,1 | +0,22% / +0,56% | +0,35% / +0,64% |
+| 0,2 | +0,36% / +0,63% | +0,40% / +0,64% |
+| 1 | +0,42% / +0,64% | +0,42% / +0,64% |
+
+**Rendita dell'IA a fine orizzonte**, in quota di Y: 0,5% (junior, compiti), 4,4% (senior, compiti), 4,0% (qualificati),
+2,3% (non qualificati), 0 (complementare).
+
+1. **Il compromesso di Federico c'è, ma è piccolo e temporaneo.** A parità di perdita di capitale umano, sostituire i
+   compiti dei senior dà più output nei primi 25 anni: dopo 10 anni +0,35% contro +0,22%. Il vantaggio dura quanto la
+   permanenza in servizio di chi c'era prima dell'IA: a fine orizzonte sparisce. Con θ = 0,02 la differenza è di 0,13
+   punti; cresce con θ.
+2. **La skill cliff pesa di più all'inizio.** Con la familiarità bassa il guadagno dei primi anni è minore, mentre la
+   perdita di H è la stessa: la quota assorbita passa dal 39% al 55% dopo 10 anni (dal 71% al 73% dopo 25).
+3. **Il guadagno dell'IA cambia la disuguaglianza più della dispersione dell'apprendimento.** Se l'IA sostituisce i
+   compiti dei junior, il guadagno va agli esperti e il Gini dei salari sale a 0,167; se sostituisce quelli dei senior,
+   va ai meno esperti e il Gini resta a 0,155. Per qualifica: 0,169 se l'IA sostituisce i non qualificati, 0,153 se i
+   qualificati.
+
+### 9.3 Verifiche
+
+**Riprodotto e verificato**
+- **h non cambia:** con D18 attivo H, h per età e B sono identici bit per bit a prima in tutti e sette gli scenari;
+  cambiano solo Y e Gini. Con `ai.familiarity: false` tutto è identico bit per bit (N = 3.000).
+- **Familiarità:** prima dell'IA f = 0; chi entra dopo ha f = 1; per gli occupati f segue l'aggiornamento con γ, i non
+  occupati non si aggiornano (test che segue ogni agente).
+- **Rendita:** $Y - \sum w = \theta(A-1)F(H - H_U)$ (test).
+- **γ = 1** coincide con l'output senza D18 da un anno dopo l'introduzione in poi (tabella sopra).
+
+**Cosa non torna o va discusso**
+1. **La forma di Y** si discosta dalla proposta di D18 (sez. 9.1): va confermata.
+2. **Gli utenti sono un'ipotesi forte.** Tutto il guadagno dell'IA sui compiti del bersaglio va ai non bersaglio, in
+   proporzione al loro h. Il Gini dipende molto da questa ipotesi: senza D18 (salario = h) junior e senior danno 0,1635
+   e 0,1610, con D18 0,167 e 0,155.
+3. **La rendita R non ha un proprietario nel modello**: non entra nel Gini né nel capitale umano. È la quota di output
+   che, nella discussione sulle politiche, si collega all'accesso agli strumenti come rendita.
+4. **A fine orizzonte D18 non conta:** l'effetto è tutto nella transizione. È coerente con l'idea, ma rende il
+   risultato sensibile all'orizzonte scelto.
+5. **f non tocca l'apprendimento.** Ide (2026) suggerisce che l'IA possa ridurre lo sforzo di chi impara: non è
+   modellato.

@@ -64,14 +64,17 @@ complementare, rende più efficace l'insegnamento. "Sostituire" ha due significa
 lavoro con meno compiti, o perdere il posto. Junior: meno incontri (p) o non occupazione; senior:
 meno trasmesso per incontro (β) o meno mentori (κ). Risultati, 50 anni dopo l'introduzione:
 1. **Togliere compiti ai junior o ai senior costa lo stesso:** capitale umano −5,2%, apprendimento da
-   incontri −45%; sui senior l'effetto arriva dopo 12 anni. Cambia la disuguaglianza: Gini 0,163 se
-   calano gli incontri dei junior, 0,161 se cala l'efficacia dei senior (base 0,155).
+   incontri −45%; sui senior l'effetto arriva dopo 12 anni. Cambiano disuguaglianza e tempi: il
+   guadagno dell'IA va a chi la usa (D18), cioè agli esperti se sostituisce i junior (Gini dei salari
+   0,167) e ai meno esperti se sostituisce i senior (0,155, come senza IA). Dopo 10 anni l'output è
+   +0,22% nel primo caso e +0,35% nel secondo, perché chi è entrato dopo l'IA la conosce meglio; a 50
+   anni la differenza sparisce.
 2. **I senior che perdono il posto contano solo se i mentori sono scarsi:** quasi nessun effetto con
    capacità di mentoring abbondante, −4,8% di capitale umano se è già al limite.
-3. **Sostituire i non qualificati aumenta la disuguaglianza** (Gini da 0,155 a 0,180; 0,144 se
-   l'IA sostituisce i qualificati).
+3. **Sostituire i non qualificati aumenta la disuguaglianza** (Gini dei salari da 0,155 a 0,169;
+   0,153 se l'IA sostituisce i qualificati).
 4. **La corsa:** con la stima prudente di Acemoglu (θ = 0,02) la perdita di capitale umano si mangia
-   circa l'86% del guadagno di produttività dell'IA.
+   il 55% del guadagno di produttività dell'IA dopo 10 anni e l'86% dopo 50 (bersaglio junior).
 5. **Se i junior perdono il posto** entrano più tardi: l'esperienza cresce solo da occupati (D19),
    quindi la formazione da junior è rinviata, non persa. Il capitale umano cala del 5,7%, poco più
    che con la perdita di compiti (−5,2%); i senior sono l'11% in meno e le carriere più brevi.
@@ -126,7 +129,7 @@ grandezza, non previsioni.
 - **Equità tra generazioni.** Chi paga sono i lavoratori che entreranno nei prossimi anni, che oggi
   non votano e non negoziano.
 - **Disuguaglianza.** Gli incontri comprimono le differenze di competenze; toglierli le allarga.
-  Sostituire i non qualificati porta il Gini da 0,155 a 0,180: chi parte più indietro perde anche
+  Sostituire i non qualificati porta il Gini dei salari da 0,155 a 0,169: chi parte più indietro perde anche
   le occasioni per recuperare. Il risultato si collega all'ipotesi di "doppia segregazione"
   (ricchezza e competenze).
 - **Il caso italiano.** Le grandi coorti degli anni '60 vanno in pensione proprio ora: la scogliera
