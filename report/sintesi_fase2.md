@@ -320,12 +320,13 @@ $$R_t = Y_t - \textstyle\sum_i w_i = \theta(A_t-1)\,F_t\,(H_t - H_U) \ge 0 .$$
 $R$ è la rendita dell'IA: il guadagno sui compiti che l'IA svolge al posto del bersaglio va a chi la possiede, non ai
 salari. Con `ai.familiarity: false` si torna a $F = 1$ e $w = h$ (versione precedente, bit per bit).
 
-**Una scelta da confermare.** Nella proposta di D18 il guadagno era $\theta(A-1)\sum_{i\in U} h_i f_i$, cioè
+**Forma dell'output (confermata il 28 ottobre 2026).** Nella proposta di D18 il guadagno era $\theta(A-1)\sum_{i\in U} h_i f_i$, cioè
 proporzionale al capitale umano degli utenti. Qui è $\theta(A-1)\,H\,F$: la familiarità pesa come media, il livello
 resta proporzionale a tutto H. Il motivo: con la somma il guadagno dipenderebbe soprattutto da quanto pesano gli utenti
 in H (circa il 90% di H se il bersaglio sono i junior, molto meno se sono i senior), non dalla familiarità; θ non
 sarebbe più la stima di Acemoglu per l'intera economia. Con $f = 1$ la nostra forma restituisce esattamente la
-versione precedente.
+versione precedente. L'ipotesi implicita: il livello del guadagno è proporzionale a tutto il capitale umano,
+compreso quello dei compiti che l'IA svolge al posto del bersaglio; gli utenti ne determinano solo l'efficacia.
 
 ### 9.2 Numeri (N = 50.000, 30 repliche, θ = 0,02, g = 3%)
 
@@ -371,7 +372,7 @@ versione precedente.
 - **γ = 1** coincide con l'output senza D18 da un anno dopo l'introduzione in poi (tabella sopra).
 
 **Cosa non torna o va discusso**
-1. **La forma di Y** si discosta dalla proposta di D18 (sez. 9.1): va confermata.
+1. **La forma di Y** si discosta dalla proposta iniziale di D18 (sez. 9.1); confermata, con l'ipotesi esplicitata in 9.1.
 2. **Gli utenti sono un'ipotesi forte.** Tutto il guadagno dell'IA sui compiti del bersaglio va ai non bersaglio, in
    proporzione al loro h. Il Gini dipende molto da questa ipotesi: senza D18 (salario = h) junior e senior danno 0,1635
    e 0,1610, con D18 0,167 e 0,155.

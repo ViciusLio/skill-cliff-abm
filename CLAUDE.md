@@ -48,6 +48,5 @@ make site         # sito in locale, porta 8000
 
 ## Lavori aperti
 
-- D18: confermare la forma dell'output (media di f pesata con h, non somma; `report/sintesi_fase2.md`, sez. 9.1).
 - `report/nota_calibrazione.md`: calibrazione e soglia di crescita R.
 - Affiliazioni e ruoli CRediT nell'articolo: segnaposto, da completare.
