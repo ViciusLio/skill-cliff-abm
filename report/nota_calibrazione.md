@@ -7,7 +7,7 @@
 Oggi solo β è calibrato su un dato esterno, cioè la quota di apprendimento dai colleghi di Jarosch et al. (2021); gli altri parametri sono scelti a mano. I nodi sono tre:
 
 1. **p e β non sono identificati separatamente.** I dati sui salari vedono solo il loro prodotto. Serve una fonte diretta per p, la frequenza con cui un junior impara da un senior.
-2. **κ decide il risultato sul bersaglio senior.** Da quasi nullo a −4,8% di capitale umano (sintesi della fase 2, sez. 4.3). Serve una misura di quanti senior fanno davvero da mentori.
+2. **κ decide il risultato sui senior che perdono il posto.** Da quasi nullo a −4,8% di capitale umano (sintesi della fase 2, sez. 4.3). Serve una misura di quanti senior fanno davvero da mentori. Sui senior che perdono compiti (β ↓, D17) κ non conta.
 3. **δ₀, S_h, d e h₀** danno forma al profilo salariale e vanno stimati sui profili italiani per età e istruzione.
 
 ## Parametri, bersagli e fonti candidate
@@ -20,6 +20,8 @@ Oggi solo β è calibrato su un dato esterno, cioè la quota di apprendimento da
 | δ₀, S_h, d | apprendimento autonomo e obsolescenza | profilo salariale per età: picco, rapporto picco/ingresso, calo finale | Eurostat SES (retribuzioni per età e istruzione); INPS; Banca d'Italia SHIW |
 | h̄₀(H)/h̄₀(L), σ | premio d'ingresso e dispersione | salario d'ingresso dei laureati rispetto ai diplomati; dispersione a inizio carriera | Eurostat SES; AlmaLaurea (retribuzioni a un anno dalla laurea) |
 | φ (fase 2) | intensità della sostituzione | assunzioni entry-level nei settori esposti all'IA | INPS (assunzioni per età e settore); Unioncamere Excelsior |
+| γ (D18) | rapidità con cui chi c'era impara a usare l'IA | uso dell'IA generativa sul lavoro per età | Eurostat (uso dell'IA nelle imprese e degli individui); indagini sull'adozione per età (es. Bick, Blandin e Deming) |
+| λ (D20, variante) | separazione annua dal mentore | durata dei rapporti di lavoro dei giovani, cambi di impresa | Istat RCFL; INPS (comunicazioni obbligatorie) |
 
 ## Metodo proposto
 
