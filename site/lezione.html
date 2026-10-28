@@ -516,10 +516,11 @@ const charts = {
     return [tr, layout("anno", "H, variazione % rispetto a nessuna IA", { shapes: vline(F2.start) })];
   },
   "c-race": () => {
-    const r = F2.race["0.03"], A = r.A, th = 0.02;
-    const y = (v, i) => 100 * ((1 + v) * (1 + th * (A[i] - 1)) - 1);
+    const r = F2.race["0.03"], A = r.A, F = r.F, th = 0.02;
+    const y = (v, i) => 100 * ((1 + v) * (1 + th * (A[i] - 1) * F[i]) - 1);
     const Y = { m: r.H.m.map(y), lo: r.H.lo.map(y), hi: r.H.hi.map(y) };
-    const pure = { m: A.map(a => 100 * th * (a - 1)), lo: A.map(a => 100 * th * (a - 1)), hi: A.map(a => 100 * th * (a - 1)) };
+    const g = A.map((a, i) => 100 * th * (a - 1) * F[i]);
+    const pure = { m: g, lo: g, hi: g };
     return [[...band(F2.years, pure, css("--text-muted"), "solo produttività IA"), ...band(F2.years, Y, css("--series-1"), "output con skill cliff"),
       ...band(F2.years, r.H, css("--series-2"), "capitale umano", pct)], layout("anno", "% rispetto a nessuna IA", { shapes: vline(F2.start) })];
   },

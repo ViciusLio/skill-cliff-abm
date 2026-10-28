@@ -91,7 +91,8 @@ th { color: var(--text-secondary); font-weight: 600; }
 
   <section class="card">
     <h2>La corsa: produttività dell'IA contro capitale umano</h2>
-    <p class="note">Bersaglio junior. Y = H · (1 + θ(A − 1)): l'IA aggiunge output in proporzione a θ, mentre la
+    <p class="note">Bersaglio junior. Y = H · (1 + θ(A − 1)·F): l'IA aggiunge output in proporzione a θ e alla
+      familiarità F di chi la usa (D18: chi entra dopo il suo arrivo ha F = 1, chi c'era impara col tempo), mentre la
       sostituzione dei junior riduce H. θ = 0,02 corrisponde a +0,7% di produttività in dieci anni (Acemoglu 2024).</p>
     <div class="controls">
       <label>g, crescita di A <input id="g" type="range" min="0" max="5" step="1" value="2"><output id="g-out"></output></label>
@@ -156,14 +157,14 @@ function renderRace() {
   const gs = Object.keys(D.race), gk = gs[+$("g").value], th = +$("theta").value;
   $("g-out").textContent = (100 * +gk).toFixed(0) + "%";
   $("theta-out").textContent = th.toFixed(3).replace(".", ",");
-  const r = D.race[gk], A = r.A, end = A.length - 1;
-  const y = (v, i) => (1 + v) * (1 + th * (A[i] - 1)) - 1;
+  const r = D.race[gk], A = r.A, F = r.F, end = A.length - 1;
+  const y = (v, i) => (1 + v) * (1 + th * (A[i] - 1) * F[i]) - 1;   // D18: F = familiarità di chi usa l'IA
   const Y = { m: r.H.m.map(y), lo: r.H.lo.map(y), hi: r.H.hi.map(y) };
   const tr = [...band(D.years, r.H, css("--text-muted"), "H (capitale umano)"), ...band(D.years, Y, css("--s1"), "Y (output)")];
   Plotly.react("c-race", tr, layout("variazione % rispetto a nessuna IA"), CFG);
   $("v-y").textContent = pct(Y.m[end]);
   $("v-h").textContent = pct(r.H.m[end]);
-  $("v-be").textContent = ((1 / (1 + r.H.m[end]) - 1) / (A[end] - 1)).toFixed(3).replace(".", ",");
+  $("v-be").textContent = ((1 / (1 + r.H.m[end]) - 1) / ((A[end] - 1) * F[end])).toFixed(3).replace(".", ",");
 }
 
 Promise.all([window.plotlyReady, fetch("data/fase2.json").then(r => r.json())]).then(([, d]) => {
