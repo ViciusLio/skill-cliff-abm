@@ -1,7 +1,7 @@
 # Comandi principali del progetto. `make help` per l'elenco.
 PY ?= python
 
-.PHONY: help install test report fase2 automazione scala docking simmetria dynamics paper site all clean
+.PHONY: help install test report fase2 automazione mentore scala docking simmetria dynamics paper site all clean
 
 help:            ## mostra questo elenco
 	@grep -E '^[a-z0-9]+:.*## ' Makefile | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -21,10 +21,14 @@ fase2:           ## esperimenti della fase 2 (IA): bersagli e corsa
 automazione:     ## D15: automazione scelta dall'impresa contro ottimo sociale
 	$(PY) scripts/automazione.py
 
+mentore:         ## D20: mentore stabile (calibrazione, proposizioni, IA) e suo docking con Mesa
+	$(PY) scripts/mentore_stabile.py
+	$(PY) scripts/docking.py --mentore
+
 scala:           ## verifica dell'invarianza alla scala (fino a 5 milioni di agenti)
 	$(PY) scripts/scale_check.py
 
-docking:         ## confronto statistico NumPy vs Mesa
+docking:         ## confronto statistico NumPy vs Mesa (modello base; la variante D20 in make mentore)
 	$(PY) scripts/docking.py
 
 simmetria:       ## p dimezzato contro beta dimezzato: stesso effetto medio? (~10 s)
@@ -39,7 +43,7 @@ paper:           ## compila l'articolo in paper/main.pdf
 site:            ## serve il sito in locale su http://localhost:8000
 	$(PY) -m http.server -d site 8000
 
-all: test docking report fase2 automazione dynamics paper  ## tutta la pipeline
+all: test docking report fase2 automazione mentore dynamics paper  ## tutta la pipeline
 
 clean:           ## rimuove i file intermedi di LaTeX
 	cd paper && latexmk -c

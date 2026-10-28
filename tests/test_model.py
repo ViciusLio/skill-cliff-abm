@@ -105,3 +105,53 @@ def test_uids_unique_and_meeting_pairs_are_junior_senior():
         assert meet.learners.size == meet.partners.size == meet.n_meetings
         # D1: ogni junior incontra un senior della propria qualifica
         assert (pop.high[meet.learners] == pop.high[meet.partners]).all()
+
+
+# --- D20: mentore stabile ---------------------------------------------------
+
+STABLE = SMALL.with_overrides({"meetings.stable_mentor": True, "meetings.separation": 0.0})
+
+
+def test_stable_mentor_lambda_one_is_random_matching():
+    a = run(SMALL)
+    b = run(SMALL.with_overrides({"meetings.stable_mentor": True, "meetings.separation": 1.0}))
+    for k in a:
+        np.testing.assert_array_equal(a[k], b[k])
+
+
+def test_stable_mentor_pairs_persist():
+    """Con lambda = 0 la coppia dura finché il junior è junior e il mentore è in servizio."""
+    from skillcliff.learning import role_masks
+
+    model = Model(STABLE, np.random.SeedSequence(3))
+    for _ in range(STABLE.burn_in):
+        model.step()
+    for _ in range(STABLE.T):
+        pop = model.pop
+        before = dict(zip(pop.uid[pop.mentor >= 0], pop.mentor[pop.mentor >= 0]))
+        model.step()
+        pop, meet = model.pop, model.last_meet
+        junior, senior = role_masks(STABLE, pop.exp)
+        for j, s in zip(pop.uid[meet.learners], pop.uid[meet.partners]):
+            if j in before and before[j] in set(pop.uid):
+                assert s == before[j]                      # stesso mentore dell'anno prima
+        assert junior[meet.learners].all() and senior[meet.partners].all()
+        assert (pop.high[meet.learners] == pop.high[meet.partners]).all()
+        assert model.n_pairs_cont > 0
+        # vincolo di capacità per gruppo: coppie (vecchie e nuove) entro kappa * S in media; i nuovi
+        # abbinamenti sono estratti con probabilità, quindi si tollera il rumore binomiale
+        for g in (False, True):
+            cap = STABLE.meetings.kappa * (senior & (pop.high == g)).sum()
+            assert (pop.high[meet.learners] == g).sum() <= cap + 3 * np.sqrt(cap) + 1
+
+
+def test_stable_mentor_keeps_transmission_lag():
+    """Proposizione 2 con il mentore stabile: i senior non cambiano per s_S - s_J anni."""
+    from skillcliff.ai import MeetingShock
+
+    cfg = STABLE.with_overrides({"meetings.separation": 0.15, "T": 25})
+    base = run_model(cfg, np.random.SeedSequence(5))
+    shock = run_model(cfg, np.random.SeedSequence(5), MeetingShock(cfg, year=5, p_mult=0.5))
+    lag = cfg.roles.senior_min_exp - cfg.roles.junior_max_exp
+    np.testing.assert_array_equal(base["mean_h_senior"][: 5 + lag], shock["mean_h_senior"][: 5 + lag])
+    assert shock["mean_h_senior"][-1] < base["mean_h_senior"][-1]

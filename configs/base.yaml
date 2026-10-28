@@ -27,6 +27,8 @@ meetings:
   kappa: 0.20           # capacità: junior seguibili da un senior in un anno (1 senior su 5 fa da mentore)
   beta: 0.10            # efficacia: dh = beta * max(0, h_senior - h_junior)
   same_qual: true       # il junior incontra senior della propria qualifica (decisione D1)
+  stable_mentor: false  # D20: il junior resta con lo stesso mentore (variante, vedi make mentore)
+  separation: 1.0       # D20: probabilità annua che la coppia si sciolga (lambda; 1 = incontri casuali)
 
 learning:
   delta0: 0.040         # apprendimento autonomo a inizio carriera
@@ -45,3 +47,5 @@ ai:                     # fase 2 (vedi src/skillcliff/ai.py)
   theta: 0.02           # Y = H (1 + theta (A - 1)); 0,02 = +0,7% in dieci anni (Acemoglu 2024)
   margin_junior: compiti  # D16: compiti (p giù) | posto (junior non occupati, D13)
   margin_senior: compiti  # D16-D17: compiti (beta giù) | posto (meno mentori, kappa giù)
+  familiarity: true       # D18: l'IA rende in proporzione alla familiarità f di chi la usa
+  gamma: 0.1              # D18: aggiornamento annuo di f per gli occupati (metà del ritardo in ~7 anni)

@@ -41,6 +41,8 @@ KAPPA_GRID = (0.05, 0.1, 0.2)
 G_GRID = (0.01, 0.02, 0.03, 0.04, 0.05, 0.06)
 THETA_GRID = (0.0, 0.01, 0.02, 0.05, 0.1, 0.2)
 THETA_LINES = (0.0, 0.02, 0.05, 0.1)
+GAMMA_GRID = (0.05, 0.1, 0.2, 1.0)      # D18: aggiornamento della familiarità
+HORIZONS = (10, 25, 49)                 # anni dopo l'introduzione (49 = fine orizzonte)
 
 LABELS = {
     "it": {
@@ -75,6 +77,11 @@ def rel(res, base, key):
     return res[key] / base[key] - 1.0
 
 
+def y_rel(h_rel, A, F, theta):
+    """Y / Y_base - 1 per un theta qualsiasi: Y = H (1 + theta (A - 1) F), Y_base = H_base (D18)."""
+    return (1 + h_rel) * (1 + theta * (A - 1) * F) - 1
+
+
 def ci(x):
     m, lo, hi = mean_ci(x)
     return {"media": float(m), "ic95": [float(lo), float(hi)]}
@@ -93,7 +100,7 @@ def save(fig, L, i):
     plt.close(fig)
 
 
-def figures(L, years, start, scen, base, race_rel, A_path, num):
+def figures(L, years, start, scen, base, race_rel, A_path, race_F, num):
     for i, key, title in ((0, "H", L["H"]), (1, "mean_h_senior", L["senior"])):
         fig, ax = plt.subplots(figsize=(7.2, 4))
         for t in SCENARIOS:
@@ -108,7 +115,7 @@ def figures(L, years, start, scen, base, race_rel, A_path, num):
     fig, ax = plt.subplots(figsize=(7.2, 4))
     seq = ["#86b6ef", "#3987e5", "#1c5cab", "#0d366b"]
     for th, c in zip(THETA_LINES, seq):
-        y = 100 * ((1 + race_rel[0.03]) * (1 + th * (A_path[0.03] - 1)) - 1)
+        y = 100 * y_rel(race_rel[0.03], A_path[0.03], race_F[0.03], th)
         band(ax, years, y, c, f"θ = {th}")
     ax.axvline(start, color=INK2, linewidth=1, linestyle=":")
     ax.axhline(0, color=INK2, linewidth=.8)
@@ -156,17 +163,28 @@ def main() -> None:
     # La corsa (bersaglio junior): theta non entra nella dinamica, quindi Y/Y_base si calcola
     # per qualsiasi theta da H/H_base e da A(t).
     base_r = run_replications(cfg, args.race_reps)
-    race_rel, A_path = {}, {}
+    race_rel, A_path, race_F = {}, {}, {}
     for g in G_GRID:
         r = scen["junior"] if (g == cfg.ai.g and args.race_reps == args.reps) else \
             run_replications(on("junior", g=g), args.race_reps)
         b = base if r is scen["junior"] else base_r
         race_rel[g] = rel(r, b, "H")
         A_path[g] = r["A"][0]
+        race_F[g] = r["F_U"]
     end = cfg.T - 1
-    mappa = [[float(((1 + race_rel[g][:, end]) * (1 + th * (A_path[g][end] - 1)) - 1).mean())
+    mappa = [[float(y_rel(race_rel[g][:, end], A_path[g][end], race_F[g][:, end], th).mean())
               for th in THETA_GRID] for g in G_GRID]
-    breakeven = {f"{g:.2f}": float((1 / (1 + race_rel[g][:, end].mean()) - 1) / (A_path[g][end] - 1)) for g in G_GRID}
+    breakeven = {f"{g:.2f}": float(((1 / (1 + race_rel[g][:, end]) - 1)
+                                    / ((A_path[g][end] - 1) * race_F[g][:, end])).mean()) for g in G_GRID}
+    # Quota del guadagno dell'IA assorbita dalla perdita di capitale umano (bersaglio junior, g e theta di base).
+    th0, g0 = cfg.ai.theta, cfg.ai.g
+    absorbed = {}
+    for k in HORIZONS:
+        t = start + k
+        pure = th0 * (A_path[g0][t] - 1) * race_F[g0][:, t]
+        y = y_rel(race_rel[g0][:, t], A_path[g0][t], race_F[g0][:, t], th0)
+        absorbed[str(k)] = {"Y_solo_IA": float(pure.mean()), "Y": float(y.mean()),
+                            "quota_assorbita": float(1 - y.mean() / pure.mean())}
 
     num = {
         "N": args.N, "repliche": args.reps, "anni": cfg.T, "introduzione": start,
@@ -179,6 +197,8 @@ def main() -> None:
                 "h_junior_fine": ci(rel(scen[t], base, "mean_h_junior")[:, end]),
                 "B_inc_fine": ci(scen[t]["B_meet"][:, -5:].mean(1) / base["B_meet"][:, -5:].mean(1) - 1),
                 "Y_fine_theta_0.02": ci(rel(scen[t], base, "Y")[:, end]),
+                "Y_per_orizzonte": {str(k): ci(rel(scen[t], base, "Y")[:, start + k]) for k in HORIZONS},
+                "F_U_per_orizzonte": {str(k): float(scen[t]["F_U"][:, start + k].mean()) for k in HORIZONS},
                 "gini_fine": ci(scen[t]["gini_w"][:, -5:].mean(1)),
                 "primo_effetto_senior_anni_dopo": first_effect(scen[t], base, "mean_h_senior", start),
                 "primo_effetto_H_anni_dopo": first_effect(scen[t], base, "H", start),
@@ -187,7 +207,7 @@ def main() -> None:
         },
         "gini_base_fine": ci(base["gini_w"][:, -5:].mean(1)),
         "corsa": {"g": list(G_GRID), "theta": list(THETA_GRID), "mappa_Y_fine": mappa,
-                  "theta_pareggio_fine": breakeven,
+                  "theta_pareggio_fine": breakeven, "assorbimento": absorbed,
                   "H_fine_per_g": {f"{g:.2f}": ci(race_rel[g][:, end]) for g in G_GRID}},
     }
     # D17: "compiti" sui junior (p giù) e sui senior (beta giù), differenze accoppiate per replica.
@@ -195,6 +215,20 @@ def main() -> None:
         "H_junior_meno_senior": ci(rel(scen["junior"], base, "H")[:, end] - rel(scen["senior"], base, "H")[:, end]),
         "gini_junior_meno_senior": ci(scen["junior"]["gini_w"][:, -5:].mean(1) - scen["senior"]["gini_w"][:, -5:].mean(1)),
     }
+    # D18: sensibilità a gamma. h non dipende da gamma, cambia solo F e quindi Y.
+    sens_g = {}
+    for gm in GAMMA_GRID:
+        sens_g[str(gm)] = {}
+        for name in ("junior", "senior"):
+            r = run_replications(on(**SCENARIOS[name], gamma=gm), args.race_reps)
+            sens_g[str(gm)][name] = {str(k): ci(rel(r, base_r, "Y")[:, start + k]) for k in HORIZONS}
+    num["sensibilita_gamma"] = sens_g
+    # senza familiarità (versione precedente di Y), per confronto
+    noF = {name: run_replications(on(**SCENARIOS[name], familiarity=False), args.race_reps)
+           for name in ("junior", "senior")}
+    num["senza_familiarita"] = {name: {"Y_per_orizzonte": {str(k): ci(rel(r, base_r, "Y")[:, start + k]) for k in HORIZONS},
+                                       "gini_fine": ci(r["gini_w"][:, -5:].mean(1))}
+                                for name, r in noF.items()}
     # D14: i senior che escono (margine "posto", kappa giù) contano solo se i mentori sono scarsi.
     sens_k = {}
     for k in KAPPA_GRID:
@@ -210,7 +244,7 @@ def main() -> None:
     (ROOT / "report" / "numeri_fase2.json").write_text(json.dumps(num, indent=1, ensure_ascii=False))
 
     for L in LABELS.values():
-        figures(L, years, start, scen, base, race_rel, A_path, num)
+        figures(L, years, start, scen, base, race_rel, A_path, race_F, num)
 
     def series(x):
         m, lo, hi = mean_ci(x)
@@ -221,7 +255,8 @@ def main() -> None:
         "labels": LABELS["it"]["targets"],
         "targets": {t: {k: series(rel(scen[t], base, k)) for k in ("H", "mean_h_senior", "mean_h_junior", "B_meet")}
                     for t in SCENARIOS},
-        "race": {f"{g:.2f}": {"H": series(race_rel[g]), "A": np.round(A_path[g], 6).tolist()} for g in G_GRID},
+        "race": {f"{g:.2f}": {"H": series(race_rel[g]), "A": np.round(A_path[g], 6).tolist(),
+                              "F": np.round(race_F[g].mean(0), 6).tolist()} for g in G_GRID},
     }
     (ROOT / "site" / "data" / "fase2.json").write_text(json.dumps(site, ensure_ascii=False))
     print(f"fase 2 in {time.perf_counter() - t0:.0f}s", file=sys.stderr)

@@ -1,7 +1,7 @@
 """Popolazione come struttura di array (un elemento per lavoratore) e demografia."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 
 import numpy as np
 
@@ -16,22 +16,19 @@ class Population:
     h: np.ndarray          # float, capitale umano
     uid: np.ndarray        # int, identificativo univoco (serve solo a tracciare gli agenti)
     out: np.ndarray        # bool, non occupato nell'ultimo anno (D13): quell'anno non conta come esperienza
+    f: np.ndarray          # float in [0, 1], familiarità con l'IA (D18)
+    mentor: np.ndarray     # int, uid del mentore stabile, -1 se non abbinato (D20)
 
     def __len__(self) -> int:
         return self.h.size
 
     def keep(self, mask: np.ndarray) -> None:
-        self.age, self.exp, self.high, self.h, self.uid, self.out = (
-            self.age[mask], self.exp[mask], self.high[mask], self.h[mask], self.uid[mask], self.out[mask]
-        )
+        for fld in fields(self):
+            setattr(self, fld.name, getattr(self, fld.name)[mask])
 
     def append(self, other: "Population") -> None:
-        self.age = np.concatenate([self.age, other.age])
-        self.exp = np.concatenate([self.exp, other.exp])
-        self.high = np.concatenate([self.high, other.high])
-        self.h = np.concatenate([self.h, other.h])
-        self.uid = np.concatenate([self.uid, other.uid])
-        self.out = np.concatenate([self.out, other.out])
+        for fld in fields(self):
+            setattr(self, fld.name, np.concatenate([getattr(self, fld.name), getattr(other, fld.name)]))
 
 
 def entry_age(cfg: Config, high: np.ndarray) -> np.ndarray:
@@ -56,6 +53,8 @@ def new_entrants(cfg: Config, n: int, rng: np.random.Generator, first_uid: int =
         h=draw_h0(cfg, high, rng),
         uid=np.arange(first_uid, first_uid + n, dtype=np.int64),
         out=np.zeros(n, dtype=bool),
+        f=np.zeros(n),
+        mentor=np.full(n, -1, dtype=np.int64),
     )
 
 

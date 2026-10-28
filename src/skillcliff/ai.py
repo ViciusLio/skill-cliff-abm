@@ -2,7 +2,15 @@
 
 Produttività dell'IA:            A_t = (1+g)^(t - t0) per t >= t0, altrimenti 1
 Quota di compiti automatizzati:  phi_t = phi_max * (1 - 1/A_t)        (0 all'introduzione, satura a phi_max)
-Output:                          Y_t = H_t * (1 + theta * (A_t - 1)),  H_t = somma di h
+Output (D18):                    Y_t = H_t * (1 + theta * (A_t - 1) * F_t),  H_t = somma di h
+                                 F_t = media di f pesata con h tra gli utenti U dell'IA
+Salari (D18):                    w_i = h_i * (1 + theta (A_t - 1) f_i H_t / H_U)  per i in U,  w_i = h_i altrimenti
+                                 (somma dei salari = Y_t)
+Familiarità f_i (D18):           chi entra con l'IA già arrivata ha f = 1; chi c'era parte da 0 e, per ogni
+                                 anno da occupato con l'IA, f <- f + gamma (1 - f)
+Utenti U: gli occupati che lavorano con l'IA al posto del bersaglio. junior: i non junior;
+senior: i non senior; qualificati / non_qualificati: gli occupati del gruppo; complementare: tutti.
+Con ai.familiarity = false: F = 1 e w = h (versione precedente).
 
 Il bersaglio decide chi viene sostituito; ai.margin_junior e ai.margin_senior (D16) decidono che cosa
 vuol dire "sostituire". Tabella 2x2, con phi_t come intensità:
@@ -65,8 +73,29 @@ class NoAI:
     def meeting_modifiers(self, t: int) -> MeetingModifiers:
         return NEUTRAL
 
-    def output(self, t: int, sum_h: float) -> float:
+    def output(self, t: int, sum_h: float, F: float = 1.0) -> float:
         return sum_h
+
+    def entrant_familiarity(self, t: int) -> float:
+        return 0.0
+
+    def update_familiarity(self, t: int, f: np.ndarray, employed: np.ndarray) -> None:
+        """Aggiorna f sul posto per chi è stato occupato nell'anno t - 1 (D18)."""
+
+    def users(self, junior: np.ndarray, senior: np.ndarray, high: np.ndarray,
+              out: np.ndarray | None) -> np.ndarray | None:
+        """Maschera degli utenti dell'IA (None: nessun peso per familiarità)."""
+        return None
+
+    def familiarity_weight(self, h: np.ndarray, f: np.ndarray, users: np.ndarray | None) -> float:
+        """F: media di f pesata con h tra gli utenti; 1 se non c'è peso per familiarità."""
+        if users is None:
+            return 1.0
+        h_u = h[users].sum()
+        return float((h[users] * f[users]).sum() / h_u) if h_u > 0 else 0.0
+
+    def wages(self, t: int, h: np.ndarray, f: np.ndarray, users: np.ndarray | None) -> np.ndarray:
+        return h
 
     def nonemployed(self, t: int, junior: np.ndarray, high: np.ndarray, rng) -> np.ndarray | None:
         """Maschera dei junior non occupati nell'anno t (None: nessuno)."""
@@ -109,8 +138,32 @@ class AI(NoAI):
             mods["beta" if a.margin_senior == "compiti" else "kappa"] = cut
         return MeetingModifiers(**mods)
 
-    def output(self, t: int, sum_h: float) -> float:
-        return sum_h * (1.0 + self.a.theta * (self.productivity(t) - 1.0))
+    def output(self, t: int, sum_h: float, F: float = 1.0) -> float:
+        return sum_h * (1.0 + self.a.theta * (self.productivity(t) - 1.0) * F)
+
+    def entrant_familiarity(self, t: int) -> float:
+        return 1.0 if self.a.familiarity and t >= self.a.start else 0.0
+
+    def update_familiarity(self, t: int, f: np.ndarray, employed: np.ndarray) -> None:
+        if self.a.familiarity and t - 1 >= self.a.start:
+            f[employed] += self.a.gamma * (1.0 - f[employed])
+
+    def users(self, junior, senior, high, out):
+        if not self.a.familiarity:
+            return None
+        employed = np.ones_like(junior) if out is None else ~out
+        return employed & {"junior": ~junior, "senior": ~senior, "qualificati": high,
+                           "non_qualificati": ~high, "complementare": True}[self.a.target]
+
+    def wages(self, t, h, f, users):
+        if users is None:
+            return h
+        h_u = h[users].sum()
+        if h_u <= 0:
+            return h
+        w = h.copy()
+        w[users] *= 1.0 + self.a.theta * (self.productivity(t) - 1.0) * f[users] * h.sum() / h_u
+        return w
 
     def nonemployed(self, t: int, junior: np.ndarray, high: np.ndarray, rng) -> np.ndarray | None:
         if not (self.a.target in HITS_JUNIOR and self.a.margin_junior == "posto"):

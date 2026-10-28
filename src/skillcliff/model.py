@@ -1,7 +1,8 @@
 """Dinamica annuale del modello.
 
 Ordine degli eventi nell'anno t:
-  1. invecchiamento (età +1; esperienza +1 solo per chi era occupato, D19)
+  1. invecchiamento (età +1; esperienza +1 e aggiornamento della familiarità con l'IA solo per
+     chi era occupato, D19 e D18)
   2. pensionamento (età >= retirement_age)
   3. ingresso dei nuovi junior
   4. incontri junior-senior e apprendimento autonomo, calcolati sullo stesso h (aggiornamento simultaneo)
@@ -27,6 +28,8 @@ class Model:
         self.rng_demo = np.random.default_rng(ss_demo)
         self.rng_meet = np.random.default_rng(ss_meet)
         self.rng_ai = np.random.default_rng(ss_ai)
+        # D20: le separazioni dal mentore usano uno stream figlio di `ai`, così gli altri non si spostano.
+        self.rng_pair = np.random.default_rng(ss_ai.spawn(1)[0])
         self.pop = initial_population(cfg, np.random.default_rng(ss_init))
         self.next_uid = len(self.pop)
         self.last_meet = None   # esito degli incontri dell'ultimo anno (per le visualizzazioni)
@@ -41,10 +44,13 @@ class Model:
         # 1-3. demografia
         pop.age += 1
         pop.exp += ~pop.out           # D19: l'esperienza cresce solo lavorando
+        self.ai.update_familiarity(self.t, pop.f, ~pop.out)
         n_before = len(pop)
         pop.keep(pop.age < cfg.population.retirement_age)
         n_new = n_entrants(cfg, n_before, len(pop))
-        pop.append(new_entrants(cfg, n_new, self.rng_demo, self.next_uid))
+        entrants = new_entrants(cfg, n_new, self.rng_demo, self.next_uid)
+        entrants.f[:] = self.ai.entrant_familiarity(self.t)
+        pop.append(entrants)
         self.next_uid += n_new
 
         # 4. apprendimento
@@ -52,7 +58,15 @@ class Model:
         mods = self.ai.meeting_modifiers(self.t)
         out = self.ai.nonemployed(self.t, junior, pop.high, self.rng_ai)
         seekers = junior if out is None else junior & ~out      # i non occupati non incontrano
-        meet = meeting_gains(cfg, pop.h, seekers, senior, self.rng_meet, mods, pop.high)
+        pairs, self.n_pairs_cont = None, 0
+        if cfg.meetings.stable_mentor:                            # D20: coppie in corso
+            pairs = self._stable_pairs(junior, out)
+            seekers = seekers & (pop.mentor < 0)
+        meet = meeting_gains(cfg, pop.h, seekers, senior, self.rng_meet, mods, pop.high, pairs)
+        if pairs is not None:                                     # i nuovi abbinamenti diventano coppie
+            n_cont = pairs[0].size
+            pop.mentor[meet.learners[n_cont:]] = pop.uid[meet.partners[n_cont:]]
+            self.n_pairs_cont = n_cont
         dh_aut = autonomous_gains(cfg, pop.h, pop.exp)
         if out is not None:                                       # niente apprendimento sul lavoro
             dh_aut[out] = -cfg.learning.depreciation * pop.h[out]
@@ -61,15 +75,30 @@ class Model:
         h_prev = pop.h
         pop.h = h_prev + meet.dh + dh_aut
 
-        self.last_meet, self.last_dh_aut = meet, dh_aut
+        self.last_meet, self.last_dh_aut, self.last_out = meet, dh_aut, out
         rec = self._record(h_prev, meet, dh_aut, junior, senior) if record else None
         self.t += 1
         return rec
 
+    def _stable_pairs(self, junior: np.ndarray, out: np.ndarray | None) -> tuple[np.ndarray, np.ndarray]:
+        """D20: tiene le coppie in cui il junior è ancora junior e occupato, il mentore è ancora in
+        servizio e non c'è separazione (probabilità lambda). Ritorna (indici junior, indici mentore)."""
+        pop = self.pop
+        has = pop.mentor >= 0
+        idx = np.minimum(np.searchsorted(pop.uid, pop.mentor), len(pop) - 1)   # uid ordinati
+        u = self.rng_pair.random(len(pop))          # estratto per tutti: numeri allineati tra scenari
+        keep = has & (pop.uid[idx] == pop.mentor) & junior & (u >= self.cfg.meetings.separation)
+        if out is not None:
+            keep &= ~out
+        pop.mentor[~keep] = -1
+        return np.flatnonzero(keep), idx[keep]
+
     def _record(self, h_prev, meet, dh_aut, junior, senior) -> dict[str, np.ndarray | float]:
         pop, n_ages = self.pop, self.cfg.max_age
         mid = ~junior & ~senior
-        w = pop.h  # salario = prodotto marginale = h (Y lineare)
+        users = self.ai.users(junior, senior, pop.high, self.last_out)
+        F = self.ai.familiarity_weight(pop.h, pop.f, users)
+        w = self.ai.wages(self.t, pop.h, pop.f, users)   # senza IA: salario = prodotto marginale = h
         j = np.flatnonzero(junior)           # tassi di crescita calcolati solo sui junior
         g_meet, g_aut = meet.dh[j] / h_prev[j], dh_aut[j] / h_prev[j]
         rec: dict[str, np.ndarray | float] = {
@@ -79,9 +108,11 @@ class Model:
             "n_senior": int(senior.sum()),
             "n_meetings": meet.n_meetings,
             "n_nonemployed": self.n_out,
+            "n_pairs": self.n_pairs_cont,
             "p_eff": meet.p_eff,
             "H": float(pop.h.sum()),
-            "Y": self.ai.output(self.t, float(pop.h.sum())),
+            "Y": self.ai.output(self.t, float(pop.h.sum()), F),
+            "F_U": F,
             "A": self.ai.productivity(self.t),
             "phi": self.ai.automation_share(self.t),
             "mean_h": float(pop.h.mean()),

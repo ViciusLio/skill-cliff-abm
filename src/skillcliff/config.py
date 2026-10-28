@@ -37,6 +37,11 @@ class MeetingsCfg:
     kappa: float = 0.20
     beta: float = 0.10
     same_qual: bool = True
+    # D20: mentore stabile. Il junior abbinato resta con lo stesso senior finché è junior, il mentore
+    # non va in pensione e non si separano (probabilità annua `separation`, lambda). Con lambda = 1
+    # ogni anno tutte le coppie si sciolgono: è il modello con incontri casuali.
+    stable_mentor: bool = False
+    separation: float = 1.0
 
 
 @dataclass(frozen=True)
@@ -64,6 +69,11 @@ class AICfg:
     # senior: compiti = beta giù (D17), posto = kappa giù (meno mentori).
     margin_junior: str = "compiti"
     margin_senior: str = "compiti"
+    # D18: il guadagno dell'IA pesa per la familiarità f di chi la usa. Chi entra dopo l'arrivo
+    # dell'IA ha f = 1, chi c'era già parte da 0 e da occupato si aggiorna: f += gamma * (1 - f).
+    # Con familiarity = false l'output torna Y = H (1 + theta (A - 1)).
+    familiarity: bool = True
+    gamma: float = 0.1
 
 
 @dataclass(frozen=True)
@@ -91,6 +101,10 @@ class Config:
             raise ValueError("età d'ingresso >= età di pensionamento")
         if {self.ai.margin_junior, self.ai.margin_senior} - {"compiti", "posto"}:
             raise ValueError("ai.margin_junior e ai.margin_senior devono essere 'compiti' o 'posto'")
+        if not 0 <= self.meetings.separation <= 1:
+            raise ValueError("meetings.separation deve stare in [0, 1]")
+        if not 0 <= self.ai.gamma <= 1:
+            raise ValueError("ai.gamma deve stare in [0, 1]")
         if self.demography.mode not in ("stationary",):
             raise NotImplementedError(f"demography.mode={self.demography.mode!r}")
 

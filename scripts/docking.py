@@ -5,7 +5,10 @@ Due test per ogni statistica:
 - test di equivalenza TOST entro ±1% (p piccolo = equivalenza dimostrata), con IC al 90%
   della differenza relativa.
 
-Uso: python scripts/docking.py [--config configs/base.yaml] [--reps 30] [--N 5000]
+Con --mentore il docking riguarda la variante con mentore stabile (D20): lambda centrale e beta
+calibrato letti da report/numeri_d20.json (make mentore); il risultato va anche in quel file.
+
+Uso: python scripts/docking.py [--config configs/base.yaml] [--reps 30] [--N 5000] [--mentore]
 """
 from __future__ import annotations
 
@@ -70,12 +73,23 @@ def main() -> None:
     ap.add_argument("--config", default="configs/base.yaml")
     ap.add_argument("--reps", type=int, default=30)
     ap.add_argument("--N", type=int, default=5000)
-    ap.add_argument("--out", default="outputs/docking.json")
+    ap.add_argument("--out", default=None)
+    ap.add_argument("--mentore", action="store_true", help="variante con mentore stabile (D20)")
     args = ap.parse_args()
     cfg = load_config(args.config).with_overrides({"population.N": args.N})
+    d20 = Path("report/numeri_d20.json")
+    if args.mentore:
+        num = json.loads(d20.read_text())
+        lam = num["lambda_centrale"]
+        cfg = cfg.with_overrides({"meetings.stable_mentor": True, "meetings.separation": lam,
+                                  "meetings.beta": num["calibrazione"][str(lam)]["beta"]})
     res = docking(cfg, args.reps)
-    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.out).write_text(json.dumps(res, indent=2))
+    out = Path(args.out or ("outputs/docking_mentore.json" if args.mentore else "outputs/docking.json"))
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(res, indent=2))
+    if args.mentore:
+        num["docking"] = {"lambda": cfg.meetings.separation, "beta": cfg.meetings.beta, **res}
+        d20.write_text(json.dumps(num, indent=1, ensure_ascii=False))
     print(f"N={res['N']} repliche={res['reps']}  NumPy {res['seconds_numpy']:.1f}s  Mesa {res['seconds_mesa']:.1f}s")
     for k, r in res["metrics"].items():
         lo, hi = r["ic90_rel"]

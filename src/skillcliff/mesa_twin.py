@@ -1,4 +1,5 @@
 """Gemello Mesa del modello base, usato solo per il docking (Axtell et al., 1996).
+Copre anche la variante con mentore stabile (D20, meetings.stable_mentor); non copre l'IA.
 
 Implementa le stesse regole di model.py con un oggetto per agente e cicli espliciti,
 in modo indipendente dal codice vettorizzato. I due modelli NON condividono i flussi
@@ -25,6 +26,8 @@ class Worker(mesa.Agent):
         base = pc.h0.high if high else pc.h0.low
         self.h = base * math.exp(model.rng.normal(-0.5 * s * s, s))
         self.dh = 0.0
+        self.mentor: Worker | None = None    # D20
+        self.retired = False
 
     def age_one_year(self) -> None:
         self.age += 1
@@ -53,6 +56,7 @@ class MesaSkillModel(mesa.Model):
         self.agents.do("age_one_year")
         retiring = [a for a in self.agents if a.age >= cfg.population.retirement_age]
         for a in retiring:
+            a.retired = True
             a.remove()
         for _ in range(len(retiring)):
             Worker(self, bool(self.rng.random() < cfg.population.share_high), 0)
@@ -70,13 +74,28 @@ class MesaSkillModel(mesa.Model):
         for q in quals:
             js = [a for a in juniors if q is None or a.high == q]
             ss = [a for a in seniors if q is None or a.high == q]
-            p_eff = min(m.p, m.kappa * len(ss) / len(js)) if js and ss else 0.0
-            for j in js:
+            seekers, occupied = js, 0
+            if m.stable_mentor:
+                # D20: la coppia continua se il mentore è in servizio e non si separano
+                for j in js:
+                    if j.mentor is not None and (j.mentor.retired or self.rng.random() < m.separation):
+                        j.mentor = None
+                for j in js:
+                    if j.mentor is not None:
+                        gain = m.beta * max(0.0, j.mentor.h - j.h)
+                        j.dh += gain
+                        meet_gain += gain / j.h
+                        occupied += 1
+                seekers = [j for j in js if j.mentor is None]
+            p_eff = min(m.p, max(0.0, m.kappa * len(ss) - occupied) / len(seekers)) if seekers and ss else 0.0
+            for j in seekers:
                 if self.rng.random() < p_eff:
                     s = ss[int(self.rng.integers(len(ss)))]
                     gain = m.beta * max(0.0, s.h - j.h)
                     j.dh += gain
                     meet_gain += gain / j.h
+                    if m.stable_mentor:
+                        j.mentor = s
         aut_gain = 0.0
         for a in workers:
             before = a.dh

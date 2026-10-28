@@ -168,3 +168,56 @@ def test_experience_grows_only_when_employed():
     assert n_out > 0
     lost = m.pop.age - entry_age(cfg, m.pop.high) - m.pop.exp   # anni persi da non occupati
     assert (lost >= 0).all() and lost.max() > 0
+
+
+# --- D18: familiarità con l'IA ----------------------------------------------
+
+def test_familiarity_dynamics():
+    """Chi entra con l'IA già arrivata ha f = 1; chi c'era parte da 0 e da occupato si aggiorna."""
+    from skillcliff.model import Model
+
+    cfg = with_ai("junior").with_overrides({"ai.margin_junior": "posto", "ai.gamma": 0.2})
+    m = Model(cfg, np.random.SeedSequence(9))
+    for _ in range(cfg.burn_in + cfg.ai.start):
+        m.step(record=False)
+    assert m.t == cfg.ai.start and (m.pop.f == 0).all()             # prima dell'IA nessuna familiarità
+    m.step(record=False)        # anno dell'arrivo: entrano lavoratori con f = 1, gli altri non cambiano
+    assert set(np.unique(m.pop.f)) == {0.0, 1.0}
+    for _ in range(8):
+        uid, f, out = m.pop.uid.copy(), m.pop.f.copy(), m.pop.out.copy()
+        m.step(record=False)
+        stay = np.isin(uid, m.pop.uid)
+        new = m.pop.f[np.searchsorted(m.pop.uid, uid[stay])]
+        want = np.where(out[stay], f[stay], f[stay] + 0.2 * (1 - f[stay]))
+        np.testing.assert_allclose(new, want)
+        assert (m.pop.f[~np.isin(m.pop.uid, uid)] == 1).all()        # entranti
+
+
+def test_wages_add_up_to_output_and_off_switch():
+    on = with_ai("senior")
+    r = run(on)
+    s = AI_CFG.ai.start
+    assert (r["F_U"][:s + 2] < 1).all() and r["F_U"][-1] > r["F_U"][s + 2]
+    from skillcliff.model import Model
+
+    m = Model(on, np.random.SeedSequence(4))
+    for _ in range(on.burn_in + on.T):
+        m.step(record=False)
+    from skillcliff.learning import role_masks
+    junior, senior = role_masks(on, m.pop.exp)
+    users = m.ai.users(junior, senior, m.pop.high, m.last_out)
+    F = m.ai.familiarity_weight(m.pop.h, m.pop.f, users)
+    w = m.ai.wages(m.t - 1, m.pop.h, m.pop.f, users)
+    assert w.sum() == pytest.approx(m.ai.output(m.t - 1, m.pop.h.sum(), F))
+    off = run(on.with_overrides({"ai.familiarity": False}))
+    np.testing.assert_array_equal(off["H"], r["H"])                   # f non tocca la dinamica di h
+    np.testing.assert_allclose(off["Y"], off["H"] * (1 + 0.1 * (off["A"] - 1)))
+
+
+def test_familiarity_favours_senior_task_substitution_early():
+    """Stesso H per compiti junior e senior, ma se l'IA sostituisce i senior la usano junior
+    entrati dopo il suo arrivo (f = 1): più output nei primi anni."""
+    j, s_ = run(with_ai("junior")), run(with_ai("senior"))
+    t = AI_CFG.ai.start + 5
+    assert s_["F_U"][t] > j["F_U"][t]
+    assert s_["Y"][t] / s_["H"][t] > j["Y"][t] / j["H"][t]
