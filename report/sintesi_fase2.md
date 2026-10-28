@@ -381,3 +381,97 @@ versione precedente.
    risultato sensibile all'orizzonte scelto.
 5. **f non tocca l'apprendimento.** Ide (2026) suggerisce che l'IA possa ridurre lo sforzo di chi impara: non è
    modellato.
+
+## 10. Mentore stabile (D20, variante)
+
+Script `scripts/mentore_stabile.py` (`make mentore`), numeri in `report/numeri_d20.json`. È una variante attivabile
+con `meetings.stable_mentor: true`; il modello di riferimento resta quello con incontri casuali.
+
+### 10.1 Regole come implementate (`src/skillcliff/model.py`, `learning.py`)
+
+- **Abbinamento.** Un junior senza mentore lo cerca come nel modello base: con probabilità $p^{\text{eff}}_g$ incontra
+  un senior della propria qualifica estratto a caso, che diventa il suo mentore.
+- **Persistenza.** Ogni anno la coppia continua, e il junior impara $\beta\max(0, h_m - h_j)$ dal suo mentore, se il
+  junior è ancora junior e occupato, il mentore è ancora in servizio e la coppia non si scioglie (probabilità λ).
+  Un junior che perde il mentore lo cerca di nuovo nello stesso anno.
+- **Capacità.** Le coppie in corso $M_g$ occupano capacità: per chi cerca
+  $p^{\text{eff}}_g = \min\big(p,\ \max(0, \kappa S_g - M_g)/J^{\text{cerca}}_g\big)$.
+- **Con λ = 1** tutte le coppie si sciolgono ogni anno: è il modello base, identico bit per bit (test).
+- **Numeri casuali.** Le separazioni usano uno stream figlio di quello dell'IA: senza la variante nulla cambia.
+
+### 10.2 Calibrazione (N = 5.000, 30 repliche)
+
+λ è fissato su un valore empirico (separazione annua dei giovani, 10–20%: centrale 0,15); β è ricalibrato per ogni λ
+in modo che B da incontri resti quello della fase 1 (0,0429).
+
+| λ | β | junior in coppia | junior che imparano | B | quota di B dagli incontri | Gini | picco del profilo (anni) | picco / ingresso (L) |
+|---|---|---|---|---|---|---|---|---|
+| 0,1 | 0,074 | 55% | 82% | 0,0693 | 62% | 0,156 | 35 / 34 | 1,87 |
+| **0,15** | **0,075** | 51% | 81% | 0,0692 | 62% | 0,156 | 34 / 34 | 1,87 |
+| 0,2 | 0,077 | 48% | 79% | 0,0692 | 62% | 0,156 | 35 / 35 | 1,87 |
+| 0,5 | 0,086 | 27% | 71% | 0,0693 | 62% | 0,156 | 35 / 34 | 1,86 |
+| 1 (base) | 0,100 | 0% | 60% | 0,0693 | 62% | 0,155 | 34 / 35 | 1,84 |
+
+*Picco: anni di esperienza al massimo del profilo salariale, non qualificati / qualificati.*
+
+Con le coppie stabili imparano più junior ogni anno (81% invece di 60%), ma ciascun incontro deve valere meno
+(β = 0,075 invece di 0,10) per dare lo stesso apprendimento medio. Una volta ricalibrato β, il modello è quasi
+indistinguibile dalla base: stesso profilo salariale, stessa quota di B dagli incontri, Gini più alto di 0,001.
+La disuguaglianza in più che ci aspettavamo dalla "fortuna del primo abbinamento" è trascurabile.
+
+### 10.3 Proposizioni
+
+- **Proposizione 1.** Con la quota realizzata di junior che imparano al posto di $p^{\text{eff}}$, l'identità con
+  abbinamento casuale sovrastima B da incontri del 4,6% (base: 1,0%, nella stessa misura su una replica di 30 anni).
+  Le coppie stabili non sono un campione casuale: la distanza di conoscenza dentro una coppia si chiude con il tempo.
+  L'identità resta una buona approssimazione, ma non è più esatta.
+- **Proposizione 2.** Il ritardo resta di 11 anni dopo il dimezzamento di p, come nella base (test e simulazione).
+
+### 10.4 La simmetria tra p e β non regge più
+
+Shock dall'anno 10, fine orizzonte (N = 5.000, 30 repliche):
+
+| | base: p dimezzato | base: β dimezzato | mentore stabile: p dimezzato | mentore stabile: β dimezzato |
+|---|---|---|---|---|
+| H | −8,7% | −8,8% | **−6,5%** | −8,8% |
+| h senior (lungo periodo) | −6,7% | −6,8% | −4,8% | −6,8% |
+| B da incontri | −54% | −54% | −41% | −54% |
+
+E con l'IA (N = 50.000, 30 repliche, fine orizzonte):
+
+| | base | mentore stabile |
+|---|---|---|
+| junior, compiti (p ↓): H | −5,2% | **−3,5%** |
+| senior, compiti (β ↓): H | −5,2% | −5,3% |
+| differenza junior − senior | 0,00 punti | +1,81 punti [1,79; 1,82] |
+| junior, posto: H | −5,7% | **−7,2%** |
+| Gini dei salari: junior / senior, compiti | 0,167 / 0,155 | 0,166 / 0,155 |
+
+1. **Con il mentore stabile, togliere incontri costa meno che togliere efficacia.** p regola solo la formazione di
+   nuove coppie; chi ha già un mentore lo tiene. β invece colpisce ogni anno di ogni coppia.
+2. **Il "posto" dei junior costa di più** (−7,2% invece di −5,7%): un junior che resta fuori perde anche il mentore e
+   al rientro deve trovarne un altro.
+3. **Il ritardo e il segno degli effetti non cambiano**: la variante sposta le grandezze, non le conclusioni qualitative.
+
+### 10.5 Verifiche
+
+**Riprodotto e verificato**
+- **λ = 1 = base**, bit per bit, anche nello scenario con non occupazione (confronto diretto e test).
+- **Persistenza:** con λ = 0 ogni junior abbinato ha lo stesso mentore dell'anno prima finché è junior e il mentore è
+  in servizio; coppie sempre junior–senior della stessa qualifica; capacità rispettata a meno del rumore binomiale (test).
+- **Calibrazione:** B da incontri entro lo 0,25% dell'obiettivo per ogni λ.
+- **Docking con Mesa** (gemello esteso con le coppie, N = 5.000, 30 repliche, λ = 0,15, β = 0,075): equivalenza entro
+  ±1% dimostrata per tutte e cinque le statistiche (p del TOST ≤ 0,001). Differenze: h medio −0,11%, junior −0,03%,
+  senior −0,12%, B da incontri −0,40%, B autonomo 0,00%.
+
+**Cosa non torna o va discusso**
+1. **Il primo docking della variante sembrava meno pulito di quello della base.** Le differenze erano tutte negative e su B da
+   incontri il test t dà p = 0,04 (base: tutte sotto lo 0,06%, p tra 0,3 e 0,75). Non ho trovato differenze tra le due
+   implementazioni; con cinque test un p = 0,04 può essere caso. Controllo con 60 repliche e un altro seed (777): differenze tra −0,12% e +0,05%, p tra 0,35 e 0,93 (`docking_controllo` in `numeri_d20.json`). Il p = 0,04 era caso.
+2. **λ non è calibrato.** Abbiamo scelto 0,15 dal turnover dei giovani; il risultato principale (p e β non più
+   simmetrici) vale per ogni λ < 1, la sua grandezza no.
+3. **Calibrare λ da solo non funzionava**: l'apprendimento medio cresce con le coppie, quindi l'unico λ che riproduce la
+   fase 1 a β invariato è λ = 1. Per questo β è ricalibrato (cambia la raccomandazione iniziale di D20).
+4. **Le coppie si incontrano ogni anno con certezza.** Una regola più debole (incontro con probabilità p anche dentro
+   la coppia) ridurrebbe l'asimmetria tra p e β.
+5. **La variante non entra in fase 1, D15 e scala**, che restano sul modello base.

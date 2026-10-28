@@ -13,7 +13,7 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 - **Descrizione standard del modello (protocollo ODD)**: appendice A dell'[articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf)
 - **Nota sulla calibrazione** (traccia per la discussione): [nota](report/nota_calibrazione.md)
 - **Resoconto dell'8 ottobre 2026**: [resoconto](report/resoconto_2026-10-08.md)
-- **Revisione dei meccanismi** (osservazioni di Federico; D16, D17, D19 fatte, D18 e D20 aperte): [revisione](report/revisione_meccanismi.md)
+- **Revisione dei meccanismi** (osservazioni di Federico, decisioni D16–D20, tutte realizzate): [revisione](report/revisione_meccanismi.md)
 
 ---
 
@@ -83,6 +83,11 @@ meno trasmesso per incontro (β) o meno mentori (κ). Risultati, 50 anni dopo l'
    automatizza il 30% dei compiti junior; su un orizzonte di 50 anni l'ottimo sociale è il 9%, e la
    scelta privata vale meno di non automatizzare affatto. Su 10 anni le due scelte quasi coincidono:
    il danno arriva dopo.
+7. **Se il junior resta con lo stesso mentore** (variante D20, separazione annua del 15%, β
+   ricalibrato sull'apprendimento della fase 1) profilo salariale, ritardo e disuguaglianza non
+   cambiano, ma togliere incontri costa meno che togliere efficacia: −3,5% di capitale umano se l'IA
+   toglie compiti ai junior, −5,3% se li toglie ai senior. Chi ha già un mentore lo tiene; chi perde il
+   posto perde anche il mentore (−7,2%).
 
 ## Cosa significa: implicazioni
 
@@ -170,6 +175,7 @@ make report      # fase 1: figure, numeri e dati del sito (~15 s con 4 core)
 make fase2       # fase 2: scenari IA, corsa, sensibilità (~2 min con 4 core)
 make automazione # D15: automazione dell'impresa contro ottimo sociale (~30 s)
 make scala       # invarianza alla scala, fino a 5 milioni di agenti (~3 min)
+make mentore     # D20: mentore stabile, calibrazione, IA e docking della variante (~10 min con 2 core)
 make docking     # NumPy contro Mesa: test di differenza e di equivalenza (~1 min)
 make simmetria   # p dimezzato contro β dimezzato: stesso effetto medio (~10 s)
 make paper       # compila paper/main.pdf
@@ -214,14 +220,15 @@ src/skillcliff/   config.py      parametri (dataclass da YAML)
                   experiment.py  repliche con seed derivati, salvataggio
                   ai.py          IA (fase 2): A(t), bersagli, margine compiti/posto (D16), output,
                                  automazione a quota fissa (D15), esperimento "p dimezzato"
-                  mesa_twin.py   gemello Mesa (solo docking)
+                  mesa_twin.py   gemello Mesa (solo docking; modello base e variante D20)
 configs/          parametri YAML
 scripts/          run_scenario.py   repliche di uno scenario con parametri da riga di comando
                   make_report.py    fase 1: figure, numeri, dati del sito
                   fase2.py          fase 2: scenari IA, corsa, sensibilità a kappa
                   automazione.py    D15: automazione scelta dall'impresa contro ottimo sociale
                   scale_check.py    invarianza alla scala (fino a 24 milioni di agenti)
-                  docking.py        confronto NumPy vs Mesa
+                  mentore_stabile.py  D20: mentore stabile (variante), calibrazione di beta, proposizioni, IA
+                  docking.py        confronto NumPy vs Mesa (anche la variante D20, con --mentore)
                   simmetria_p_beta.py  p dimezzato contro beta dimezzato
                   export_dynamics.py  dati della vista dinamica
                   verify_site.mjs   verifica del sito in un browser headless

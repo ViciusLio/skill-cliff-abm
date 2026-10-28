@@ -2,8 +2,10 @@
 
 *Federico Bassi e Vincenzo Lio. Analisi e proposte di decisione (D16–D20).*
 
-**Stato (28 ottobre 2026).** D19 A, D16 A e D17 A implementate: equazioni, numeri e verifiche nella
-[sintesi della fase 2](sintesi_fase2.md), sez. 8. D18 e D20 da decidere.
+**Stato (28 ottobre 2026).** Tutte implementate: D19 A, D16 A e D17 A (sintesi della fase 2, sez. 8),
+D18 A (sez. 9), D20 A come variante (sez. 10). Equazioni, numeri e verifiche nella
+[sintesi della fase 2](sintesi_fase2.md). Rispetto alle proposte qui sotto: in D20 β è ricalibrato con λ
+empirico (calibrare λ da solo non funziona); in D18 la forma dell'output è da confermare (sez. 9.1).
 
 ## Le osservazioni
 

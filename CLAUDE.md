@@ -40,6 +40,7 @@ make test         # test
 make report       # fase 1: figure, numeri (report/numeri_fase1.json), dati del sito
 make fase2        # fase 2: scenari IA (report/numeri_fase2.json)
 make automazione  # D15 (report/numeri_d15.json)
+make mentore      # D20, mentore stabile, e suo docking (report/numeri_d20.json)
 make docking      # NumPy contro Mesa
 make paper        # paper/main.pdf
 make site         # sito in locale, porta 8000
@@ -47,6 +48,6 @@ make site         # sito in locale, porta 8000
 
 ## Lavori aperti
 
-- `report/revisione_meccanismi.md`: osservazioni di Federico e decisioni D16–D20.
+- D18: confermare la forma dell'output (media di f pesata con h, non somma; `report/sintesi_fase2.md`, sez. 9.1).
 - `report/nota_calibrazione.md`: calibrazione e soglia di crescita R.
 - Affiliazioni e ruoli CRediT nell'articolo: segnaposto, da completare.

@@ -255,6 +255,8 @@ If juniors lose their jobs instead of tasks, training is postponed rather than l
 
 Seniors who lose their jobs are almost harmless in the baseline, but only because mentoring capacity is abundant: with $S/J\approx5.7$ there are more potential mentors than needed. When capacity is scarcer ($\kappa=0.1$), the same substitution lowers aggregate human capital by 4.8 per cent, almost as much as task substitution. How many seniors actually act as mentors is therefore a key empirical quantity.
 
+\emph{Stable mentors.} In the baseline a junior meets a randomly drawn senior every year. In a variant, a junior who meets a senior keeps that mentor for as long as both remain employed and the junior remains a junior, unless the pair separates with annual probability $\lambda$; pairs occupy mentoring capacity, and $\lambda=1$ reproduces the baseline exactly. With $\lambda=0.15$, close to the annual separation rate of young workers, and $\beta$ recalibrated (from 0.10 to 0.075) to keep $B^{\mathrm{inc}}$ at its Phase~1 value, the age--wage profile, the share of learning from meetings and the wage Gini are virtually unchanged, and the transmission lag of Proposition~\ref{prop:lag} is still eleven years. Proposition~\ref{prop:B} becomes an approximation, which overstates $B^{\mathrm{inc}}$ by about 5 per cent because matched juniors are not a random sample. The symmetry between $p$ and $\beta$ breaks: since $p$ only governs the formation of new pairs, replacing junior tasks lowers aggregate human capital by 3.5 per cent, against 5.3 per cent when senior tasks are replaced; replacing junior jobs costs 7.2 per cent, because a junior who leaves employment also loses the mentor. The variant changes magnitudes, not the timing or the sign of the effects.
+
 \begin{table}[t]\centering\small
 \caption{Effects of AI fifty years after its introduction, relative to the scenario without AI (mean of 30 paired replications).}\label{tab:ai}
 \begin{tabular}{@{}lrrrrrr@{}}
@@ -391,6 +393,8 @@ $B^{\mathrm{aut}}$ & 0.0264 & 0.0264 & $0.00\%$ & 0.32 & $[-0.00\%, +0.00\%]$ & 
 \bottomrule
 \end{tabular}}
 \end{table}
+
+The stable-mentor variant of Section~\ref{sec:ai} has been docked in the same way, with the Mesa implementation extended to persistent pairs ($\lambda=0.15$, $\beta=0.075$). Equivalence within $\pm1$ per cent is established for all five statistics ($p_{\mathrm{TOST}}\le0.001$); the relative differences lie between $-0.40$ and $0$ per cent with 30 replications and between $-0.12$ and $+0.05$ per cent in a second run with 60 replications and a different root seed ($p$ between 0.35 and 0.93 in the Welch test).
 
 \bibliographystyle{elsarticle-harv}
 \bibliography{references}
