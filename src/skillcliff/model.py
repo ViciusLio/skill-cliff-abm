@@ -113,6 +113,7 @@ class Model:
             "H": float(pop.h.sum()),
             "Y": self.ai.output(self.t, float(pop.h.sum()), F),
             "F_U": F,
+            "rent_ai": float(self.ai.output(self.t, float(pop.h.sum()), F) - w.sum()),
             "A": self.ai.productivity(self.t),
             "phi": self.ai.automation_share(self.t),
             "mean_h": float(pop.h.mean()),

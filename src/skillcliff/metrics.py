@@ -8,7 +8,7 @@ from scipy import stats
 SCALARS = (
     "N", "n_junior", "n_mid", "n_senior", "n_meetings", "n_nonemployed", "n_pairs", "p_eff",
     "H", "Y", "A", "phi", "mean_h", "mean_h_junior", "mean_h_mid", "mean_h_senior",
-    "B", "B_meet", "B_aut", "gini_w", "F_U",
+    "B", "B_meet", "B_aut", "gini_w", "F_U", "rent_ai",
 )
 
 

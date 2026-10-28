@@ -193,7 +193,7 @@ def test_familiarity_dynamics():
         assert (m.pop.f[~np.isin(m.pop.uid, uid)] == 1).all()        # entranti
 
 
-def test_wages_add_up_to_output_and_off_switch():
+def test_wages_rent_and_off_switch():
     on = with_ai("senior")
     r = run(on)
     s = AI_CFG.ai.start
@@ -208,7 +208,10 @@ def test_wages_add_up_to_output_and_off_switch():
     users = m.ai.users(junior, senior, m.pop.high, m.last_out)
     F = m.ai.familiarity_weight(m.pop.h, m.pop.f, users)
     w = m.ai.wages(m.t - 1, m.pop.h, m.pop.f, users)
-    assert w.sum() == pytest.approx(m.ai.output(m.t - 1, m.pop.h.sum(), F))
+    A, h = m.ai.productivity(m.t - 1), m.pop.h
+    rent = m.ai.output(m.t - 1, h.sum(), F) - w.sum()             # rendita dell'IA: Y meno salari
+    assert rent == pytest.approx(0.1 * (A - 1) * F * (h.sum() - h[users].sum()))
+    assert rent > 0 and r["rent_ai"][-1] > 0
     off = run(on.with_overrides({"ai.familiarity": False}))
     np.testing.assert_array_equal(off["H"], r["H"])                   # f non tocca la dinamica di h
     np.testing.assert_allclose(off["Y"], off["H"] * (1 + 0.1 * (off["A"] - 1)))

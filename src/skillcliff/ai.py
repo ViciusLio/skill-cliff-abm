@@ -4,8 +4,9 @@ Produttività dell'IA:            A_t = (1+g)^(t - t0) per t >= t0, altrimenti 1
 Quota di compiti automatizzati:  phi_t = phi_max * (1 - 1/A_t)        (0 all'introduzione, satura a phi_max)
 Output (D18):                    Y_t = H_t * (1 + theta * (A_t - 1) * F_t),  H_t = somma di h
                                  F_t = media di f pesata con h tra gli utenti U dell'IA
-Salari (D18):                    w_i = h_i * (1 + theta (A_t - 1) f_i H_t / H_U)  per i in U,  w_i = h_i altrimenti
-                                 (somma dei salari = Y_t)
+Salari (D18):                    w_i = h_i * (1 + theta (A_t - 1) f_i)  per i in U,  w_i = h_i altrimenti
+Rendita dell'IA (D18):           R_t = Y_t - somma dei salari = theta (A_t - 1) F_t (H_t - H_U) >= 0: il guadagno
+                                 sui compiti svolti dall'IA al posto del bersaglio va a chi possiede l'IA
 Familiarità f_i (D18):           chi entra con l'IA già arrivata ha f = 1; chi c'era parte da 0 e, per ogni
                                  anno da occupato con l'IA, f <- f + gamma (1 - f)
 Utenti U: gli occupati che lavorano con l'IA al posto del bersaglio. junior: i non junior;
@@ -158,11 +159,8 @@ class AI(NoAI):
     def wages(self, t, h, f, users):
         if users is None:
             return h
-        h_u = h[users].sum()
-        if h_u <= 0:
-            return h
         w = h.copy()
-        w[users] *= 1.0 + self.a.theta * (self.productivity(t) - 1.0) * f[users] * h.sum() / h_u
+        w[users] *= 1.0 + self.a.theta * (self.productivity(t) - 1.0) * f[users]
         return w
 
     def nonemployed(self, t: int, junior: np.ndarray, high: np.ndarray, rng) -> np.ndarray | None:
