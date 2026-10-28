@@ -1,7 +1,7 @@
 # Comandi principali del progetto. `make help` per l'elenco.
 PY ?= python
 
-.PHONY: help install test report fase2 automazione mentore scala docking simmetria dynamics paper site all clean
+.PHONY: help install test report fase2 automazione mentore scala docking docking-netlogo simmetria dynamics paper site all clean
 
 help:            ## mostra questo elenco
 	@grep -E '^[a-z0-9]+:.*## ' Makefile | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -30,6 +30,9 @@ scala:           ## verifica dell'invarianza alla scala (fino a 5 milioni di age
 
 docking:         ## confronto statistico NumPy vs Mesa (modello base; la variante D20 in make mentore)
 	$(PY) scripts/docking.py
+
+docking-netlogo: ## NetLogo vs NumPy, 7 scenari (serve NETLOGO_HOME, NetLogo 6.4 e Java; ~15 min)
+	$(PY) scripts/docking_netlogo.py
 
 simmetria:       ## p dimezzato contro beta dimezzato: stesso effetto medio? (~10 s)
 	$(PY) scripts/simmetria_p_beta.py

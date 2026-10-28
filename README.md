@@ -14,6 +14,8 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 - **Nota sulla calibrazione** (traccia per la discussione): [nota](report/nota_calibrazione.md)
 - **Resoconto dell'8 ottobre 2026**: [resoconto](report/resoconto_2026-10-08.md)
 - **Revisione dei meccanismi** (osservazioni di Federico, decisioni D16–D20, tutte realizzate): [revisione](report/revisione_meccanismi.md)
+- **Il modello in NetLogo**: [`Netlogo/skill_cliff.nlogo`](Netlogo/skill_cliff.nlogo) ([scarica](https://github.com/ViciusLio/skill-cliff-abm/raw/main/Netlogo/skill_cliff.nlogo)),
+  guida in [`Netlogo/LEGGIMI.md`](Netlogo/LEGGIMI.md). È il modello della prima versione, verificato contro quello Python.
 - **Verso la seconda versione dell'articolo**: [revisione critica](report/revisione_articolo.md) e [piano di lavoro](report/piano_v2.md).
   La prima versione resta disponibile: [PDF](https://viciuslio.github.io/skill-cliff-abm/articolo_v1.pdf) e tag git `articolo-v1`.
 
@@ -179,6 +181,7 @@ make automazione # D15: automazione dell'impresa contro ottimo sociale (~30 s)
 make scala       # invarianza alla scala, fino a 5 milioni di agenti (~3 min)
 make mentore     # D20: mentore stabile, calibrazione, IA e docking della variante (~10 min con 2 core)
 make docking     # NumPy contro Mesa: test di differenza e di equivalenza (~1 min)
+make docking-netlogo  # NumPy contro NetLogo, 7 scenari (serve NETLOGO_HOME; ~15 min con 2 core)
 make simmetria   # p dimezzato contro β dimezzato: stesso effetto medio (~10 s)
 make paper       # compila paper/main.pdf
 make site        # sito in locale sulla porta 8000 (si apre da solo)
@@ -231,9 +234,11 @@ scripts/          run_scenario.py   repliche di uno scenario con parametri da ri
                   scale_check.py    invarianza alla scala (fino a 24 milioni di agenti)
                   mentore_stabile.py  D20: mentore stabile (variante), calibrazione di beta, proposizioni, IA
                   docking.py        confronto NumPy vs Mesa (anche la variante D20, con --mentore)
+                  docking_netlogo.py  confronto NumPy vs NetLogo, scenario per scenario
                   simmetria_p_beta.py  p dimezzato contro beta dimezzato
                   export_dynamics.py  dati della vista dinamica
                   verify_site.mjs   verifica del sito in un browser headless
+Netlogo/          skill_cliff.nlogo, gemello NetLogo del modello (prima versione) e guida LEGGIMI.md
 notebooks/        esplorazione interattiva
 tests/            pytest
 CLAUDE.md         regole di lavoro per Claude (anche nel Codespace)

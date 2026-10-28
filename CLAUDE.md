@@ -32,6 +32,10 @@ l'autore di riferimento). Il README racconta il lavoro; `report/` contiene sinte
 - Se cambia la versione base del modello, va aggiornato il gemello Mesa (`mesa_twin.py`) e
   rifatto il docking (`make docking`); una variante attivabile da configurazione può restare
   fuori dal docking, ma va detto.
+- Il gemello NetLogo (`Netlogo/skill_cliff.nlogo`) riproduce il modello della prima versione (tag
+  `articolo-v1`), che Federico usa in NetLogo. Se cambiano le regole, aggiornalo o di' che resta
+  alla prima versione; verifica con `make docking-netlogo`. In NetLogo i nomi non distinguono le
+  maiuscole (H e h sono lo stesso nome).
 
 ## Comandi
 
@@ -42,6 +46,7 @@ make fase2        # fase 2: scenari IA (report/numeri_fase2.json)
 make automazione  # D15 (report/numeri_d15.json)
 make mentore      # D20, mentore stabile, e suo docking (report/numeri_d20.json)
 make docking      # NumPy contro Mesa
+make docking-netlogo  # NumPy contro NetLogo (serve NETLOGO_HOME)
 make paper        # paper/main.pdf
 make site         # sito in locale, porta 8000
 ```
