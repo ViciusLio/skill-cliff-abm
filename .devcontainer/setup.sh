@@ -2,6 +2,9 @@
 # Preparazione del Codespace: pacchetto Python, LaTeX minimo per l'articolo, test, Claude Code.
 set -euo pipefail
 pip install -e ".[dev,mesa]" jupyter ipykernel
+# L'immagine include il repository di yarn, la cui chiave è scaduta: apt-get update fallirebbe
+# (e con set -e si fermerebbe tutto il setup). Yarn non serve, quindi lo togliamo.
+sudo rm -f /etc/apt/sources.list.d/yarn.list
 sudo apt-get update -qq
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
   texlive-latex-base texlive-latex-recommended texlive-publishers \
