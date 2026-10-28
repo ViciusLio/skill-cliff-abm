@@ -13,6 +13,7 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 - **Descrizione standard del modello (protocollo ODD)**: appendice A dell'[articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf)
 - **Nota sulla calibrazione** (traccia per la discussione): [nota](report/nota_calibrazione.md)
 - **Resoconto dell'8 ottobre 2026**: [resoconto](report/resoconto_2026-10-08.md)
+- **Revisione dei meccanismi** (osservazioni di Federico, decisioni D16–D20 aperte): [revisione](report/revisione_meccanismi.md)
 
 ---
 
@@ -160,9 +161,15 @@ make fase2       # fase 2: scenari IA, corsa, sensibilità (~2 min con 4 core)
 make automazione # D15: automazione dell'impresa contro ottimo sociale (~30 s)
 make scala       # invarianza alla scala, fino a 5 milioni di agenti (~3 min)
 make docking     # NumPy contro Mesa: test di differenza e di equivalenza (~1 min)
+make simmetria   # p dimezzato contro β dimezzato: stesso effetto medio (~10 s)
 make paper       # compila paper/main.pdf
 make site        # sito in locale sulla porta 8000 (si apre da solo)
 ```
+
+**Claude nel Codespace.** Il Codespace installa Claude Code: scrivi `claude` nel terminale e, al
+primo avvio, accedi con il tuo account Claude (si apre un link, si incolla il codice). Le regole di
+lavoro del progetto sono in [`CLAUDE.md`](CLAUDE.md), che Claude legge da solo. In un Codespace
+creato prima di questa modifica si installa a mano con `curl -fsSL https://claude.ai/install.sh | bash`.
 
 Il Codespace usa la quota gratuita dell'account GitHub di chi lo apre (circa 120 ore-core al mese).
 Alla creazione si possono scegliere più core: le repliche girano in parallelo su tutti quelli disponibili
@@ -205,12 +212,14 @@ scripts/          run_scenario.py   repliche di uno scenario con parametri da ri
                   automazione.py    D15: automazione scelta dall'impresa contro ottimo sociale
                   scale_check.py    invarianza alla scala (fino a 24 milioni di agenti)
                   docking.py        confronto NumPy vs Mesa
+                  simmetria_p_beta.py  p dimezzato contro beta dimezzato
                   export_dynamics.py  dati della vista dinamica
                   verify_site.mjs   verifica del sito in un browser headless
 notebooks/        esplorazione interattiva
 tests/            pytest
+CLAUDE.md         regole di lavoro per Claude (anche nel Codespace)
 paper/            articolo LaTeX (elsarticle) e figure in inglese
-report/           sintesi delle fasi, resoconto, numeri chiave (numeri_*.json), figure in italiano
+report/           sintesi delle fasi, resoconto, revisione dei meccanismi, numeri chiave (numeri_*.json), figure in italiano
 site/             sito pubblicato su GitHub Pages: index (fase 1), dinamica, fase2, lezione
 outputs/          risultati delle simulazioni (non versionati, tranne outputs/examples)
 ```

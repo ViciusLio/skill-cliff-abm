@@ -16,7 +16,8 @@
       "extensions": [
         "ms-python.python",
         "ms-toolsai.jupyter",
-        "James-Yu.latex-workshop"
+        "James-Yu.latex-workshop",
+        "anthropic.claude-code"
       ]
     },
     "codespaces": {

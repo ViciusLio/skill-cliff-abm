@@ -1,7 +1,7 @@
 # Comandi principali del progetto. `make help` per l'elenco.
 PY ?= python
 
-.PHONY: help install test report fase2 automazione scala docking dynamics paper site all clean
+.PHONY: help install test report fase2 automazione scala docking simmetria dynamics paper site all clean
 
 help:            ## mostra questo elenco
 	@grep -E '^[a-z0-9]+:.*## ' Makefile | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -26,6 +26,9 @@ scala:           ## verifica dell'invarianza alla scala (fino a 5 milioni di age
 
 docking:         ## confronto statistico NumPy vs Mesa
 	$(PY) scripts/docking.py
+
+simmetria:       ## p dimezzato contro beta dimezzato: stesso effetto medio? (~10 s)
+	$(PY) scripts/simmetria_p_beta.py
 
 dynamics:        ## dati della vista dinamica (site/dinamica.html)
 	$(PY) scripts/export_dynamics.py
