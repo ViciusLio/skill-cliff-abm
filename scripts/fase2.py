@@ -20,15 +20,23 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from make_report import AQUA, BLUE, INK2, ORANGE, ROOT, band, plt  # noqa: E402
 
 from skillcliff import load_config  # noqa: E402
-from skillcliff.ai import TARGETS  # noqa: E402
 from skillcliff.experiment import run_replications, save_results  # noqa: E402
 from skillcliff.metrics import mean_ci  # noqa: E402
 
 YELLOW, MAGENTA = "#eda100", "#e87ba4"
-GREEN = "#008300"
-# Scenari: i 5 bersagli più la variante D13 (junior sostituiti non occupati).
-SCENARIOS = TARGETS + ("junior_non_occupati",)
-TARGET_COLORS = dict(zip(SCENARIOS, (BLUE, ORANGE, AQUA, YELLOW, MAGENTA, GREEN)))
+GREEN, VIOLET = "#008300", "#7b5cd6"
+# Scenari (D16): bersaglio e margine della sostituzione. "compiti" è il default per junior e senior;
+# "posto" vuol dire junior non occupati (D13) o senior che escono (meno mentori, kappa giù).
+SCENARIOS = {
+    "junior": {"target": "junior"},
+    "junior_posto": {"target": "junior", "margin_junior": "posto"},
+    "senior": {"target": "senior"},
+    "senior_posto": {"target": "senior", "margin_senior": "posto"},
+    "qualificati": {"target": "qualificati"},
+    "non_qualificati": {"target": "non_qualificati"},
+    "complementare": {"target": "complementare"},
+}
+TARGET_COLORS = dict(zip(SCENARIOS, (BLUE, GREEN, ORANGE, VIOLET, AQUA, YELLOW, MAGENTA)))
 KAPPA_GRID = (0.05, 0.1, 0.2)
 G_GRID = (0.01, 0.02, 0.03, 0.04, 0.05, 0.06)
 THETA_GRID = (0.0, 0.01, 0.02, 0.05, 0.1, 0.2)
@@ -37,9 +45,10 @@ THETA_LINES = (0.0, 0.02, 0.05, 0.1)
 LABELS = {
     "it": {
         "dir": ROOT / "report" / "fig", "year": "anno",
-        "targets": {"junior": "junior", "senior": "senior", "qualificati": "qualificati",
-                    "non_qualificati": "non qualificati", "complementare": "complementare",
-                    "junior_non_occupati": "junior, non occupati (D13)"},
+        "targets": {"junior": "junior, compiti (p)", "junior_posto": "junior, posto (non occupati)",
+                    "senior": "senior, compiti (β)", "senior_posto": "senior, posto (κ)",
+                    "qualificati": "qualificati", "non_qualificati": "non qualificati",
+                    "complementare": "complementare"},
         "H": "Capitale umano aggregato H rispetto a nessuna IA", "senior": "h medio dei senior rispetto a nessuna IA",
         "rel": "variazione %", "race": "La corsa: output Y rispetto a nessuna IA (bersaglio junior, g = 3%)",
         "map": "Output a fine orizzonte rispetto a nessuna IA (bersaglio junior)",
@@ -48,9 +57,10 @@ LABELS = {
     },
     "en": {
         "dir": ROOT / "paper" / "fig", "year": "year",
-        "targets": {"junior": "junior", "senior": "senior", "qualificati": "high-skilled",
-                    "non_qualificati": "low-skilled", "complementare": "complementary",
-                    "junior_non_occupati": "junior, non-employed"},
+        "targets": {"junior": "junior, tasks (p)", "junior_posto": "junior, jobs (non-employed)",
+                    "senior": "senior, tasks (β)", "senior_posto": "senior, jobs (κ)",
+                    "qualificati": "high-skilled", "non_qualificati": "low-skilled",
+                    "complementare": "complementary"},
         "H": "Aggregate human capital H relative to no AI", "senior": "Mean senior h relative to no AI",
         "rel": "% change", "race": "The race: output Y relative to no AI (junior target, g = 3%)",
         "map": "End-of-horizon output relative to no AI (junior target)",
@@ -87,7 +97,8 @@ def figures(L, years, start, scen, base, race_rel, A_path, num):
     for i, key, title in ((0, "H", L["H"]), (1, "mean_h_senior", L["senior"])):
         fig, ax = plt.subplots(figsize=(7.2, 4))
         for t in SCENARIOS:
-            band(ax, years, 100 * rel(scen[t], base, key), TARGET_COLORS[t], L["targets"][t])
+            band(ax, years, 100 * rel(scen[t], base, key), TARGET_COLORS[t], L["targets"][t],
+                 linestyle="--" if t == "senior" else "-")   # coincide quasi con junior (Prop. 1)
         ax.axvline(start, color=INK2, linewidth=1, linestyle=":")
         ax.axhline(0, color=INK2, linewidth=.8)
         ax.set_title(title); ax.set_xlabel(L["year"]); ax.set_ylabel(L["rel"])
@@ -137,8 +148,7 @@ def main() -> None:
                                                   **{f"ai.{k}": v for k, v in kw.items()}})
 
     base = run_replications(cfg, args.reps)
-    scen = {t: run_replications(on(t), args.reps) for t in TARGETS}
-    scen["junior_non_occupati"] = run_replications(on("junior", displacement=True), args.reps)
+    scen = {name: run_replications(on(**kw), args.reps) for name, kw in SCENARIOS.items()}
     save_results(ROOT / "outputs" / "fase2" / "base.npz", cfg, base)
     for t, r in scen.items():
         save_results(ROOT / "outputs" / "fase2" / f"{t}.npz", cfg, r)
@@ -180,12 +190,18 @@ def main() -> None:
                   "theta_pareggio_fine": breakeven,
                   "H_fine_per_g": {f"{g:.2f}": ci(race_rel[g][:, end]) for g in G_GRID}},
     }
-    # D14: il bersaglio senior conta solo se la capacità di mentoring diventa scarsa.
+    # D17: "compiti" sui junior (p giù) e sui senior (beta giù), differenze accoppiate per replica.
+    num["simmetria_compiti"] = {
+        "H_junior_meno_senior": ci(rel(scen["junior"], base, "H")[:, end] - rel(scen["senior"], base, "H")[:, end]),
+        "gini_junior_meno_senior": ci(scen["junior"]["gini_w"][:, -5:].mean(1) - scen["senior"]["gini_w"][:, -5:].mean(1)),
+    }
+    # D14: i senior che escono (margine "posto", kappa giù) contano solo se i mentori sono scarsi.
     sens_k = {}
     for k in KAPPA_GRID:
         ck = cfg.with_overrides({"meetings.kappa": k})
         bk = run_replications(ck, args.race_reps)
-        sk = run_replications(ck.with_overrides({"ai.enabled": True, "ai.target": "senior"}), args.race_reps)
+        sk = run_replications(ck.with_overrides({"ai.enabled": True, "ai.target": "senior",
+                                                 "ai.margin_senior": "posto"}), args.race_reps)
         sens_k[str(k)] = {"H_fine": ci(rel(sk, bk, "H")[:, end]),
                           "h_senior_fine": ci(rel(sk, bk, "mean_h_senior")[:, end]),
                           "primo_effetto_H_anni_dopo": first_effect(sk, bk, "H", start),

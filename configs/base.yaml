@@ -43,3 +43,5 @@ ai:                     # fase 2 (vedi src/skillcliff/ai.py)
   g: 0.03               # crescita annua di A(t)
   phi_max: 0.6          # quota massima dei compiti del bersaglio automatizzabile
   theta: 0.02           # Y = H (1 + theta (A - 1)); 0,02 = +0,7% in dieci anni (Acemoglu 2024)
+  margin_junior: compiti  # D16: compiti (p giù) | posto (junior non occupati, D13)
+  margin_senior: compiti  # D16-D17: compiti (beta giù) | posto (meno mentori, kappa giù)

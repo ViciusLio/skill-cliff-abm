@@ -59,7 +59,11 @@ class AICfg:
     g: float = 0.03             # crescita annua della produttività dell'IA A(t)
     phi_max: float = 0.6        # quota massima dei compiti del bersaglio automatizzabile
     theta: float = 0.02         # Y = H * (1 + theta * (A - 1))
-    displacement: bool = False  # D13: i junior sostituiti diventano non occupati (invece di incontrare meno)
+    # D16: che cosa vuol dire "sostituire" (vedi ai.py). compiti: resta al lavoro con meno compiti;
+    # posto: perde il posto. junior: compiti = p giù, posto = non occupato (D13);
+    # senior: compiti = beta giù (D17), posto = kappa giù (meno mentori).
+    margin_junior: str = "compiti"
+    margin_senior: str = "compiti"
 
 
 @dataclass(frozen=True)
@@ -85,6 +89,8 @@ class Config:
             raise ValueError("junior_max_exp non può superare senior_min_exp")
         if max(p.entry_age.low, p.entry_age.high) >= p.retirement_age:
             raise ValueError("età d'ingresso >= età di pensionamento")
+        if {self.ai.margin_junior, self.ai.margin_senior} - {"compiti", "posto"}:
+            raise ValueError("ai.margin_junior e ai.margin_senior devono essere 'compiti' o 'posto'")
         if self.demography.mode not in ("stationary",):
             raise NotImplementedError(f"demography.mode={self.demography.mode!r}")
 

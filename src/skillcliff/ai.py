@@ -4,19 +4,29 @@ Produttività dell'IA:            A_t = (1+g)^(t - t0) per t >= t0, altrimenti 1
 Quota di compiti automatizzati:  phi_t = phi_max * (1 - 1/A_t)        (0 all'introduzione, satura a phi_max)
 Output:                          Y_t = H_t * (1 + theta * (A_t - 1)),  H_t = somma di h
 
-Il bersaglio decide quali parametri degli incontri vengono ridotti (o aumentati):
-  junior           p   * (1 - phi) per entrambe le qualifiche   (meno lavoro junior, meno affiancamento)
-  senior           kappa * (1 - phi) per entrambe              (meno senior disponibili come mentori)
-  qualificati      p e kappa del gruppo H * (1 - phi)
-  non_qualificati  p e kappa del gruppo L * (1 - phi)
-  complementare    beta * (1 + phi) per entrambe               (l'IA rende più efficace l'insegnamento)
+Il bersaglio decide chi viene sostituito; ai.margin_junior e ai.margin_senior (D16) decidono che cosa
+vuol dire "sostituire". Tabella 2x2, con phi_t come intensità:
 
-Con ai.displacement (decisione D13) i bersagli junior, qualificati e non_qualificati non riducono p:
-ogni anno una quota phi dei junior del gruppo colpito è non occupata. Un junior non occupato non
-incontra senior e non impara sul lavoro (resta solo l'obsolescenza d); i suoi compiti li svolge
-l'IA, quindi l'output corrente non cambia e la perdita passa solo per il suo capitale umano.
-Con D19 l'anno da non occupato non conta come esperienza: il junior resta junior più a lungo
-e arriva più tardi (e con meno anni di carriera) a senior.
+              compiti (resta al lavoro, perde compiti)     posto (perde il posto)
+  junior      p     * (1 - phi)  meno affiancamento         una quota phi dei junior è non occupata (D13)
+  senior      beta  * (1 - phi)  trasmette meno (D17)       kappa * (1 - phi)  meno mentori
+
+  junior           riga junior, entrambe le qualifiche
+  senior           riga senior, entrambe le qualifiche
+  qualificati      righe junior e senior, solo gruppo H
+  non_qualificati  righe junior e senior, solo gruppo L
+  complementare    beta * (1 + phi) per entrambe              (l'IA rende più efficace l'insegnamento)
+
+Con margine "compiti" su entrambe le righe p e beta entrano come prodotto nell'apprendimento medio
+(Proposizione 1): junior e senior hanno lo stesso effetto medio, cambia la dispersione.
+Le versioni precedenti si riottengono così: bersaglio senior di prima = senior con margin_senior
+"posto"; qualificati/non_qualificati di prima = margin_junior "compiti", margin_senior "posto";
+ai.displacement di prima (D13) = margin_junior "posto".
+
+Un junior non occupato non incontra senior e non impara sul lavoro (resta solo l'obsolescenza d);
+i suoi compiti li svolge l'IA, quindi l'output corrente non cambia e la perdita passa solo per il suo
+capitale umano. Con D19 l'anno da non occupato non conta come esperienza: il junior resta junior più
+a lungo e arriva più tardi (e con meno anni di carriera) a senior.
 """
 from __future__ import annotations
 
@@ -63,8 +73,11 @@ class NoAI:
         return None
 
 
-# Gruppi di junior colpiti dalla non occupazione (D13), per bersaglio: (L, H).
-DISPLACED_GROUPS = {"junior": (True, True), "qualificati": (False, True), "non_qualificati": (True, False)}
+# Gruppi colpiti per bersaglio: (L, H), e se il bersaglio colpisce junior e senior.
+HIT_GROUPS = {"junior": (True, True), "senior": (True, True),
+              "qualificati": (False, True), "non_qualificati": (True, False)}
+HITS_JUNIOR = ("junior", "qualificati", "non_qualificati")
+HITS_SENIOR = ("senior", "qualificati", "non_qualificati")
 
 
 class AI(NoAI):
@@ -85,27 +98,24 @@ class AI(NoAI):
 
     def meeting_modifiers(self, t: int) -> MeetingModifiers:
         phi = self.automation_share(t)
-        cut, both = 1.0 - phi, (1.0 - phi, 1.0 - phi)
-        if self.a.displacement and self.a.target in DISPLACED_GROUPS:
-            # i junior colpiti escono dal pool (vedi nonemployed); restano i tagli sui mentori
-            return {"junior": NEUTRAL,
-                    "qualificati": MeetingModifiers(kappa=(1.0, cut)),
-                    "non_qualificati": MeetingModifiers(kappa=(cut, 1.0))}[self.a.target]
-        return {
-            "junior": MeetingModifiers(p=both),
-            "senior": MeetingModifiers(kappa=both),
-            "qualificati": MeetingModifiers(p=(1.0, cut), kappa=(1.0, cut)),
-            "non_qualificati": MeetingModifiers(p=(cut, 1.0), kappa=(cut, 1.0)),
-            "complementare": MeetingModifiers(beta=(1.0 + phi, 1.0 + phi)),
-        }[self.a.target]
+        a = self.a
+        if a.target == "complementare":
+            return MeetingModifiers(beta=(1.0 + phi, 1.0 + phi))
+        cut = tuple(1.0 - phi if hit else 1.0 for hit in HIT_GROUPS[a.target])
+        mods = {}
+        if a.target in HITS_JUNIOR and a.margin_junior == "compiti":
+            mods["p"] = cut           # con "posto" i junior colpiti escono dal pool (vedi nonemployed)
+        if a.target in HITS_SENIOR:
+            mods["beta" if a.margin_senior == "compiti" else "kappa"] = cut
+        return MeetingModifiers(**mods)
 
     def output(self, t: int, sum_h: float) -> float:
         return sum_h * (1.0 + self.a.theta * (self.productivity(t) - 1.0))
 
     def nonemployed(self, t: int, junior: np.ndarray, high: np.ndarray, rng) -> np.ndarray | None:
-        if not (self.a.displacement and self.a.target in DISPLACED_GROUPS):
+        if not (self.a.target in HITS_JUNIOR and self.a.margin_junior == "posto"):
             return None
-        hit_low, hit_high = DISPLACED_GROUPS[self.a.target]
+        hit_low, hit_high = HIT_GROUPS[self.a.target]
         in_group = np.where(high, hit_high, hit_low)
         u = rng.random(junior.size)          # estratto per tutti: numeri casuali allineati tra anni
         return junior & in_group & (u < self.automation_share(t))

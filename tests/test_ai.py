@@ -43,6 +43,42 @@ def test_junior_target_seniors_untouched_for_lag_years():
     assert ai["mean_h_senior"][-1] < base["mean_h_senior"][-1]
 
 
+# --- D16-D17: tabella 2x2 (compiti / posto) -----------------------------------
+
+@pytest.mark.parametrize("target,mj,ms,expected", [
+    ("junior", "compiti", "compiti", {"p": (0.5, 0.5)}),
+    ("junior", "posto", "compiti", {}),
+    ("senior", "compiti", "compiti", {"beta": (0.5, 0.5)}),
+    ("senior", "compiti", "posto", {"kappa": (0.5, 0.5)}),
+    ("qualificati", "compiti", "compiti", {"p": (1.0, 0.5), "beta": (1.0, 0.5)}),
+    ("non_qualificati", "posto", "posto", {"kappa": (0.5, 1.0)}),
+])
+def test_margin_table(target, mj, ms, expected):
+    ai = AI(with_ai(target).with_overrides({"ai.margin_junior": mj, "ai.margin_senior": ms}))
+    t = next(t for t in range(200) if ai.automation_share(t) > 0)
+    phi = ai.automation_share(t)
+    want = {k: tuple(1 - phi if v == 0.5 else 1.0 for v in vals) for k, vals in expected.items()}
+    assert ai.meeting_modifiers(t) == ai.meeting_modifiers(t).__class__(**want)
+    junior = np.ones(1000, dtype=bool)
+    out = ai.nonemployed(t, junior, np.zeros(1000, dtype=bool), np.random.default_rng(0))
+    assert (out is not None) == (mj == "posto" and target != "qualificati")
+
+
+def test_margin_must_be_known():
+    with pytest.raises(ValueError):
+        AI_CFG.with_overrides({"ai.margin_senior": "licenziato"})
+
+
+def test_task_substitution_junior_and_senior_same_mean_effect():
+    """Proposizione 1: p e beta entrano come prodotto, quindi 'compiti' sui junior (p giù) e sui
+    senior (beta giù) spostano H quasi allo stesso modo."""
+    base = run(AI_CFG)
+    dj = run(with_ai("junior"))["H"][-1] / base["H"][-1] - 1
+    ds = run(with_ai("senior"))["H"][-1] / base["H"][-1] - 1
+    assert dj < 0 and ds < 0
+    assert abs(dj - ds) < 0.15 * abs(dj)
+
+
 def test_complementary_ai_raises_learning():
     base, ai = run(AI_CFG), run(with_ai("complementare"))
     s = AI_CFG.ai.start
@@ -68,7 +104,7 @@ def test_skill_targets_require_same_qual():
 def test_displacement_share_and_no_learning_for_nonemployed():
     from skillcliff.model import Model
 
-    cfg = with_ai("junior").with_overrides({"ai.displacement": True})
+    cfg = with_ai("junior").with_overrides({"ai.margin_junior": "posto"})
     m = Model(cfg, np.random.SeedSequence(5))
     for _ in range(cfg.burn_in):
         m.step(record=False)
@@ -90,7 +126,7 @@ def test_displacement_share_and_no_learning_for_nonemployed():
 
 def test_displacement_identical_before_start_and_keeps_senior_lag():
     base = run(AI_CFG)
-    ai = run(with_ai("junior").with_overrides({"ai.displacement": True}))
+    ai = run(with_ai("junior").with_overrides({"ai.margin_junior": "posto"}))
     s = AI_CFG.ai.start
     lag = AI_CFG.roles.senior_min_exp - AI_CFG.roles.junior_max_exp
     np.testing.assert_array_equal(base["H"][: s + 1], ai["H"][: s + 1])
@@ -117,7 +153,7 @@ def test_experience_grows_only_when_employed():
     from skillcliff.population import entry_age
 
     base = Model(AI_CFG, np.random.SeedSequence(8))
-    cfg = with_ai("junior").with_overrides({"ai.displacement": True})
+    cfg = with_ai("junior").with_overrides({"ai.margin_junior": "posto"})
     m = Model(cfg, np.random.SeedSequence(8))
     n_out = 0
     for _ in range(cfg.burn_in + cfg.T):
