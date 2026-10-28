@@ -15,6 +15,8 @@ Con ai.displacement (decisione D13) i bersagli junior, qualificati e non_qualifi
 ogni anno una quota phi dei junior del gruppo colpito è non occupata. Un junior non occupato non
 incontra senior e non impara sul lavoro (resta solo l'obsolescenza d); i suoi compiti li svolge
 l'IA, quindi l'output corrente non cambia e la perdita passa solo per il suo capitale umano.
+Con D19 l'anno da non occupato non conta come esperienza: il junior resta junior più a lungo
+e arriva più tardi (e con meno anni di carriera) a senior.
 """
 from __future__ import annotations
 

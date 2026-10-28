@@ -68,8 +68,10 @@ complementare, rende più efficace l'insegnamento. Risultati, 50 anni dopo l'int
 3. **Sostituire i non qualificati aumenta la disuguaglianza** (Gini da 0,155 a 0,170).
 4. **La corsa:** con la stima prudente di Acemoglu (θ = 0,02) la perdita di capitale umano si mangia
    circa l'86% del guadagno di produttività dell'IA.
-5. **Se i junior sostituiti restano senza lavoro** il danno raddoppia (capitale umano −10,2%) e
-   l'output finisce sotto lo scenario senza IA.
+5. **Se i junior sostituiti restano senza lavoro** entrano più tardi: l'esperienza cresce solo da
+   occupati (D19), quindi la formazione da junior è rinviata, non persa. Il capitale umano cala del 5,7%,
+   poco più che con la perdita di compiti (−5,2%), e ogni coorte arriva a senior più tardi.
+   (Prima di D19, quando l'esperienza cresceva anche da non occupati, la perdita era del 10,2%.)
 6. **Le imprese automatizzano troppo.** Un'impresa che non vede la perdita futura di capitale umano
    automatizza il 30% dei compiti junior; su un orizzonte di 50 anni l'ottimo sociale è il 9%, e la
    scelta privata vale meno di non automatizzare affatto. Su 10 anni le due scelte quasi coincidono:
@@ -86,8 +88,9 @@ grandezza, non previsioni.
   entry-level riduce l'apprendimento da incontri del 45%.
 - **Il conto arriva ai senior di domani.** Chi oggi è già senior non perde nulla; chi entra oggi
   diventerà un senior con meno competenze. Nel modello l'effetto sui senior compare dopo 12 anni.
-- **Restare fuori costa il doppio.** Se i junior sostituiti non trovano un altro lavoro, la perdita
-  di capitale umano passa dal 5,2% al 10,2% e l'output scende sotto lo scenario senza IA.
+- **Restare fuori rinvia la formazione.** Se i junior sostituiti non trovano lavoro entrano più tardi
+  e fanno carriere più brevi: la perdita di capitale umano è del 5,7% (5,2% se restano occupati con
+  meno compiti).
 
 **Politica.**
 - **È un fallimento di mercato.** La formazione dei junior è un'esternalità tra generazioni:

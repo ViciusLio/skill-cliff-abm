@@ -1,7 +1,7 @@
 """Dinamica annuale del modello.
 
 Ordine degli eventi nell'anno t:
-  1. invecchiamento (età e esperienza +1)
+  1. invecchiamento (età +1; esperienza +1 solo per chi era occupato, D19)
   2. pensionamento (età >= retirement_age)
   3. ingresso dei nuovi junior
   4. incontri junior-senior e apprendimento autonomo, calcolati sullo stesso h (aggiornamento simultaneo)
@@ -40,7 +40,7 @@ class Model:
 
         # 1-3. demografia
         pop.age += 1
-        pop.exp += 1
+        pop.exp += ~pop.out           # D19: l'esperienza cresce solo lavorando
         n_before = len(pop)
         pop.keep(pop.age < cfg.population.retirement_age)
         n_new = n_entrants(cfg, n_before, len(pop))
@@ -57,6 +57,7 @@ class Model:
         if out is not None:                                       # niente apprendimento sul lavoro
             dh_aut[out] = -cfg.learning.depreciation * pop.h[out]
         self.n_out = 0 if out is None else int(out.sum())
+        pop.out = np.zeros(len(pop), dtype=bool) if out is None else out
         h_prev = pop.h
         pop.h = h_prev + meet.dh + dh_aut
 

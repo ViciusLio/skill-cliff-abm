@@ -95,7 +95,8 @@ def test_displacement_identical_before_start_and_keeps_senior_lag():
     lag = AI_CFG.roles.senior_min_exp - AI_CFG.roles.junior_max_exp
     np.testing.assert_array_equal(base["H"][: s + 1], ai["H"][: s + 1])
     np.testing.assert_array_equal(base["mean_h_senior"][: s + lag], ai["mean_h_senior"][: s + lag])
-    assert ai["mean_h_junior"][s + 3] < base["mean_h_junior"][s + 3]
+    # su H, non su h medio dei junior: con D19 chi resta fuori resta junior più a lungo (composizione)
+    assert ai["H"][s + 3] < base["H"][s + 3]
 
 
 def test_fixed_automation_cuts_junior_meetings_from_start():
@@ -108,3 +109,26 @@ def test_fixed_automation_cuts_junior_meetings_from_start():
     assert fx["phi"][s] == 0.4 and fx["phi"][s - 1] == 0.0
     assert fx["p_eff"][s + 1] == pytest.approx(0.6 * AI_CFG.meetings.p)
     assert fx["H"][-1] < base["H"][-1]
+
+
+def test_experience_grows_only_when_employed():
+    """D19: un anno da non occupato non conta come esperienza; senza IA s = età - età d'ingresso."""
+    from skillcliff.model import Model
+    from skillcliff.population import entry_age
+
+    base = Model(AI_CFG, np.random.SeedSequence(8))
+    cfg = with_ai("junior").with_overrides({"ai.displacement": True})
+    m = Model(cfg, np.random.SeedSequence(8))
+    n_out = 0
+    for _ in range(cfg.burn_in + cfg.T):
+        base.step(record=False)
+        np.testing.assert_array_equal(base.pop.exp, base.pop.age - entry_age(AI_CFG, base.pop.high))
+        uid, exp, out = m.pop.uid.copy(), m.pop.exp.copy(), m.pop.out.copy()
+        m.step(record=False)
+        stay = np.isin(uid, m.pop.uid)                  # chi non è andato in pensione
+        exp_new = m.pop.exp[np.searchsorted(m.pop.uid, uid[stay])]
+        np.testing.assert_array_equal(exp_new, exp[stay] + ~out[stay])
+        n_out += out.sum()
+    assert n_out > 0
+    lost = m.pop.age - entry_age(cfg, m.pop.high) - m.pop.exp   # anni persi da non occupati
+    assert (lost >= 0).all() and lost.max() > 0
