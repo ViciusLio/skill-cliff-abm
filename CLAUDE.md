@@ -48,5 +48,7 @@ make site         # sito in locale, porta 8000
 
 ## Lavori aperti
 
+- `report/piano_v2.md`: task list della seconda versione dell'articolo (decisioni D21–D26 da prendere).
+  La prima versione è congelata nel tag `articolo-v1` e in `site/articolo_v1.pdf`: non modificarli.
 - `report/nota_calibrazione.md`: calibrazione e soglia di crescita R.
 - Affiliazioni e ruoli CRediT nell'articolo: segnaposto, da completare.

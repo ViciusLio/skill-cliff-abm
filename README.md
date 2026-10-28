@@ -14,6 +14,8 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 - **Nota sulla calibrazione** (traccia per la discussione): [nota](report/nota_calibrazione.md)
 - **Resoconto dell'8 ottobre 2026**: [resoconto](report/resoconto_2026-10-08.md)
 - **Revisione dei meccanismi** (osservazioni di Federico, decisioni D16–D20, tutte realizzate): [revisione](report/revisione_meccanismi.md)
+- **Verso la seconda versione dell'articolo**: [revisione critica](report/revisione_articolo.md) e [piano di lavoro](report/piano_v2.md).
+  La prima versione resta disponibile: [PDF](https://viciuslio.github.io/skill-cliff-abm/articolo_v1.pdf) e tag git `articolo-v1`.
 
 ---
 
