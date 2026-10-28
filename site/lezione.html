@@ -11,7 +11,7 @@
   color-scheme: light;
   --surface-0: #f4f3f0; --surface-1: #fcfcfb; --border: #e4e3df;
   --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #77766f;
-  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100; --series-5: #e87ba4;
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100; --series-5: #e87ba4; --series-6: #7b5cd6;
   --seq-1: #86b6ef; --seq-2: #5598e7; --seq-3: #2a78d6; --seq-4: #1c5cab; --seq-5: #0d366b;
   --grid: #e4e3df; --accent: #2a78d6; --accent-soft: #e6effb;
   /* illustrazioni */
@@ -23,7 +23,7 @@
     color-scheme: dark;
     --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
     --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a998f;
-    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-5: #d55181;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-5: #d55181; --series-6: #9a82e6;
     --seq-1: #b7d3f6; --seq-2: #86b6ef; --seq-3: #5598e7; --seq-4: #3987e5; --seq-5: #256abf;
     --grid: #2e2e2c; --accent: #3987e5; --accent-soft: #1b2a3d;
     --ink: #d9d6cc; --fleece-dark: #4a4944; --fleece-light: #f1efe9; --face-light: #e8d6c0;
@@ -34,7 +34,7 @@
   color-scheme: dark;
   --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
   --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a998f;
-  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-5: #d55181;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-5: #d55181; --series-6: #9a82e6;
   --seq-1: #b7d3f6; --seq-2: #86b6ef; --seq-3: #5598e7; --seq-4: #3987e5; --seq-5: #256abf;
   --grid: #2e2e2c; --accent: #3987e5; --accent-soft: #1b2a3d;
   --ink: #d9d6cc; --fleece-dark: #4a4944; --fleece-light: #f1efe9; --face-light: #e8d6c0;
@@ -386,8 +386,9 @@ a { color: var(--accent); }
 <section class="slide"><div class="inner">
   <span class="when">Fase 2 · l'IA arriva all'anno 10</span>
   <h2>Chi viene sostituito conta</h2>
-  <p>Capitale umano aggregato rispetto a un mondo senza IA. Sostituire i junior è il caso peggiore (−5,2% dopo 50 anni);
-    sostituire i senior quasi non conta finché ci sono mentori in eccesso; l'IA che aiuta a insegnare fa l'opposto (+5,2%).</p>
+  <p>Capitale umano aggregato rispetto a un mondo senza IA. Togliere compiti ai junior (meno incontri) o ai senior
+    (meno trasmesso per incontro) costa lo stesso, −5,2% dopo 50 anni; i senior che escono quasi non contano finché ci sono
+    mentori in eccesso; l'IA che aiuta a insegnare fa l'opposto (+5,2%).</p>
   <div class="chartwrap"><svg class="peek" viewBox="0 0 90 120" aria-hidden="true"><use href="#robot"/></svg><div class="chart" id="c-targets"></div></div>
 </div></section>
 
@@ -510,7 +511,7 @@ const charts = {
       layout("anno", "B da incontri", { shapes: vline(10), yaxis: { rangemode: "tozero", gridcolor: css("--grid") } })];
   },
   "c-targets": () => {
-    const col = { junior: "--series-1", senior: "--series-2", qualificati: "--series-3", non_qualificati: "--series-4", complementare: "--series-5" };
+    const col = { junior: "--series-1", senior: "--series-2", senior_posto: "--series-6", qualificati: "--series-3", non_qualificati: "--series-4", complementare: "--series-5" };
     const tr = Object.entries(F2.targets).filter(([t]) => t in col).flatMap(([t, s]) => band(F2.years, s.H, css(col[t]), F2.labels[t], pct));
     return [tr, layout("anno", "H, variazione % rispetto a nessuna IA", { shapes: vline(F2.start) })];
   },

@@ -21,15 +21,19 @@ $$A_t = (1+g)^{\,t-t_0}\ \text{per}\ t\ge t_0,\quad A_t = 1\ \text{prima};\qquad
 
 $\varphi$ parte da zero, cresce con A e si satura a $\varphi_{\max}$. Poiché $A_{t_0} = 1$, l'IA agisce dall'anno $t_0 + 1$.
 
-**Bersagli.** L'IA moltiplica i parametri degli incontri di ciascun gruppo di qualifica:
+**Bersagli e margini (D16, D17).** Il bersaglio dice chi viene sostituito; il margine
+(`ai.margin_junior`, `ai.margin_senior`) dice che cosa vuol dire "sostituire". Dettagli nella sez. 8.
 
-| Bersaglio | Cosa cambia | Lettura |
+| Bersaglio | Cosa cambia (margine "compiti", default) | Lettura |
 |---|---|---|
 | junior | $p \times (1-\varphi_t)$ in entrambi i gruppi | meno lavoro junior, meno affiancamento |
-| senior | $\kappa \times (1-\varphi_t)$ in entrambi i gruppi | meno senior disponibili come mentori |
-| qualificati | $p$ e $\kappa$ del gruppo H $\times (1-\varphi_t)$ | sostituzione del lavoro qualificato |
-| non qualificati | $p$ e $\kappa$ del gruppo L $\times (1-\varphi_t)$ | sostituzione del lavoro non qualificato |
+| senior | $\beta \times (1-\varphi_t)$ in entrambi i gruppi | ogni incontro trasmette meno |
+| qualificati | $p$ e $\beta$ del gruppo H $\times (1-\varphi_t)$ | sostituzione del lavoro qualificato |
+| non qualificati | $p$ e $\beta$ del gruppo L $\times (1-\varphi_t)$ | sostituzione del lavoro non qualificato |
 | complementare | $\beta \times (1+\varphi_t)$ in entrambi i gruppi | l'IA rende più efficace l'insegnamento |
+
+Con il margine "posto" i junior colpiti diventano non occupati (D13) e i senior colpiti escono:
+$\kappa \times (1-\varphi_t)$, meno mentori.
 
 **Output.** Con $H_t = \sum_i h_{i,t}$:
 
@@ -37,11 +41,12 @@ $$Y_t = H_t\,\big[1 + \theta\,(A_t - 1)\big].$$
 
 θ non entra nella dinamica degli agenti: la "corsa" si calcola quindi per qualsiasi θ a partire da $H_t$ e $A_t$, senza nuove simulazioni.
 
-**Variante "junior non occupati" (D13).** Con `ai.displacement` la sostituzione dei junior non riduce p: ogni anno
+**Junior che perdono il posto (D13, ora `ai.margin_junior: posto`).** La sostituzione dei junior non riduce p: ogni anno
 una quota $\varphi_t$ dei junior del gruppo colpito è senza lavoro. Un junior non occupato non incontra senior e non
 impara sul lavoro; resta solo l'obsolescenza, $\Delta h_{i,t} = -d\,h_{i,t}$. I suoi compiti li svolge l'IA, quindi
 l'output corrente non cambia: la perdita passa solo per il capitale umano. Le estrazioni per la non occupazione
 usano un flusso di numeri casuali dedicato, così gli altri flussi restano allineati con lo scenario senza IA.
+Con D19 l'anno da non occupato non conta come esperienza (sez. 8).
 
 ## 3. Parametri
 
@@ -63,24 +68,25 @@ usano un flusso di numeri casuali dedicato, così gli altri flussi restano allin
 
 Variazioni rispetto allo scenario senza IA, a fine orizzonte (50 anni dopo l'introduzione):
 
-| Bersaglio | H | h senior | B da incontri | Y (θ = 0,02) | Gini | Anni al primo effetto sui senior |
+| Scenario | H | h senior | B da incontri | Y (θ = 0,02) | Gini | Anni al primo effetto sui senior |
 |---|---|---|---|---|---|---|
-| junior | −5,2% | −4,5% | −45% | +0,9% | 0,163 | 12 |
-| non qualificati | −3,3% | −2,9% | −31% | +3,0% | 0,170 | 12 |
-| qualificati | −2,0% | −1,7% | −13% | +4,4% | 0,148 | 12 |
-| senior | −0,1% | 0,0% | −2% | +6,4% | 0,155 | 44 |
-| complementare | +5,2% | +4,3% | +45% | +12,0% | 0,150 | 12 |
-| junior, non occupati (D13) | −10,2% | −8,8% | −46% | −4,3% | 0,170 | 12 |
+| junior, compiti (p ↓) | −5,2% | −4,5% | −45% | +0,9% | 0,163 | 12 |
+| junior, posto (non occupati) | −5,7% | −1,9% | −44% | +0,4% | 0,168 | 12 |
+| senior, compiti (β ↓) | −5,2% | −4,5% | −45% | +0,9% | 0,161 | 12 |
+| senior, posto (κ ↓) | −0,1% | 0,0% | −2% | +6,4% | 0,155 | 44 |
+| non qualificati (p e β del gruppo L ↓) | −5,5% | −5,0% | −49% | +0,7% | 0,180 | 12 |
+| qualificati (p e β del gruppo H ↓) | −3,3% | −2,9% | −21% | +3,0% | 0,144 | 12 |
+| complementare (β ↑) | +5,2% | +4,3% | +45% | +12,0% | 0,150 | 12 |
 
-*Senza IA il Gini è 0,155. Nella variante D13, B da incontri è la media su tutti i junior, compresi i non occupati.*
+*Senza IA il Gini è 0,155. Per i junior che perdono il posto, B da incontri è la media su tutti i junior, compresi i non occupati.*
 
-1. **Sostituire i junior è il caso peggiore.** H scende del 5,2% e l'apprendimento da incontri quasi si dimezza. Il primo effetto sui senior arriva **12 anni** dopo l'introduzione: un anno perché l'IA inizi ad agire, più gli 11 anni della Proposizione 2.
-2. **Sostituire i senior conta solo se i mentori sono scarsi.** Con κ = 0,2 e S/J ≈ 5,7 ci sono più mentori potenziali di quanti ne servano: il vincolo si attiva dopo circa 30 anni e l'effetto a fine orizzonte è quasi nullo. Con κ = 0,1, dove la capacità è già al limite, la stessa sostituzione costa −4,8% di capitale umano, quasi quanto sostituire i junior (sez. 4.3).
-3. **Bersagliare i non qualificati costa più che bersagliare i qualificati, e aumenta la disuguaglianza.** Il Gini sale a 0,170 se l'IA sostituisce i non qualificati e scende a 0,148 se sostituisce i qualificati. Il motivo principale è il peso: i non qualificati sono il 70% degli entranti.
-4. **L'IA complementare è lo specchio della sostituzione dei junior.** Con la stessa intensità $\varphi$, H sale del 5,2% e l'output del 12%.
-5. **Se i junior sostituiti restano senza lavoro (D13) il danno raddoppia.** H scende del 10,2% e i senior dell'8,8%. Con θ = 0,02 l'output finisce sotto lo scenario senza IA (−4,3%): la soglia di pareggio sale da 0,017 a circa 0,035.
+1. **Sostituire i compiti dei junior o quelli dei senior costa lo stesso.** H scende del 5,2% in entrambi i casi e l'apprendimento da incontri quasi si dimezza: p e β entrano come prodotto nella Proposizione 1. Cambia solo la distribuzione: il Gini è 0,163 se l'IA toglie incontri ai junior, 0,161 se toglie efficacia ai senior (sez. 8). Il primo effetto sui senior arriva **12 anni** dopo l'introduzione: un anno perché l'IA inizi ad agire, più gli 11 anni della Proposizione 2.
+2. **I senior che perdono il posto contano solo se i mentori sono scarsi.** Con κ = 0,2 e S/J ≈ 5,7 ci sono più mentori potenziali di quanti ne servano: il vincolo si attiva dopo circa 30 anni e l'effetto a fine orizzonte è quasi nullo. Con κ = 0,1, dove la capacità è già al limite, la stessa sostituzione costa −4,8% di capitale umano, quasi quanto sostituire i compiti (sez. 4.3).
+3. **Bersagliare i non qualificati costa più che bersagliare i qualificati, e aumenta la disuguaglianza.** Il Gini sale a 0,180 se l'IA sostituisce i non qualificati e scende a 0,144 se sostituisce i qualificati. Il motivo principale è il peso: i non qualificati sono il 70% degli entranti. Questi due scenari tagliano insieme p e β del gruppo, quindi l'apprendimento da incontri del gruppo scala con $(1-\varphi)^2$: i non qualificati perdono più del bersaglio junior (−5,5% contro −5,2%).
+4. **L'IA complementare è lo specchio della sostituzione dei compiti.** Con la stessa intensità $\varphi$, H sale del 5,2% e l'output del 12%.
+5. **Se i junior perdono il posto, la formazione è rinviata, non persa.** Con D19 un anno da non occupato non conta come esperienza: il junior resta junior finché non ha lavorato 5 anni. H scende del 5,7%, poco più che con la perdita di compiti; a fine orizzonte i junior sono 10.200 invece di 5.800 e i senior 29.300 invece di 32.800 (N = 50.000). L'h medio dei senior cala solo dell'1,9% perché chi arriva a senior ha avuto la formazione completa, solo più tardi: il costo è nelle carriere più brevi. Con θ = 0,02 l'output resta sopra lo scenario senza IA (+0,4%); la soglia di pareggio è 0,019 (0,017 con la perdita di compiti). Prima di D19 lo stesso scenario dava −10,2%.
 
-### 4.3 Sensibilità a κ per il bersaglio senior (D14)
+### 4.3 Sensibilità a κ per i senior che perdono il posto (D14)
 
 | κ | p effettiva senza IA | H a fine orizzonte | h senior | Primo effetto su H |
 |---|---|---|---|---|
@@ -146,14 +152,15 @@ con guadagno pieno dell'automazione π = 0,10 e costo di adozione c = 1/3.
 
 **Riprodotto e verificato**
 - **Prima dell'introduzione** ogni scenario è identico al bit allo scenario senza IA (test per tutti e 5 i bersagli).
+- **Tabella 2×2:** ogni combinazione di bersaglio e margine produce i moltiplicatori attesi e la non occupazione solo con il margine "posto" (test). Le verifiche specifiche di D16, D17 e D19 sono nella sez. 8.
 - **Ritardo:** con il bersaglio junior l'h dei senior resta identico per $s_S - s_J$ anni dopo l'inizio dell'effetto, come previsto dalla Proposizione 2 (test).
 - **Isolamento dei gruppi:** il bersaglio "qualificati" lascia identici i non qualificati (test).
 - **Formule:** A, φ e Y seguono le formule (test).
 
 **Cosa non torna o va discusso**
-1. **Il risultato sui senior dipende da κ** (sez. 4.3). Senza una misura empirica della capacità di mentoring, il bersaglio senior va presentato come un intervallo: da quasi nullo a −4,8%.
+1. **Il risultato sui senior che perdono il posto dipende da κ** (sez. 4.3). Senza una misura empirica della capacità di mentoring va presentato come un intervallo: da quasi nullo a −4,8%. Sui senior che perdono compiti κ non conta.
 2. **A cresce senza limiti.** Con A esponenziale e θ > 0 l'IA vince sempre nel lunghissimo periodo; la corsa è interessante sull'orizzonte di una o due generazioni, non all'infinito.
-3. **Due modi di sostituire i junior.** Nella versione base restano occupati e incontrano meno; nella variante D13 restano senza lavoro e il danno raddoppia. La realtà sta probabilmente in mezzo: chi non entra in un'impresa esposta trova spesso lavoro altrove, con meno apprendimento.
+3. **Due modi di sostituire i junior.** Nella versione "compiti" restano occupati e incontrano meno; nella versione "posto" restano senza lavoro e la formazione è rinviata (sez. 8). La realtà sta probabilmente in mezzo: chi non entra in un'impresa esposta trova spesso lavoro altrove, con meno apprendimento.
 4. **L'IA è esogena.** Nessuna impresa sceglie se automatizzare. Il fallimento di mercato di Ide (automazione socialmente eccessiva) richiede una scelta d'impresa: è il passo successivo.
 5. **Il caso complementare è simmetrico per costruzione** (β × (1+φ)). Non c'è il calo di sforzo dei co-pilot descritto da Ide, che lo renderebbe meno favorevole.
 6. **θ e g sono incerti.** Per questo sono esplorati su griglia; la stima di Acemoglu è prudente, altre sono molto più alte.
@@ -189,6 +196,93 @@ di confidenza per i confronti tra scenari; la scala reale è possibile ma non ca
 - **D12 – Output.**
   - **A (implementata):** $Y = H(1+\theta(A-1))$, una sola forma per tutti i bersagli.
   - B: forme diverse per sostituzione e complementarità (task-based alla Acemoglu).
-- **D13 – Junior sostituiti.** Fatto: la versione base (restano occupati, incontrano meno) resta il riferimento; la variante "non occupati" (`ai.displacement`) è implementata, testata e riportata accanto (sez. 4.1).
+- **D13 – Junior sostituiti.** Fatto: la versione base (restano occupati, incontrano meno) resta il riferimento; la variante "non occupati" è implementata, testata e riportata accanto (sez. 4.1). Con D16 è diventata il margine "posto" dei junior.
 - **D14 – Sensibilità a κ per il bersaglio senior.** Fatta (sez. 4.3).
 - **D15 – Scelta d'impresa sull'automazione.** Fatto (sez. 4.4): l'eccesso di automazione va da 0,05 (orizzonte di 10 anni) a 0,21 (50 anni).
+- **D16 – Che cosa vuol dire "sostituire".** **A (implementata):** tabella 2×2 esplicita, margine "compiti" o "posto" per junior e senior (sez. 8).
+- **D17 – Compiti dei senior.** **A (implementata):** β ↓; κ resta solo nel margine "posto". L'equivalenza media con p è un risultato (sez. 8).
+- **D18 – Produttività e familiarità con l'IA.** Da decidere.
+- **D19 – Esperienza solo da occupati.** **A (implementata)** (sez. 8).
+- **D20 – Mentore stabile.** Da decidere.
+
+## 8. Revisione dei meccanismi: D16, D17, D19
+
+Origine: le osservazioni di Federico in [`revisione_meccanismi.md`](revisione_meccanismi.md).
+
+### 8.1 Equazioni come implementate
+
+**Esperienza (D19, `src/skillcliff/model.py`).** Con $u_{i,t} = 1$ se il lavoratore $i$ è non occupato nell'anno $t$:
+
+$$s_{i,t+1} = s_{i,t} + (1 - u_{i,t}),\qquad a_{i,t+1} = a_{i,t} + 1 .$$
+
+Il ruolo (junior se $s<5$, senior se $s\ge 15$) e l'apprendimento autonomo $\delta(s)$ dipendono da $s$, il pensionamento
+dall'età. Un anno fuori quindi rinvia la formazione da junior e accorcia la carriera. Senza non occupazione $u = 0$ e
+$s = a - a^{\text{ingresso}}$ come prima.
+
+**Sostituzione (D16, D17, `src/skillcliff/ai.py`).** Per il gruppo di qualifica $g$ colpito dal bersaglio:
+
+| | compiti (resta al lavoro) | posto (lo perde) |
+|---|---|---|
+| **junior** | $p_g \times (1-\varphi_t)$ | $u_{i,t} = 1$ con probabilità $\varphi_t$ |
+| **senior** | $\beta_g \times (1-\varphi_t)$ | $\kappa_g \times (1-\varphi_t)$ |
+
+L'apprendimento medio da incontri dei junior è $p^{\text{eff}}\,\beta\,\mathbb{E}[\max(0, h_s - h_j)]$
+(Proposizione 1), con $p^{\text{eff}} = \min(p, \kappa S/J)$. Il margine "compiti" tocca $p$ o $\beta$, che entrano come
+prodotto: stesso effetto medio. Il margine "posto" dei senior tocca $\kappa$, che conta solo se il vincolo è attivo.
+
+**Riproducibilità.** I risultati precedenti si riottengono con: senior di prima = senior con `margin_senior: posto`;
+qualificati e non qualificati di prima = `margin_junior: compiti`, `margin_senior: posto`; `ai.displacement` di prima =
+`margin_junior: posto`. Verificato bit per bit su tutti e sette gli scenari di prima (N = 3.000).
+
+### 8.2 Numeri (N = 50.000, 30 repliche, fine orizzonte)
+
+**Compiti junior contro compiti senior (D17).** Differenze accoppiate per replica (`simmetria_compiti` in `numeri_fase2.json`):
+
+| | junior, compiti (p ↓) | senior, compiti (β ↓) | differenza (IC 95%) |
+|---|---|---|---|
+| H | −5,24% | −5,24% | 0,002 punti [−0,007; +0,011] |
+| Gini | 0,1635 | 0,1610 | 0,0024 [0,0024; 0,0025] |
+
+Lo stesso risultato con uno shock secco (`make simmetria`, 10 repliche, N = 5.000): p dimezzato H −8,73%, Gini 0,165;
+β dimezzato H −8,77%, Gini 0,162. Meno incontri: alcuni junior imparano e altri no. Meno efficacia: imparano tutti un po' meno.
+
+**Junior che perdono il posto, prima e dopo D19:**
+
+| | prima di D19 | con D19 |
+|---|---|---|
+| H | −10,2% | −5,7% |
+| h senior | −8,8% | −1,9% |
+| B da incontri | −46% | −44% |
+| Y (θ = 0,02) | −4,3% | +0,4% |
+| Gini | 0,170 | 0,168 |
+| θ di pareggio | 0,035 circa | 0,019 |
+
+Prima di D19 un junior rimasto fuori per 5 anni diventava "intermedio" senza aver mai incontrato un senior, e
+15 anni dopo l'ingresso era senior: la formazione era persa. Con D19 è rinviata: ogni junior lavora 5 anni da junior
+prima di passare oltre, ma lo fa più tardi e con meno anni di carriera davanti.
+
+### 8.3 Verifiche
+
+**Riprodotto e verificato**
+- **Base identica bit per bit dopo D19:** senza non occupazione nessun output cambia (confronto prima/dopo su base e
+  5 bersagli; test: senza IA $s = a - a^{\text{ingresso}}$ in ogni anno).
+- **D19:** chi è stato non occupato in un anno non accumula esperienza in quell'anno, gli altri sì (test che segue
+  ogni agente per identificativo).
+- **Tabella 2×2:** moltiplicatori e non occupazione per ogni combinazione di bersaglio e margine (test).
+- **Equivalenza media:** compiti junior e compiti senior danno lo stesso H (IC della differenza include lo zero) e Gini
+  diversi (IC esclude lo zero); test a N piccolo con tolleranza del 15%.
+- **Docking con Mesa:** la base non cambia, quindi il docking resta valido. Il gemello Mesa non ha l'IA: D16, D17 e D19
+  restano fuori dal docking.
+
+**Cosa non torna o va discusso**
+1. **Con D19 il "posto" dei junior costa molto meno di prima** (−5,7% invece di −10,2%). Il numero vecchio era gonfiato
+   dall'incoerenza che D19 corregge. Resta però un'ipotesi forte: ogni anno la non occupazione è estratta di nuovo,
+   indipendentemente dagli anni precedenti; chi è stato fuori non ha meno probabilità di essere assunto (nessuna
+   cicatrice oltre agli anni persi). Una persistenza della non occupazione aumenterebbe il danno.
+2. **L'h medio dei senior è una misura di composizione.** Con D19 i senior sono meno (29.300 contro 32.800) ma hanno
+   avuto la formazione completa: l'h medio dei senior sottostima il danno. Conta H.
+3. **Gli scenari per qualifica sono cambiati** (qualificati −2,0% → −3,3%, non qualificati −3,3% → −5,5%; Gini 0,148 →
+   0,144 e 0,170 → 0,180), perché con il margine "compiti" tagliano p e β del gruppo, non più p e κ. Il taglio doppio
+   pesa $(1-\varphi)^2$ sull'apprendimento del gruppo: confrontarli con il bersaglio junior richiede attenzione.
+4. **L'output del margine "compiti" è lo stesso per junior e senior.** La differenza di produttività che Federico
+   suggerisce (junior formati all'IA, senior meno abituati) è D18, non ancora implementata.

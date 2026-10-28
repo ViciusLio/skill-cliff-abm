@@ -27,7 +27,7 @@
 \affiliation[aff2]{organization={\todo{Affiliation}},country={Italy}}
 
 \begin{abstract}
-In the growth model of \citet{Lucas1988} the efficiency with which workers accumulate human capital, $B$, is a constant. In the later work of Lucas himself \citep{Lucas2009,LucasMoll2014}, knowledge is acquired in encounters between people who know more and people who know less. Recent evidence that generative AI reduces the employment of entry-level workers \citep{Brynjolfsson2025,HosseiniLichtinger2025} turns this distinction into a policy question: if AI substitutes for junior work, it may also remove the occasions on which junior workers learn from senior ones \citep{Ide2026}. This paper develops an agent-based model in which $B$ is not assumed but emerges from junior--senior meetings, and uses it to characterise the timing of the resulting losses. Calibrated to an age--wage profile that rises slowly and flattens, as in the Italian private sector, the model shows that a permanent halving of meeting opportunities leaves the human capital of senior workers \emph{exactly} unchanged for ten years and erodes it thereafter, through a cumulative and intergenerational mechanism, by 6.7 per cent in the long run. We call this delayed fall the \emph{skill cliff}. Introducing AI explicitly, we find that who is substituted matters: replacing junior workers lowers aggregate human capital by 5.2 per cent after fifty years, replacing seniors matters only when mentoring capacity is scarce, and with a conservative estimate of AI productivity the loss of human capital absorbs about 86 per cent of the output gain. Two propositions connect the micro-level rules to the aggregate: an identity that expresses $B$ as a function of meeting opportunities, mentoring capacity and the distribution of knowledge, and a transmission lag equal to the distance between the junior and senior thresholds plus one year.
+In the growth model of \citet{Lucas1988} the efficiency with which workers accumulate human capital, $B$, is a constant. In the later work of Lucas himself \citep{Lucas2009,LucasMoll2014}, knowledge is acquired in encounters between people who know more and people who know less. Recent evidence that generative AI reduces the employment of entry-level workers \citep{Brynjolfsson2025,HosseiniLichtinger2025} turns this distinction into a policy question: if AI substitutes for junior work, it may also remove the occasions on which junior workers learn from senior ones \citep{Ide2026}. This paper develops an agent-based model in which $B$ is not assumed but emerges from junior--senior meetings, and uses it to characterise the timing of the resulting losses. Calibrated to an age--wage profile that rises slowly and flattens, as in the Italian private sector, the model shows that a permanent halving of meeting opportunities leaves the human capital of senior workers \emph{exactly} unchanged for ten years and erodes it thereafter, through a cumulative and intergenerational mechanism, by 6.7 per cent in the long run. We call this delayed fall the \emph{skill cliff}. Introducing AI explicitly, we find that who is substituted matters: removing tasks from juniors or from seniors lowers aggregate human capital by the same 5.2 per cent after fifty years but with different effects on inequality, seniors who lose their jobs matter only when mentoring capacity is scarce, and with a conservative estimate of AI productivity the loss of human capital absorbs about 86 per cent of the output gain. Two propositions connect the micro-level rules to the aggregate: an identity that expresses $B$ as a function of meeting opportunities, mentoring capacity and the distribution of knowledge, and a transmission lag equal to the distance between the junior and senior thresholds plus one year.
 \end{abstract}
 
 \begin{keyword}
@@ -227,41 +227,58 @@ AI arrives in year $t_0=10$ of the recorded period. Its productivity grows at ra
 A_t = (1+g)^{t-t_0}\ \ (t\ge t_0), \qquad \varphi_t = \varphi_{\max}\left(1-\frac{1}{A_t}\right), \label{eq:ai}\\
 Y_t = H_t\left[1+\theta\,(A_t-1)\right], \label{eq:aiY}
 \end{gather}
-with $A_t=1$ before $t_0$ and $H_t=\sum_i h_{i,t}$. The share $\varphi_t$ starts at zero and saturates at $\varphi_{\max}$. The target of substitution determines which parameters of the meeting technology are affected: replacing juniors multiplies $p$ by $1-\varphi_t$ (fewer junior tasks, fewer occasions to work alongside a senior); replacing seniors multiplies $\kappa$ by $1-\varphi_t$ (fewer seniors available as mentors); replacing high- or low-skilled workers applies both cuts within the corresponding group; complementary AI multiplies $\beta$ by $1+\varphi_t$ (AI makes teaching more effective). In a variant, juniors who are replaced become non-employed: they neither meet seniors nor learn on the job, and their human capital depreciates at rate $d$; their tasks are performed by AI, so that current output is unaffected and the loss operates only through human capital.
+with $A_t=1$ before $t_0$ and $H_t=\sum_i h_{i,t}$. The share $\varphi_t$ starts at zero and saturates at $\varphi_{\max}$.
+
+What does it mean to ``substitute'' a worker? We distinguish the target (juniors or seniors) from the margin: the worker keeps the job but loses tasks, or loses the job. The four cases act on different parameters of the meeting technology (Table~\ref{tab:margins}). Replacing junior tasks multiplies $p$ by $1-\varphi_t$ (fewer occasions to work alongside a senior). Replacing junior jobs makes a share $\varphi_t$ of juniors non-employed each year: they neither meet seniors nor learn on the job, their human capital depreciates at rate $d$, and the year does not count as experience, so that they remain juniors longer and reach seniority later. Their tasks are performed by AI, so that current output is unaffected and the loss operates only through human capital. Replacing senior tasks multiplies $\beta$ by $1-\varphi_t$ (each meeting transmits less); replacing senior jobs multiplies $\kappa$ by $1-\varphi_t$ (fewer seniors available as mentors). Replacing high- or low-skilled workers applies the junior and the senior cut within the corresponding group, and complementary AI multiplies $\beta$ by $1+\varphi_t$ (AI makes teaching more effective). Task substitution is the default for both roles.
+
+\begin{table}[t]\centering\small
+\caption{Four meanings of substitution.}\label{tab:margins}
+\begin{tabular}{@{}lp{0.36\linewidth}p{0.42\linewidth}@{}}
+\toprule
+ & Loses tasks & Loses the job \\
+\midrule
+Junior & $p\times(1-\varphi_t)$: fewer meetings & non-employed with probability $\varphi_t$: no meetings, no experience \\
+Senior & $\beta\times(1-\varphi_t)$: less transmitted per meeting & $\kappa\times(1-\varphi_t)$: fewer mentors \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 We set $g=0.03$ and $\varphi_{\max}=0.6$, so that ten years after its introduction AI automates 15 per cent of the targeted tasks, in line with the 13--16 per cent relative fall in the employment of young workers in exposed occupations \citep{Brynjolfsson2025}; and $\theta=0.02$, which yields a productivity gain of 0.7 per cent over ten years, close to the conservative estimate of \citet{Acemoglu2024}. Since $\theta$ does not affect the dynamics of agents, the output path can be computed for any $\theta$ from $H_t$ and $A_t$. Every scenario shares random numbers with the scenario without AI, so that before $t_0$ the two are identical and all differences are due to AI. We use $N=50{,}000$ and 30 replications.\footnote{The model is invariant to scale: because meetings are random draws within large pools rather than links in a local network, simulations with 5{,}000 and with 24 million agents (the number of employed workers in Italy) yield the same results to the fourth digit; the population size only reduces sampling noise.}
 
 \subsection{Who is substituted matters}
 
-Table~\ref{tab:ai} and Figure~\ref{fig:ai} compare the scenarios fifty years after the introduction of AI. Replacing junior workers is the most harmful case: aggregate human capital falls by 5.2 per cent and learning from meetings almost halves. Consistently with Proposition~\ref{prop:lag}, seniors are affected only twelve years after the introduction of AI---one year for $A_t$ to exceed one, plus the eleven-year transmission lag. Replacing low-skilled workers costs more than replacing high-skilled workers and raises wage inequality, because the low-skilled are 70 per cent of entrants. Complementary AI mirrors the substitution of juniors. If replaced juniors become non-employed, the loss doubles.
+Table~\ref{tab:ai} and Figure~\ref{fig:ai} compare the scenarios fifty years after the introduction of AI. Replacing junior tasks lowers aggregate human capital by 5.2 per cent and almost halves learning from meetings. Consistently with Proposition~\ref{prop:lag}, seniors are affected only twelve years after the introduction of AI---one year for $A_t$ to exceed one, plus the eleven-year transmission lag. Replacing senior tasks has the same mean effect: because $p$ and $\beta$ enter learning as a product (Eq.~\eqref{eq:Bmf}), cutting either by $1-\varphi_t$ yields the same loss of human capital (the paired difference is 0.002 percentage points, with a 95 per cent confidence interval that includes zero). The two channels differ in distribution: fewer meetings mean that some juniors learn and others do not, whereas less effective meetings mean that every junior learns a little less, so that the wage Gini rises to 0.163 in the first case and to 0.161 in the second. Replacing low-skilled workers costs more than replacing high-skilled workers and raises wage inequality, because the low-skilled are 70 per cent of entrants; since these scenarios cut both $p$ and $\beta$ within the group, learning in the group scales with $(1-\varphi_t)^2$. Complementary AI mirrors task substitution.
 
-Replacing seniors is almost harmless in the baseline, but only because mentoring capacity is abundant: with $S/J\approx5.7$ there are more potential mentors than needed. When capacity is scarcer ($\kappa=0.1$), the same substitution lowers aggregate human capital by 4.8 per cent, almost as much as replacing juniors. How many seniors actually act as mentors is therefore a key empirical quantity.
+If juniors lose their jobs instead of tasks, training is postponed rather than lost: since experience accrues only in employment, a non-employed junior remains a junior until five years of work have been completed. The loss of human capital (5.7 per cent) is close to that of task substitution, but its composition differs: entry into seniority is delayed and careers are shorter, so that after fifty years there are 11 per cent fewer seniors, while the mean human capital of those who reach seniority falls by only 1.9 per cent.
+
+Seniors who lose their jobs are almost harmless in the baseline, but only because mentoring capacity is abundant: with $S/J\approx5.7$ there are more potential mentors than needed. When capacity is scarcer ($\kappa=0.1$), the same substitution lowers aggregate human capital by 4.8 per cent, almost as much as task substitution. How many seniors actually act as mentors is therefore a key empirical quantity.
 
 \begin{table}[t]\centering\small
 \caption{Effects of AI fifty years after its introduction, relative to the scenario without AI (mean of 30 paired replications).}\label{tab:ai}
 \begin{tabular}{@{}lrrrrr@{}}
 \toprule
-Target & $H$ & Senior $h$ & $B^{\mathrm{inc}}$ & $Y$ ($\theta=0.02$) & Gini \\
+Target, margin & $H$ & Senior $h$ & $B^{\mathrm{inc}}$ & $Y$ ($\theta=0.02$) & Gini \\
 \midrule
-Junior & $-5.2\%$ & $-4.5\%$ & $-45\%$ & $+0.9\%$ & 0.163 \\
-Low-skilled & $-3.3\%$ & $-2.9\%$ & $-31\%$ & $+3.0\%$ & 0.170 \\
-High-skilled & $-2.0\%$ & $-1.7\%$ & $-13\%$ & $+4.4\%$ & 0.148 \\
-Senior & $-0.1\%$ & $0.0\%$ & $-2\%$ & $+6.4\%$ & 0.155 \\
+Junior, tasks ($p$) & $-5.2\%$ & $-4.5\%$ & $-45\%$ & $+0.9\%$ & 0.163 \\
+Junior, jobs (non-employed) & $-5.7\%$ & $-1.9\%$ & $-44\%$ & $+0.4\%$ & 0.168 \\
+Senior, tasks ($\beta$) & $-5.2\%$ & $-4.5\%$ & $-45\%$ & $+0.9\%$ & 0.161 \\
+Senior, jobs ($\kappa$) & $-0.1\%$ & $0.0\%$ & $-2\%$ & $+6.4\%$ & 0.155 \\
+Low-skilled, tasks & $-5.5\%$ & $-5.0\%$ & $-49\%$ & $+0.7\%$ & 0.180 \\
+High-skilled, tasks & $-3.3\%$ & $-2.9\%$ & $-21\%$ & $+3.0\%$ & 0.144 \\
 Complementary & $+5.2\%$ & $+4.3\%$ & $+45\%$ & $+12.0\%$ & 0.150 \\
-Junior, non-employed & $-10.2\%$ & $-8.8\%$ & $-46\%$ & $-4.3\%$ & 0.170 \\
 \bottomrule
-\multicolumn{6}{@{}p{0.9\linewidth}@{}}{\footnotesize The wage Gini without AI is 0.155. The senior target with scarcer mentoring capacity ($\kappa=0.1$) gives $H$: $-4.8\%$.}
+\multicolumn{6}{@{}p{0.95\linewidth}@{}}{\footnotesize The wage Gini without AI is 0.155. Seniors losing their jobs with scarcer mentoring capacity ($\kappa=0.1$): $H$ $-4.8\%$. For non-employed juniors, $B^{\mathrm{inc}}$ is averaged over all juniors.}
 \end{tabular}
 \end{table}
 
 \begin{figure}[t]\centering
 \includegraphics[width=.8\linewidth]{fig6_scenarios_H.pdf}
-\caption{Aggregate human capital relative to the scenario without AI, by target of substitution. Mean over 30 replications; bands are 95\% confidence intervals.}\label{fig:ai}
+\caption{Aggregate human capital relative to the scenario without AI, by target and margin of substitution (the dashed line, senior tasks, almost coincides with junior tasks). Mean over 30 replications; bands are 95\% confidence intervals.}\label{fig:ai}
 \end{figure}
 
 \subsection{The race}
 
-The skill cliff hypothesis is ultimately a race between the growth of AI productivity and the erosion of the knowledge it relies upon. With $\theta=0.02$ and the junior target, AI alone would raise output by 6.5 per cent after fifty years; with the induced loss of human capital the gain is 0.9 per cent, so that the skill cliff absorbs about 86 per cent of it (Figure~\ref{fig:race}). The break-even value of $\theta$---below which output ends lower than without AI---is 0.017 for $g=0.03$, and rises to about 0.035 if replaced juniors become non-employed. Faster AI ($g=0.06$) causes a larger loss of human capital ($-7.5$ per cent) but also a faster growth of $A_t$, so that the break-even value of $\theta$ falls (0.005): with exponential AI productivity the race is eventually won, and the question becomes the horizon over which it is lost.
+The skill cliff hypothesis is ultimately a race between the growth of AI productivity and the erosion of the knowledge it relies upon. With $\theta=0.02$ and the junior target, AI alone would raise output by 6.5 per cent after fifty years; with the induced loss of human capital the gain is 0.9 per cent, so that the skill cliff absorbs about 86 per cent of it (Figure~\ref{fig:race}). The break-even value of $\theta$---below which output ends lower than without AI---is 0.017 for $g=0.03$, and 0.019 if juniors lose their jobs rather than tasks. Faster AI ($g=0.06$) causes a larger loss of human capital ($-7.5$ per cent) but also a faster growth of $A_t$, so that the break-even value of $\theta$ falls (0.005): with exponential AI productivity the race is eventually won, and the question becomes the horizon over which it is lost.
 
 \begin{figure}[t]\centering
 \includegraphics[width=.8\linewidth]{fig8_race.pdf}
@@ -315,16 +332,16 @@ This appendix describes the model following the ODD protocol (Overview, Design c
 The model studies how the efficiency of learning, $B$, emerges from meetings between junior and senior workers, and how a reduction of those meetings, in particular the substitution of junior work by AI, affects human capital over time. It is evaluated against three patterns: a concave age--wage profile that rises slowly and flattens, as in the Italian private sector; a share of learning from coworkers of 4--9 per cent of junior wages \citep{Jarosch2021}; and a stationary distribution of human capital in the absence of shocks.
 
 \subsection{Entities, state variables and scales}
-The only agents are workers. Each worker $i$ has an identifier, an age $a_i$ (years), an experience $s_i$ (years since entry), a qualification $q_i\in\{L,H\}$ and human capital $h_i\ge 0$. The role (junior if $s_i<s_J$, senior if $s_i\ge s_S$, intermediate otherwise) is derived from experience. The global state consists of the time index $t$ and, in the AI scenarios, of AI productivity $A_t$ and the automated share $\varphi_t$. There is no space and no network: interactions are random draws within qualification groups. One time step is one year; a run consists of a burn-in of 300 years, which removes the dependence on initial conditions, followed by 60 recorded years. The population has a constant size $N$ (5{,}000 in Phase~1, 50{,}000 in the AI experiments); results are invariant to $N$ up to sampling noise.
+The only agents are workers. Each worker $i$ has an identifier, an age $a_i$ (years), an experience $s_i$ (years of employment since entry), a qualification $q_i\in\{L,H\}$ and human capital $h_i\ge 0$. The role (junior if $s_i<s_J$, senior if $s_i\ge s_S$, intermediate otherwise) is derived from experience. The global state consists of the time index $t$ and, in the AI scenarios, of AI productivity $A_t$ and the automated share $\varphi_t$. There is no space and no network: interactions are random draws within qualification groups. One time step is one year; a run consists of a burn-in of 300 years, which removes the dependence on initial conditions, followed by 60 recorded years. The population has a constant size $N$ (5{,}000 in Phase~1, 50{,}000 in the AI experiments); results are invariant to $N$ up to sampling noise.
 
 \subsection{Process overview and scheduling}
 In each year the following processes are executed in this order, each on all agents at once (synchronous update):
 \begin{enumerate}
-\item \emph{Ageing}: $a_i$ and $s_i$ increase by one.
+\item \emph{Ageing}: $a_i$ increases by one; $s_i$ increases by one if the worker was employed in the previous year.
 \item \emph{Retirement}: workers with $a_i\ge\bar a$ leave.
 \item \emph{Entry}: as many workers enter as have left, with $s=0$.
 \item \emph{Roles}: juniors and seniors are identified from experience.
-\item \emph{AI} (Section~\ref{sec:ai} only): the multipliers of $p$, $\kappa$ and $\beta$ for each qualification group are computed from $\varphi_t$; in the non-employment variant, a share $\varphi_t$ of the targeted juniors is drawn as non-employed.
+\item \emph{AI} (Section~\ref{sec:ai} only): the multipliers of $p$, $\kappa$ and $\beta$ for each qualification group are computed from $\varphi_t$; when juniors lose their jobs, a share $\varphi_t$ of the targeted juniors is drawn as non-employed.
 \item \emph{Meetings}: within each qualification group, juniors who are employed meet a senior with probability $p^{\mathrm{eff}}_{g,t}$ and compute their gain, Eqs.~\eqref{eq:peff}--\eqref{eq:meeting}.
 \item \emph{Autonomous learning and obsolescence}: Eq.~\eqref{eq:aut}; non-employed juniors only depreciate.
 \item \emph{Update}: all gains, computed on beginning-of-year human capital, are added at once.
@@ -337,7 +354,7 @@ In each year the following processes are executed in this order, each on all age
 \emph{Adaptation, objectives, learning, prediction.} Workers follow fixed rules and take no decisions; they do not adapt, optimise or predict. The only decision is the automated share in Section~\ref{sec:ai}, taken outside the agent-based model by comparing simulated paths (firm versus planner).
 \emph{Sensing.} A junior observes only the human capital of the senior met.
 \emph{Interaction.} Direct and asymmetric: knowledge flows from the senior to the junior, never in the opposite direction, and only within the same qualification group. Interactions are rationed by the mentoring capacity $\kappa S_g$.
-\emph{Stochasticity.} The qualification and the initial human capital of entrants, the occurrence of meetings, the choice of the senior and, in the variant, non-employment are random. Each replication uses its own seed, derived from a root seed; separate random streams are used for demography, meetings and AI, so that scenarios with the same seed share all draws until AI arrives (common random numbers).
+\emph{Stochasticity.} The qualification and the initial human capital of entrants, the occurrence of meetings, the choice of the senior and, when juniors lose their jobs, non-employment are random. Each replication uses its own seed, derived from a root seed; separate random streams are used for demography, meetings and AI, so that scenarios with the same seed share all draws until AI arrives (common random numbers).
 \emph{Collectives.} None beyond qualification groups and roles.
 \emph{Observation.} Each year: number of juniors, seniors and meetings; effective meeting probability; aggregate human capital $H_t$ and output $Y_t$; mean human capital by role, age and qualification; $B_t$ and its components; the wage Gini coefficient. Statistics are averaged over 30 replications, with 95 per cent confidence intervals based on Student's $t$.
 
@@ -348,7 +365,7 @@ $N$ workers are created with a qualification drawn with probability $q$ and an e
 The model uses no time series as input. Parameters are read from a configuration file; in the AI scenarios, $A_t$ and $\varphi_t$ are deterministic functions of time, Eq.~\eqref{eq:ai}.
 
 \subsection{Submodels}
-\emph{Entry}: Eq.~\eqref{eq:entry}, with entry age 20 or 25 by qualification. \emph{Meetings}: Eqs.~\eqref{eq:peff} and \eqref{eq:meeting}, applied within each qualification group; the senior is drawn uniformly. \emph{Autonomous learning and obsolescence}: Eq.~\eqref{eq:aut}. \emph{Output and wages}: $Y_t=\sum_i h_{i,t}$ and $w_i=h_i$ without AI; Eq.~\eqref{eq:aiY} with AI. \emph{AI}: Eq.~\eqref{eq:ai} and the multipliers described in Section~\ref{sec:ai}; in the non-employment variant a targeted junior is non-employed with probability $\varphi_t$, independently each year. \emph{Firm versus planner}: Eq.~\eqref{eq:d15}, evaluated on a grid of automated shares.
+\emph{Entry}: Eq.~\eqref{eq:entry}, with entry age 20 or 25 by qualification. \emph{Meetings}: Eqs.~\eqref{eq:peff} and \eqref{eq:meeting}, applied within each qualification group; the senior is drawn uniformly. \emph{Autonomous learning and obsolescence}: Eq.~\eqref{eq:aut}. \emph{Output and wages}: $Y_t=\sum_i h_{i,t}$ and $w_i=h_i$ without AI; Eq.~\eqref{eq:aiY} with AI. \emph{AI}: Eq.~\eqref{eq:ai} and the multipliers described in Section~\ref{sec:ai}; when juniors lose their jobs a targeted junior is non-employed with probability $\varphi_t$, independently each year, and that year does not count as experience. \emph{Firm versus planner}: Eq.~\eqref{eq:d15}, evaluated on a grid of automated shares.
 
 \subsection{Implementation and verification}
 The model is written in Python with vectorised NumPy operations (one array per state variable). An automated test suite checks, among other things, that the number of agents is conserved, that human capital is never negative, that $p=0$ implies no learning from meetings, that runs with the same seed are identical, that every meeting pairs a junior with a senior of the same qualification, and that all AI scenarios coincide with the scenario without AI before $t_0$. An independent object-based implementation in Mesa reproduces the results within $\pm1$ per cent (Appendix~\ref{app:docking}). Code, configuration and data are available at \url{https://github.com/ViciusLio/skill-cliff-abm}.

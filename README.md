@@ -13,7 +13,7 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 - **Descrizione standard del modello (protocollo ODD)**: appendice A dell'[articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf)
 - **Nota sulla calibrazione** (traccia per la discussione): [nota](report/nota_calibrazione.md)
 - **Resoconto dell'8 ottobre 2026**: [resoconto](report/resoconto_2026-10-08.md)
-- **Revisione dei meccanismi** (osservazioni di Federico, decisioni D16–D20 aperte): [revisione](report/revisione_meccanismi.md)
+- **Revisione dei meccanismi** (osservazioni di Federico; D16, D17, D19 fatte, D18 e D20 aperte): [revisione](report/revisione_meccanismi.md)
 
 ---
 
@@ -58,19 +58,23 @@ generazione professionale dopo**, quando i junior formati con meno incontri dive
    capacità di mentoring e distribuzione della conoscenza. Si può innestare nei modelli di
    crescita a una equazione.
 
-**Fase 2: l'IA.** Una produttività `A(t)` che cresce al tasso `g` automatizza una quota crescente
-dei compiti del bersaglio (junior, senior, qualificati, non qualificati) oppure, nel caso
-complementare, rende più efficace l'insegnamento. Risultati, 50 anni dopo l'introduzione:
-1. **Sostituire i junior è il caso peggiore:** capitale umano −5,2%, apprendimento da incontri −45%;
-   sui senior l'effetto arriva dopo 12 anni.
-2. **Sostituire i senior conta solo se i mentori sono scarsi:** quasi nessun effetto con capacità di
-   mentoring abbondante, −4,8% di capitale umano se è già al limite.
-3. **Sostituire i non qualificati aumenta la disuguaglianza** (Gini da 0,155 a 0,170).
+**Fase 2: l'IA.** Una produttività `A(t)` che cresce al tasso `g` sostituisce una quota crescente
+del lavoro del bersaglio (junior, senior, qualificati, non qualificati) oppure, nel caso
+complementare, rende più efficace l'insegnamento. "Sostituire" ha due significati (D16): restare al
+lavoro con meno compiti, o perdere il posto. Junior: meno incontri (p) o non occupazione; senior:
+meno trasmesso per incontro (β) o meno mentori (κ). Risultati, 50 anni dopo l'introduzione:
+1. **Togliere compiti ai junior o ai senior costa lo stesso:** capitale umano −5,2%, apprendimento da
+   incontri −45%; sui senior l'effetto arriva dopo 12 anni. Cambia la disuguaglianza: Gini 0,163 se
+   calano gli incontri dei junior, 0,161 se cala l'efficacia dei senior (base 0,155).
+2. **I senior che perdono il posto contano solo se i mentori sono scarsi:** quasi nessun effetto con
+   capacità di mentoring abbondante, −4,8% di capitale umano se è già al limite.
+3. **Sostituire i non qualificati aumenta la disuguaglianza** (Gini da 0,155 a 0,180; 0,144 se
+   l'IA sostituisce i qualificati).
 4. **La corsa:** con la stima prudente di Acemoglu (θ = 0,02) la perdita di capitale umano si mangia
    circa l'86% del guadagno di produttività dell'IA.
-5. **Se i junior sostituiti restano senza lavoro** entrano più tardi: l'esperienza cresce solo da
-   occupati (D19), quindi la formazione da junior è rinviata, non persa. Il capitale umano cala del 5,7%,
-   poco più che con la perdita di compiti (−5,2%), e ogni coorte arriva a senior più tardi.
+5. **Se i junior perdono il posto** entrano più tardi: l'esperienza cresce solo da occupati (D19),
+   quindi la formazione da junior è rinviata, non persa. Il capitale umano cala del 5,7%, poco più
+   che con la perdita di compiti (−5,2%); i senior sono l'11% in meno e le carriere più brevi.
    (Prima di D19, quando l'esperienza cresceva anche da non occupati, la perdita era del 10,2%.)
 6. **Le imprese automatizzano troppo.** Un'impresa che non vede la perdita futura di capitale umano
    automatizza il 30% dei compiti junior; su un orizzonte di 50 anni l'ottimo sociale è il 9%, e la
@@ -122,7 +126,7 @@ grandezza, non previsioni.
 - **Equità tra generazioni.** Chi paga sono i lavoratori che entreranno nei prossimi anni, che oggi
   non votano e non negoziano.
 - **Disuguaglianza.** Gli incontri comprimono le differenze di competenze; toglierli le allarga.
-  Sostituire i non qualificati porta il Gini da 0,155 a 0,170: chi parte più indietro perde anche
+  Sostituire i non qualificati porta il Gini da 0,155 a 0,180: chi parte più indietro perde anche
   le occasioni per recuperare. Il risultato si collega all'ipotesi di "doppia segregazione"
   (ricchezza e competenze).
 - **Il caso italiano.** Le grandi coorti degli anni '60 vanno in pensione proprio ora: la scogliera
@@ -205,7 +209,7 @@ src/skillcliff/   config.py      parametri (dataclass da YAML)
                   model.py       dinamica annuale
                   metrics.py     metriche, Gini, IC tra repliche
                   experiment.py  repliche con seed derivati, salvataggio
-                  ai.py          IA (fase 2): A(t), bersagli, non occupazione, output,
+                  ai.py          IA (fase 2): A(t), bersagli, margine compiti/posto (D16), output,
                                  automazione a quota fissa (D15), esperimento "p dimezzato"
                   mesa_twin.py   gemello Mesa (solo docking)
 configs/          parametri YAML

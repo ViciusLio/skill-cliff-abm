@@ -1,6 +1,9 @@
 # Revisione dei meccanismi — osservazioni di Federico
 
-*Federico Bassi e Vincenzo Lio. Analisi e proposte di decisione (D16–D20), non ancora implementate.*
+*Federico Bassi e Vincenzo Lio. Analisi e proposte di decisione (D16–D20).*
+
+**Stato (28 ottobre 2026).** D19 A, D16 A e D17 A implementate: equazioni, numeri e verifiche nella
+[sintesi della fase 2](sintesi_fase2.md), sez. 8. D18 e D20 da decidere.
 
 ## Le osservazioni
 
