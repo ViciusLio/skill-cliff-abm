@@ -98,8 +98,9 @@ class NoAI:
     def wages(self, t: int, h: np.ndarray, f: np.ndarray, users: np.ndarray | None) -> np.ndarray:
         return h
 
-    def nonemployed(self, t: int, junior: np.ndarray, high: np.ndarray, rng) -> np.ndarray | None:
-        """Maschera dei junior non occupati nell'anno t (None: nessuno)."""
+    def nonemployed(self, t: int, junior: np.ndarray, high: np.ndarray, rng,
+                    exp: np.ndarray | None = None) -> np.ndarray | None:
+        """Maschera dei junior non occupati nell'anno t (None: nessuno). exp serve agli shock di coorte."""
         return None
 
 
@@ -163,7 +164,8 @@ class AI(NoAI):
         w[users] *= 1.0 + self.a.theta * (self.productivity(t) - 1.0) * f[users]
         return w
 
-    def nonemployed(self, t: int, junior: np.ndarray, high: np.ndarray, rng) -> np.ndarray | None:
+    def nonemployed(self, t: int, junior: np.ndarray, high: np.ndarray, rng,
+                    exp: np.ndarray | None = None) -> np.ndarray | None:
         if not (self.a.target in HITS_JUNIOR and self.a.margin_junior == "posto"):
             return None
         hit_low, hit_high = HIT_GROUPS[self.a.target]
@@ -202,6 +204,23 @@ class FixedAutomation(NoAI):
     def meeting_modifiers(self, t: int) -> MeetingModifiers:
         cut = 1.0 - self.automation_share(t)
         return MeetingModifiers(p=(cut, cut))
+
+
+class CohortShock(NoAI):
+    """Esperimento di validazione (T6, non è IA): una recessione dall'anno `year` per `duration` anni.
+    In quegli anni chi cerca il primo lavoro (junior con esperienza 0) resta non occupato con
+    probabilità u; con D19 l'anno perso non conta come esperienza, quindi chi resta fuori ritenta
+    l'anno dopo. Nessun'altra regola cambia: misura il costo di un ingresso ritardato."""
+
+    def __init__(self, cfg: Config, year: int, duration: int, u: float) -> None:
+        super().__init__(cfg)
+        self.year, self.duration, self.u = year, duration, u
+
+    def nonemployed(self, t, junior, high, rng, exp=None):
+        if not self.year <= t < self.year + self.duration:
+            return None
+        draw = rng.random(junior.size)       # stream dell'IA: gli altri restano allineati con la base
+        return junior & (exp == 0) & (draw < self.u)
 
 
 def make_ai(cfg: Config) -> NoAI:

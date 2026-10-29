@@ -187,6 +187,17 @@ With thresholds $s_J=10$ and $s_S=20$, $B$ falls to 0.057 because the junior poo
 \caption{Sensitivity to the meeting probability $p$ and to mentoring capacity $\kappa$ (10 replications per point).}\label{fig:sens}
 \end{figure}
 
+\subsection{An untargeted pattern: cohorts entering a recession}
+
+The calibration targets the age--wage profile and the share of learning from coworkers. A pattern that it does not target is the persistence of the earnings losses of cohorts that enter the labour market in a recession. We simulate a two-year recession in which a share $u$ of those looking for their first job remain non-employed; as in Section~\ref{sec:ai}, a year out of employment does not count as experience, so that they try again the following year. No other rule changes. Because scenarios share random numbers, we compare the same workers with and without the recession, and measure the mean wage of the cohorts that entered during the recession relative to their own counterfactual (Figure~\ref{fig:recession}).
+
+The initial loss is proportional to the share of entrants left out: about 0.9 per cent of the cohort's mean wage for every 10 per cent of the cohort that remains non-employed for a year. Its persistence does not depend on the size of the shock. After five years, when the unaffected members of the cohort stop being juniors while those who entered late are still learning from seniors, the loss falls to about 40 per cent of its peak. It then declines slowly, because workers with less experience learn autonomously slightly faster: 34--35 per cent of the peak loss remains after ten years, 30 per cent after fifteen and 15 per cent after thirty. The empirical evidence brackets this pattern. In Canadian administrative data the losses fade after eight to ten years \citep{Oreopoulos2012}; for American college graduates the loss is still about 2.5 per cent fifteen years after an initial loss of 6--7 per cent per point of unemployment \citep{Kahn2010}, that is, about 40 per cent of its initial value. The model is close to the second estimate. The level of the loss, by contrast, is not comparable: in the model the only channel is the experience lost by those who remain out of work, whereas the estimates include the lower quality of the employers that the whole cohort joins.
+
+\begin{figure}[t]\centering
+\includegraphics[width=\linewidth]{fig11_recession_cohorts.pdf}
+\caption{Cohorts entering in a two-year recession in which 10, 20 or 40 per cent of first-time job seekers remain non-employed. (a) Mean wage of the cohort relative to the same cohort without the recession. (b) Share of the largest loss that remains, with the evidence of \citet{Oreopoulos2012} and \citet{Kahn2010}. $N=50{,}000$, 30 paired replications; bands are 95\% confidence intervals.}\label{fig:recession}
+\end{figure}
+
 % ---------------------------------------------------------------------------
 \section{Implications for aggregate modelling}\label{sec:aggregate}
 

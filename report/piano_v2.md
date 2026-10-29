@@ -81,7 +81,7 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
 
 ## 2. Analisi sulla base (senza meccanismi nuovi)
 
-- [ ] **T6 – Validazione sulle coorti della recessione** [D24]
+- [x] **T6 – Validazione sulle coorti della recessione** [D24] (29 ottobre: 30% della perdita dopo 15 anni; Kahn ~40%, Oreopoulos 0 dopo 8–10)
   - Shock di non occupazione su una coorte d'ingresso, usando D19.
   - Perdita salariale nel tempo confrontata con le stime degli effetti cicatrice: è un momento che non abbiamo usato
     per calibrare.

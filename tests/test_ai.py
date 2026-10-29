@@ -224,3 +224,20 @@ def test_familiarity_favours_senior_task_substitution_early():
     t = AI_CFG.ai.start + 5
     assert s_["F_U"][t] > j["F_U"][t]
     assert s_["Y"][t] / s_["H"][t] > j["Y"][t] / j["H"][t]
+
+
+# --- T6: shock di coorte (validazione) ------------------------------------------
+
+def test_cohort_shock_hits_only_entrants_in_recession_years():
+    from skillcliff.ai import CohortShock
+    from skillcliff.model import Model
+
+    shock = CohortShock(AI_CFG, year=3, duration=2, u=0.5)
+    base = run_model(AI_CFG, np.random.SeedSequence(10))
+    shocked = run_model(AI_CFG, np.random.SeedSequence(10), shock)
+    np.testing.assert_array_equal(base["H"][:3], shocked["H"][:3])
+    assert shocked["n_nonemployed"][3] > 0 and shocked["n_nonemployed"][5:].sum() == 0
+    m = Model(AI_CFG, np.random.SeedSequence(10), CohortShock(AI_CFG, year=3, duration=2, u=0.5))
+    for _ in range(AI_CFG.burn_in + 4):
+        m.step(record=False)
+    assert m.pop.out.any() and (m.pop.exp[m.pop.out] == 0).all()   # solo chi cerca il primo lavoro

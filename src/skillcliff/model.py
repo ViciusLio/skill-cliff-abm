@@ -56,7 +56,7 @@ class Model:
         # 4. apprendimento
         junior, senior = role_masks(cfg, pop.exp)
         mods = self.ai.meeting_modifiers(self.t)
-        out = self.ai.nonemployed(self.t, junior, pop.high, self.rng_ai)
+        out = self.ai.nonemployed(self.t, junior, pop.high, self.rng_ai, pop.exp)
         seekers = junior if out is None else junior & ~out      # i non occupati non incontrano
         pairs, self.n_pairs_cont = None, 0
         if cfg.meetings.stable_mentor:                            # D20: coppie in corso
