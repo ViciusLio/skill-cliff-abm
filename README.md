@@ -157,8 +157,8 @@ sezione 7 del [resoconto](report/resoconto_2026-10-08.md).
   poi la [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html)
   con lo scenario "p dimezzato".
 - **In un'ora.** L'[articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf): introduzione
-  (tre lacune e quattro contributi), sezione 4 (risultati), sezione 5 (le due proposizioni),
-  sezione 6 (l'IA: bersagli, corsa, impresa contro pianificatore), sezione 7 (fallimento di
+  (la domanda, i due risultati principali e le due conseguenze), sezione 4 (risultati), sezione 5 (le due proposizioni),
+  sezione 6 (l'IA: compiti o posto, corsa, impresa contro pianificatore), sezione 7 (fallimento di
   mercato e politiche). L'appendice A descrive il modello con il protocollo ODD.
 - **Per verificare tutto.** La [sintesi tecnica](report/sintesi.md) con equazioni, parametri e una
   sezione *Verifiche* che dice cosa torna e cosa no. Poi apri il Codespace ed esegui

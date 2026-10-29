@@ -63,7 +63,8 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
 - [x] **T3 – Effetti in punti di crescita annua** (29 ottobre: −0,11 punti l'anno per 49 anni, bersaglio junior)
   - Tradurre le perdite di H in tasso di crescita annuo equivalente e confrontarle con Ide (−0,05 punti).
   - *Fatto quando:* calcolo in `scripts/fase2.py`, numero in `numeri_fase2.json` e nel testo.
-- [ ] **T4 – Stile**
+- [x] **T4 – Stile** (29 ottobre: titolo corto, introduzione da 877 a 732 parole con i risultati nel secondo paragrafo;
+  "Proposition" resta, per coerenza con i ~50 rimandi nei documenti, ma la 1 è presentata come identità contabile)
   - Introduzione più asciutta con i contributi nel secondo paragrafo.
   - Titolo più corto.
   - "Proposition" diventa "Result" o "Lemma".
