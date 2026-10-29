@@ -15,6 +15,9 @@ la base identica bit per bit.*
   test e confronto "base contro esteso" a numeri casuali comuni.
 - **Mesa e NetLogo** restano gemelli della base; per ogni meccanismo nuovo si dice se entra nel docking.
 - **Il sito** si pubblica solo da `main`: qui i risultati stanno nei file di `report/`.
+- **NetLogo (D29).** Federico prova la versione estesa in `Netlogo/skill_cliff_esteso.nlogo` (solo su questo ramo;
+  il file base `Netlogo/skill_cliff.nlogo` resta quello della prima versione). Un meccanismo è finito solo quando è
+  anche lì, spento di default, e il confronto con il Python (`scripts/docking_netlogo.py`) copre i suoi scenari.
 
 ## Compiti
 
@@ -46,3 +49,4 @@ Ognuno parte con un piano in formato D da confermare.
 ## Registro
 
 - **29 ottobre 2026.** Ramo creato da `main` (commit `5608a24`). Nessun meccanismo nuovo ancora.
+- **29 ottobre 2026.** D29 A: NetLogo esteso in `Netlogo/skill_cliff_esteso.nlogo`. Ordine: E2, poi E1.
