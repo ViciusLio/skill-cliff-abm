@@ -68,6 +68,9 @@ Con D19 l'anno da non occupato non conta come esperienza (sez. 8).
 
 ![h dei senior per bersaglio](fig/fig7_scenari_senior.png)
 
+Le figure mostrano i quattro scenari che l'articolo discute nel testo (D25: compiti dei junior, compiti dei senior,
+posto dei junior, complementare); gli altri sono nella tabella qui sotto e nell'appendice B dell'articolo.
+
 Variazioni rispetto allo scenario senza IA, a fine orizzonte (50 anni dopo l'introduzione):
 
 | Scenario | H | h senior | B da incontri | Y (θ = 0,02) dopo 10 anni | Y (θ = 0,02) | Gini dei salari | Anni al primo effetto sui senior |

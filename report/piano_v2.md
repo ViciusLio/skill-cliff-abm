@@ -38,7 +38,7 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
 
 ## 1. Testo
 
-- [ ] **T1 – Un messaggio, una gerarchia** [D25]
+- [x] **T1 – Un messaggio, una gerarchia** [D25] (29 ottobre: sezione 6 con quattro scenari, varianti nell'appendice B)
   - Correggere la sezione 3.1: l'esperienza cresce solo da occupati (D19), come già nell'ODD e nella sezione 6.
   - Messaggio principale: il ritardo (Proposizione 2) e l'equivalenza p/β.
   - Conseguenze: l'eccesso di automazione e la corsa.

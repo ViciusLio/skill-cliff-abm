@@ -37,6 +37,8 @@ SCENARIOS = {
     "complementare": {"target": "complementare"},
 }
 TARGET_COLORS = dict(zip(SCENARIOS, (BLUE, GREEN, ORANGE, VIOLET, AQUA, YELLOW, MAGENTA)))
+# D25: le figure mostrano i quattro scenari del testo; gli altri sono nella tabella dell'appendice C
+MAIN_SCENARIOS = ("junior", "senior", "junior_posto", "complementare")
 KAPPA_GRID = (0.05, 0.1, 0.2)
 G_GRID = (0.01, 0.02, 0.03, 0.04, 0.05, 0.06)
 THETA_GRID = (0.0, 0.01, 0.02, 0.05, 0.1, 0.2)
@@ -103,7 +105,7 @@ def save(fig, L, i):
 def figures(L, years, start, scen, base, race_rel, A_path, race_F, num):
     for i, key, title in ((0, "H", L["H"]), (1, "mean_h_senior", L["senior"])):
         fig, ax = plt.subplots(figsize=(7.2, 4))
-        for t in SCENARIOS:
+        for t in MAIN_SCENARIOS:
             band(ax, years, 100 * rel(scen[t], base, key), TARGET_COLORS[t], L["targets"][t],
                  linestyle="--" if t == "senior" else "-")   # coincide quasi con junior (Prop. 1)
         ax.axvline(start, color=INK2, linewidth=1, linestyle=":")
