@@ -190,9 +190,12 @@ def main() -> None:
         "N": args.N, "repliche": args.reps, "anni": cfg.T, "introduzione": start,
         "parametri_ia": {"g": cfg.ai.g, "phi_max": cfg.ai.phi_max, "theta": cfg.ai.theta},
         "phi_dopo_10_anni": float(scen["junior"]["phi"][0, start + 10]),
+        "anni_dall_introduzione_a_fine_orizzonte": end - start,
         "scenari": {
             t: {
                 "H_fine": ci(rel(scen[t], base, "H")[:, end]),
+                # T3: perdita di livello espressa come crescita annua equivalente sugli anni dall'introduzione
+                "H_crescita_annua_equivalente": ci((1 + rel(scen[t], base, "H")[:, end]) ** (1 / (end - start)) - 1),
                 "h_senior_fine": ci(rel(scen[t], base, "mean_h_senior")[:, end]),
                 "h_junior_fine": ci(rel(scen[t], base, "mean_h_junior")[:, end]),
                 "B_inc_fine": ci(scen[t]["B_meet"][:, -5:].mean(1) / base["B_meet"][:, -5:].mean(1) - 1),

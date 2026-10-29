@@ -69,8 +69,8 @@ del lavoro del bersaglio (junior, senior, qualificati, non qualificati) oppure, 
 complementare, rende più efficace l'insegnamento. "Sostituire" ha due significati (D16): restare al
 lavoro con meno compiti, o perdere il posto. Junior: meno incontri (p) o non occupazione; senior:
 meno trasmesso per incontro (β) o meno mentori (κ). Risultati, 50 anni dopo l'introduzione:
-1. **Togliere compiti ai junior o ai senior costa lo stesso:** capitale umano −5,2%, apprendimento da
-   incontri −45%; sui senior l'effetto arriva dopo 12 anni. Cambiano disuguaglianza e tempi: il
+1. **Togliere compiti ai junior o ai senior costa lo stesso:** capitale umano −5,2% (come crescere 0,11
+   punti l'anno più lentamente per 49 anni), apprendimento da incontri −45%; sui senior l'effetto arriva dopo 12 anni. Cambiano disuguaglianza e tempi: il
    guadagno dell'IA va a chi la usa (D18), cioè agli esperti se sostituisce i junior (Gini dei salari
    0,167) e ai meno esperti se sostituisce i senior (0,155, come senza IA). Dopo 10 anni l'output è
    +0,22% nel primo caso e +0,35% nel secondo, perché chi è entrato dopo l'IA la conosce meglio; a 50
