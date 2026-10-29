@@ -68,6 +68,9 @@ Con D19 l'anno da non occupato non conta come esperienza (sez. 8).
 
 ![h dei senior per bersaglio](fig/fig7_scenari_senior.png)
 
+Le figure mostrano i quattro scenari che l'articolo discute nel testo (D25: compiti dei junior, compiti dei senior,
+posto dei junior, complementare); gli altri sono nella tabella qui sotto e nell'appendice B dell'articolo.
+
 Variazioni rispetto allo scenario senza IA, a fine orizzonte (50 anni dopo l'introduzione):
 
 | Scenario | H | h senior | B da incontri | Y (θ = 0,02) dopo 10 anni | Y (θ = 0,02) | Gini dei salari | Anni al primo effetto sui senior |
@@ -476,3 +479,44 @@ E con l'IA (N = 50.000, 30 repliche, fine orizzonte):
 4. **Le coppie si incontrano ogni anno con certezza.** Una regola più debole (incontro con probabilità p anche dentro
    la coppia) ridurrebbe l'asimmetria tra p e β.
 5. **La variante non entra in fase 1, D15 e scala**, che restano sul modello base.
+
+## 11. Validazione: le coorti che entrano in una recessione (T6, D24)
+
+Script `scripts/validazione.py` (`make validazione`), numeri in `report/numeri_validazione.json`, figura sotto.
+Nessuna regola nuova: un modulo di shock (`CohortShock`) come l'esperimento "p dimezzato".
+
+**Esperimento.** Recessione negli anni 10 e 11: chi cerca il primo lavoro (esperienza 0) resta non occupato con
+probabilità u e, con D19, ritenta l'anno dopo. A numeri casuali comuni le coorti sono le stesse persone con e senza
+recessione; si confronta il salario medio (= h) delle coorti entrate in quegli anni. N = 50.000, 30 repliche.
+
+![Coorti della recessione](fig/fig11_coorti_recessione.png)
+
+| u (entranti fuori per anno) | quota della coorte fuori almeno un anno | perdita massima | dopo 5 anni | dopo 10 | dopo 15 | dopo 30 |
+|---|---|---|---|---|---|---|
+| 10% | 9,9% | −0,9% | −0,35% | −0,30% | −0,26% | −0,14% |
+| 20% | 20,1% | −1,7% | −0,74% | −0,61% | −0,52% | −0,27% |
+| 40% | 40,0% | −3,8% | −1,69% | −1,30% | −1,12% | −0,56% |
+
+**Quota rimasta della perdita massima:** 40–45% dopo 5 anni, 34–35% dopo 10, 30% dopo 15, 15% dopo 30, uguale per
+le tre intensità.
+
+1. **La forma è robusta, il livello scala.** La perdita iniziale è circa 0,9 punti di salario per ogni 10% di coorte
+   rimasta fuori un anno; la persistenza non dipende da u.
+2. **Due fasi di recupero.** Al quinto anno i coetanei smettono di essere junior, chi è entrato tardi impara ancora dai
+   senior: la perdita scende al 40% circa. Poi cala lentamente perché chi ha meno esperienza impara un po' più in fretta
+   in autonomia ($\delta(s)$ decresce con l'esperienza).
+3. **Confronto con le stime.** Oreopoulos, von Wachter e Heisz (2012, Canada): le perdite svaniscono dopo 8–10 anni.
+   Kahn (2010, Stati Uniti): 6–7% iniziale per punto di disoccupazione, ancora 2,5% dopo 15 anni, cioè circa il 40%.
+   Il modello (30% dopo 15 anni) è vicino alla stima americana.
+
+**Verifiche e limiti**
+- **Test:** lo shock colpisce solo chi cerca il primo lavoro, solo negli anni di recessione; prima la base è identica.
+- **Un errore trovato e corretto durante il lavoro:** nella prima versione dello script i due modelli (con e senza
+  recessione) nascevano dallo stesso oggetto seme, che `spawn()` consuma: le popolazioni non erano le stesse e il
+  confronto era rumore. Con una copia fresca del seme per modello il confronto è accoppiato e gli intervalli sono stretti.
+- **Il livello non è confrontabile.** Nel modello l'unico canale è l'esperienza persa da chi resta fuori; le stime
+  includono anche le imprese peggiori in cui entra tutta la coorte. Si confronta la persistenza, non il livello.
+- **Fonti dei numeri di Kahn.** L'abstract non riporta le cifre; 6–7% e 2,5% dopo 15 anni vengono da sintesi del lavoro
+  (Economic Policy Institute; Yale Alumni Magazine) concordi tra loro. Da controllare sul testo prima dell'invio.
+- **Accoppiamento non perfetto.** Chi è fuori non cerca un mentore, quindi le estrazioni degli incontri degli altri si
+  spostano; con 30 repliche e N = 50.000 l'effetto sugli intervalli è piccolo.

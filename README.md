@@ -63,7 +63,10 @@ generazione professionale dopo**, quando i junior formati con meno incontri dive
    *identico* per 10 anni e inizia a scendere all'11°, cioè dopo `s_S − s_J + 1` anni, come
    previsto dalla Proposizione 2 dell'articolo (anche con soglie 10/20). A regime cala del 6,7%
    e l'output del 7,2%.
-4. **Dal micro al macro.** Un'identità di campo medio (Proposizione 1) traduce le regole
+4. **Un fatto non usato nella calibrazione.** Le coorti che entrano durante una recessione, e in parte restano
+   senza lavoro, perdono salario in proporzione a chi resta fuori; dopo 15 anni ne resta il 30%, vicino alle stime
+   per gli Stati Uniti (Kahn 2010, circa il 40%) e più persistente di quelle canadesi (Oreopoulos et al. 2012).
+5. **Dal micro al macro.** Un'identità di campo medio (Proposizione 1) traduce le regole
    individuali in un'equazione aggregata per `B`, che dipende da opportunità d'incontro,
    capacità di mentoring e distribuzione della conoscenza. Si può innestare nei modelli di
    crescita a una equazione.
@@ -160,8 +163,8 @@ sezione 7 del [resoconto](report/resoconto_2026-10-08.md).
   poi la [dinamica degli agenti](https://viciuslio.github.io/skill-cliff-abm/dinamica.html)
   con lo scenario "p dimezzato".
 - **In un'ora.** L'[articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf): introduzione
-  (tre lacune e quattro contributi), sezione 4 (risultati), sezione 5 (le due proposizioni),
-  sezione 6 (l'IA: bersagli, corsa, impresa contro pianificatore), sezione 7 (fallimento di
+  (la domanda, i due risultati principali e le due conseguenze), sezione 4 (risultati), sezione 5 (le due proposizioni),
+  sezione 6 (l'IA: compiti o posto, corsa, impresa contro pianificatore), sezione 7 (fallimento di
   mercato e politiche). L'appendice A descrive il modello con il protocollo ODD.
 - **Per verificare tutto.** La [sintesi tecnica](report/sintesi.md) con equazioni, parametri e una
   sezione *Verifiche* che dice cosa torna e cosa no. Poi apri il Codespace ed esegui
@@ -185,6 +188,7 @@ make report      # fase 1: figure, numeri e dati del sito (~15 s con 4 core)
 make fase2       # fase 2: scenari IA, corsa, sensibilità (~2 min con 4 core)
 make automazione # D15: automazione dell'impresa contro ottimo sociale (~30 s)
 make scala       # invarianza alla scala, fino a 5 milioni di agenti (~3 min)
+make validazione # T6: coorti che entrano in una recessione (~3 min)
 make mentore     # D20: mentore stabile, calibrazione, IA e docking della variante (~10 min con 2 core)
 make docking     # NumPy contro Mesa: test di differenza e di equivalenza (~1 min)
 make docking-netlogo  # NumPy contro NetLogo, 7 scenari (serve NETLOGO_HOME; ~15 min con 2 core)
@@ -238,6 +242,7 @@ scripts/          run_scenario.py   repliche di uno scenario con parametri da ri
                   fase2.py          fase 2: scenari IA, corsa, sensibilità a kappa
                   automazione.py    D15: automazione scelta dall'impresa contro ottimo sociale
                   scale_check.py    invarianza alla scala (fino a 24 milioni di agenti)
+                  validazione.py    T6: coorti che entrano in una recessione (validazione non mirata)
                   mentore_stabile.py  D20: mentore stabile (variante), calibrazione di beta, proposizioni, IA
                   docking.py        confronto NumPy vs Mesa (anche la variante D20, con --mentore)
                   docking_netlogo.py  confronto NumPy vs NetLogo, scenario per scenario
