@@ -57,7 +57,7 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
     - effetti cicatrice (Kahn; Oreopoulos et al.);
     - IA e lavoro (Brynjolfsson, Li e Raymond; Autor);
     - letteratura di JASSS sui modelli di apprendimento e diffusione;
-    - restano da aggiungere con T6 e T10a: Saltelli et al. (2008) e Sobol (2001), già verificati.
+    - aggiunti con T10a: Saltelli et al. (2008) e Sobol (2001).
   - Un paragrafo su cosa ci distingue dagli ABM con competenze.
   - *Fatto quando:* `references.bib` aggiornato, nessuna voce non verificata.
 - [x] **T3 – Effetti in punti di crescita annua** (29 ottobre: −0,11 punti l'anno per 49 anni, bersaglio junior)
@@ -93,7 +93,7 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
   - Stessa metrica per tutte (effetto su B, H e output) e confronto a parità di intensità.
   - Lettura per i decisori pubblici e per le imprese che investono in capitale umano.
   - *Fatto quando:* tabella nella sezione 7 dell'articolo, nel README e nella sintesi.
-- [ ] **T10a – Sensibilità globale** [D26]
+- [x] **T10a – Sensibilità globale** [D26] (29 ottobre: segni robusti su 704 punti; livelli guidati da p, β, δ₀)
   - Indici di Sobol sui risultati principali (perdita di H, ritardo, eccesso di automazione) rispetto ai parametri
     calibrati a mano.
   - *Fatto quando:* tabella e figura in appendice.
@@ -112,4 +112,4 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
 - **28 ottobre 2026.** Prima versione congelata (`articolo-v1`). Revisione e piano scritti.
 - **28 ottobre 2026.** Modello in NetLogo pubblicato in `Netlogo/` (docking: differenza massima 0,25%).
 - **29 ottobre 2026.** Decisioni D21–D28: modello base su `main`, versione estesa nel ramo `esteso`. Fatti T2, T3 e la
-  traduzione italiana della prima versione.
+  traduzione italiana della prima versione; poi T1, T4, T6, T9 e T10a.

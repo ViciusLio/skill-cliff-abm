@@ -550,3 +550,33 @@ esistente. Nessuna regola nuova. Metrica comune: quota della perdita di H dovuta
 **Limiti.** Nessun prezzo: stessa intensità non è stesso costo. L'output del modello non dipende da φ, quindi il costo
 in produzione del contributo è quello dell'esercizio D15 (sez. 4.4). Le leve partono tutte dall'arrivo dell'IA; una
 politica tardiva vede il proprio effetto sui senior solo dopo il ritardo della Proposizione 2.
+
+## 13. Sensibilità globale (T10a, D26)
+
+Script `scripts/sensibilita.py` (`make sensibilita`), numeri in `report/numeri_sensibilita.json`, figura sotto.
+Nove parametri variati insieme su intervalli uniformi: p ∈ [0,3; 0,9], κ ∈ [0,1; 0,4], β ∈ [0,05; 0,15],
+σ ∈ [0,1; 0,3], δ₀ ∈ [0,03; 0,05], S_h ∈ [40; 60], d ∈ [0,008; 0,016], g ∈ [0,01; 0,05], φ_max ∈ [0,4; 0,8].
+Indici di Sobol del primo ordine (Saltelli) e totali (Jansen) su 64 punti base quasi casuali (704 vettori di
+parametri), N = 5.000, una replica per punto, intervalli bootstrap. Le soglie junior/senior restano fisse: il
+ritardo dipende solo da loro (Proposizione 2).
+
+![Sobol](fig/fig13_sensibilita_sobol.png)
+
+| Risultato | media | 90% dei punti | min / max | indici totali più alti |
+|---|---|---|---|---|
+| B da incontri (base) | 0,047 | [0,012; 0,111] | 0,005 / 0,203 | p 0,47; δ₀ 0,44; β 0,42 |
+| perdita di H con IA (junior, compiti) | −5,0% | [−11,6%; −1,2%] | −22,4% / 0,0% | p 0,29; β 0,25; δ₀ 0,23; g 0,15; φ_max 0,11 |
+| eccesso di automazione (D15) | 0,18 | [0,06; 0,30] | 0,03 / 0,30 | p 0,35; β 0,30; δ₀ 0,25 |
+
+1. **I segni sono robusti.** In tutti i 704 punti la perdita di H non è mai positiva e l'eccesso di automazione è
+   sempre positivo.
+2. **I livelli dipendono da p, β e δ₀**, i parametri scelti a mano: sono quelli da calibrare sui dati (ramo `esteso`,
+   compito E3).
+3. **Le interazioni sono forti:** gli indici del primo ordine sono molto più piccoli dei totali, come previsto per p e β
+   che entrano come prodotto (Proposizione 1).
+4. **σ è irrilevante, κ conta poco** perché nella maggior parte dello spazio non è vincolante.
+
+**Limiti.** Con 64 punti base gli intervalli degli indici del primo ordine sono larghi; quelli totali sono più stretti.
+Una replica per punto con N = 5.000: il rumore di simulazione entra nella varianza (piccolo rispetto a quella dovuta ai
+parametri). L'eccesso di automazione usa una griglia di φ da 0 a 0,4 con interpolazione: 0,30 vuol dire che il
+pianificatore non automatizzerebbe affatto.
