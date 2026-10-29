@@ -5,6 +5,8 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 
 [![Apri in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ViciusLio/skill-cliff-abm?quickstart=1)
 
+- **Per tutti**: [La bottega vuota](Medium/la_bottega_vuota.md), articolo divulgativo sulle conclusioni dei modelli
+  (Medium, circa 12 minuti)
 - **Articolo** (bozza, in inglese): [articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf), sorgente [`paper/main.tex`](paper/main.tex);
   [traduzione italiana](https://viciuslio.github.io/skill-cliff-abm/articolo_it.pdf) della versione in lavorazione
 - **Lezione**: [lezione](https://viciuslio.github.io/skill-cliff-abm/lezione.html)
@@ -22,6 +24,18 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
   [`esteso`](https://github.com/ViciusLio/skill-cliff-abm/tree/esteso), verso un secondo articolo.
   La prima versione resta disponibile: [PDF](https://viciuslio.github.io/skill-cliff-abm/articolo_v1.pdf),
   [traduzione italiana](https://viciuslio.github.io/skill-cliff-abm/articolo_v1_it.pdf) e tag git `articolo-v1`.
+
+### Dove siamo (29 ottobre 2026)
+
+- **Prima versione** dell'articolo congelata (tag `articolo-v1`), con traduzione italiana e modello NetLogo verificato
+  contro il Python (differenza massima 0,25%).
+- **Seconda versione** (questo ramo): articolo riorganizzato attorno a due risultati (il ritardo di dieci anni e
+  l'equivalenza tra perdere occasioni e perdere efficacia), bibliografia da 18 a 49 voci verificate, validazione sulle
+  coorti della recessione, politiche quantificate, sensibilità globale; traduzione italiana aggiornata. Restano
+  affiliazioni e ruoli CRediT, la rigenerazione completa e l'invio (JASSS o SCED).
+- **Versione estesa** (ramo [`esteso`](https://github.com/ViciusLio/skill-cliff-abm/tree/esteso)): l'impresa che
+  sceglie quanto automatizzare (E2) e l'IA come tutor (E1), in Python e in NetLogo; verso un secondo articolo.
+- **Divulgazione**: [La bottega vuota](Medium/la_bottega_vuota.md).
 
 ---
 
