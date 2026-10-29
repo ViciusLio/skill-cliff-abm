@@ -1,5 +1,8 @@
 # La *skill cliff*: chi insegnerà ai senior di domani?
 
+> **Ramo `esteso`**: versione estesa del modello, in costruzione verso un secondo articolo
+> ([piano](report/piano_esteso.md)). La versione base, con articolo e sito, è sul ramo `main`.
+
 Modello ad agenti sulla trasmissione di capitale umano tra generazioni e sugli effetti
 ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro in corso.
 

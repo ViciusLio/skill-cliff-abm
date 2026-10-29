@@ -1,5 +1,8 @@
 # Istruzioni per Claude
 
+> **Sei sul ramo `esteso`** (versione complessa, secondo articolo). Piano: `report/piano_esteso.md`.
+> Qui si aggiungono meccanismi, sempre spegnibili da configurazione; non si modifica `paper/main.tex`.
+
 Progetto: ABM sulla trasmissione del capitale umano tra senior e junior e sull'effetto dell'IA
 (la *skill cliff*). Autori: Federico Bassi e Vincenzo Lio (in quest'ordine, alfabetico; Lio è
 l'autore di riferimento). Il README racconta il lavoro; `report/` contiene sintesi, numeri e decisioni.
