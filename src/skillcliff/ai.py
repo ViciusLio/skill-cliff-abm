@@ -77,6 +77,17 @@ class NoAI:
     def output(self, t: int, sum_h: float, F: float = 1.0) -> float:
         return sum_h
 
+    def observe(self, t: int, h: np.ndarray, junior: np.ndarray, gain_prev: float) -> None:
+        """Osserva lo stato all'inizio dell'anno t (E2: salario dei junior e valore formativo). Base: nulla."""
+
+    def savings(self, t: int, n_junior: int) -> float:
+        """Risparmio dell'impresa dall'automazione nell'anno t (E2). Base: zero."""
+        return 0.0
+
+    def tutor(self, t, h, f, junior, senior, high, out):
+        """E1: (guadagno dall'IA tutor, fattore sull'apprendimento autonomo dei junior). Base: (None, None)."""
+        return None, None
+
     def entrant_familiarity(self, t: int) -> float:
         return 0.0
 
@@ -125,7 +136,49 @@ class AI(NoAI):
         return (1.0 + self.a.g) ** (t - self.a.start) if t >= self.a.start else 1.0
 
     def automation_share(self, t: int) -> float:
+        if self.a.endogenous:
+            return self._phi if t >= self.a.start else 0.0
         return self.a.phi_max * (1.0 - 1.0 / self.productivity(t))
+
+    # --- E1: l'IA come tutor ----------------------------------------------------------
+    def tutor(self, t, h, f, junior, senior, high, out):
+        a = self.a
+        if not a.tutor or t < a.start:
+            return None, None
+        learners = junior if out is None else junior & ~out
+        gain = np.zeros_like(h)
+        for g in (False, True):                       # l'IA ha imparato dai senior della stessa qualifica
+            s_g, j_g = senior & (high == g), learners & (high == g)
+            if s_g.any() and j_g.any():
+                target = a.codifiable * h[s_g].mean()
+                gain[j_g] = a.beta_ai * f[j_g] * np.maximum(0.0, target - h[j_g])
+        factor = np.where(learners, 1.0 - a.effort * f, 1.0) if a.effort > 0 else None
+        return gain, factor
+
+    # --- E2: l'impresa sceglie phi ----------------------------------------------------
+    _phi, _w_j, _cost = 0.0, 1.0, 1.0
+
+    def training_value(self, gain_prev: float) -> float:
+        """Valore formativo di un anno da junior: guadagno medio dagli incontri, scontato sulla carriera."""
+        k = np.arange(1, self.a.career + 1)
+        return gain_prev * float((self.a.rho ** k).sum())
+
+    def observe(self, t, h, junior, gain_prev):
+        if not self.a.endogenous:
+            return
+        w_j = float(h[junior].mean()) if junior.any() else 0.0
+        cost = self.a.c0 / self.productivity(t)
+        perceived = w_j - self.a.chi * self.training_value(gain_prev)
+        self._w_j, self._cost = w_j, cost
+        self._phi = self.a.phi_max * max(0.0, 1.0 - cost / perceived) if perceived > 0 else 0.0
+
+    def savings(self, t, n_junior):
+        """Compiti automatizzabili x in [0, 1] con costo dell'IA c_t / (1 - x): si automatizzano quelli con
+        x < x* = phi / phi_max; risparmio = J * phi_max * integrale di (w_J - c_t / (1 - x)) su [0, x*]."""
+        if not self.a.endogenous or t < self.a.start or self._phi <= 0:
+            return 0.0
+        x = self._phi / self.a.phi_max
+        return n_junior * self.a.phi_max * (self._w_j * x + self._cost * np.log(1.0 - x))
 
     def meeting_modifiers(self, t: int) -> MeetingModifiers:
         phi = self.automation_share(t)
@@ -247,6 +300,19 @@ class Policy(AI):
             return m
         scaled = tuple(x * (1.0 + self.size) for x in getattr(m, self.lever))
         return MeetingModifiers(**{**{k: getattr(m, k) for k in ("p", "kappa", "beta")}, self.lever: scaled})
+
+
+class FixedShareFirm(AI):
+    """E2, pianificatore (D33): quota phi costante dall'arrivo dell'IA, con salari, costi e risparmi
+    calcolati come per l'impresa di E2. Serve a trovare la quota costante socialmente ottima."""
+
+    def __init__(self, cfg: Config, phi: float) -> None:
+        super().__init__(cfg)
+        self.phi_const = phi
+
+    def observe(self, t, h, junior, gain_prev):
+        super().observe(t, h, junior, gain_prev)
+        self._phi = self.phi_const if t >= self.a.start else 0.0
 
 
 def make_ai(cfg: Config) -> NoAI:

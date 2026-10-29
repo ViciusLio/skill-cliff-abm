@@ -49,3 +49,12 @@ ai:                     # fase 2 (vedi src/skillcliff/ai.py)
   margin_senior: compiti  # D16-D17: compiti (beta giù) | posto (meno mentori, kappa giù)
   familiarity: true       # D18: l'IA rende in proporzione alla familiarità f di chi la usa
   gamma: 0.1              # D18: aggiornamento annuo di f per gli occupati (metà del ritardo in ~7 anni)
+  endogenous: false       # E2: l'impresa sceglie phi ogni anno (solo target junior, margine compiti)
+  c0: 1.33                # E2: costo dell'IA all'introduzione, c_t = c0 / A_t (calibrato: phi = 0,15 dopo 10 anni)
+  chi: 0.0                # E2: quota del valore formativo dei junior che l'impresa internalizza (0 = miope)
+  rho: 0.97               # E2: sconto del valore formativo
+  career: 40              # E2: anni di carriera su cui si sconta il valore formativo
+  tutor: false            # E1: il junior impara anche dall'IA
+  beta_ai: 0.05           # E1: efficacia del tutor (un incontro con un senior vale 0,10)
+  codifiable: 0.5         # E1: quota della conoscenza dei senior che l'IA codifica
+  effort: 0.0             # E1: calo dello sforzo nell'apprendimento autonomo dei junior che usano l'IA

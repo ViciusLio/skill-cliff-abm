@@ -14,7 +14,7 @@ import numpy as np
 
 from skillcliff.ai import make_ai
 from skillcliff.config import Config
-from skillcliff.learning import autonomous_gains, meeting_gains, role_masks
+from skillcliff.learning import autonomous_gains, autonomous_rate, meeting_gains, role_masks
 from skillcliff.metrics import SCALARS, by_age, gini, masked_mean
 from skillcliff.population import initial_population, n_entrants, new_entrants
 
@@ -36,6 +36,8 @@ class Model:
         self.last_dh_aut = None
         self.ai = ai if ai is not None else make_ai(cfg)
         self.t = -cfg.burn_in
+        self.gain_prev = 0.0     # E2: guadagno medio dei junior dagli incontri nell'anno precedente
+        self.gain_prev_obs = 0.0
 
     def step(self, record: bool = True) -> dict[str, np.ndarray | float] | None:
         """Un anno di simulazione. Con record=False (burn-in) non calcola le metriche."""
@@ -55,6 +57,8 @@ class Model:
 
         # 4. apprendimento
         junior, senior = role_masks(cfg, pop.exp)
+        self.ai.observe(self.t, pop.h, junior, self.gain_prev)     # E2: base, nulla
+        self.gain_prev_obs = self.gain_prev
         mods = self.ai.meeting_modifiers(self.t)
         out = self.ai.nonemployed(self.t, junior, pop.high, self.rng_ai, pop.exp)
         seekers = junior if out is None else junior & ~out      # i non occupati non incontrano
@@ -68,14 +72,22 @@ class Model:
             pop.mentor[meet.learners[n_cont:]] = pop.uid[meet.partners[n_cont:]]
             self.n_pairs_cont = n_cont
         dh_aut = autonomous_gains(cfg, pop.h, pop.exp)
+        dh_tutor, effort = self.ai.tutor(self.t, pop.h, pop.f, junior, senior, pop.high, out)   # E1: base, None
+        if effort is not None:                                    # meno sforzo: si riduce solo delta(s)
+            delta = autonomous_rate(cfg, pop.exp) + cfg.learning.depreciation
+            dh_aut = dh_aut - (1.0 - effort) * delta * pop.h
         if out is not None:                                       # niente apprendimento sul lavoro
             dh_aut[out] = -cfg.learning.depreciation * pop.h[out]
         self.n_out = 0 if out is None else int(out.sum())
         pop.out = np.zeros(len(pop), dtype=bool) if out is None else out
         h_prev = pop.h
         pop.h = h_prev + meet.dh + dh_aut
+        if dh_tutor is not None:
+            pop.h = pop.h + dh_tutor
+        self.last_tutor = dh_tutor
 
         self.last_meet, self.last_dh_aut, self.last_out = meet, dh_aut, out
+        self.gain_prev = float(meet.dh[junior].mean()) if junior.any() else 0.0
         rec = self._record(h_prev, meet, dh_aut, junior, senior) if record else None
         self.t += 1
         return rec
@@ -116,6 +128,9 @@ class Model:
             "rent_ai": float(self.ai.output(self.t, float(pop.h.sum()), F) - w.sum()),
             "A": self.ai.productivity(self.t),
             "phi": self.ai.automation_share(self.t),
+            "savings": self.ai.savings(self.t, int(junior.sum())),
+            "w_firm": self.ai._w_j if getattr(self.ai, "a", None) is not None and self.ai.a.endogenous else 0.0,
+            "v_firm": self.ai.training_value(self.gain_prev_obs) if getattr(self.ai, "a", None) is not None and self.ai.a.endogenous else 0.0,
             "mean_h": float(pop.h.mean()),
             "mean_h_junior": masked_mean(pop.h, junior),
             "mean_h_mid": masked_mean(pop.h, mid),
@@ -124,7 +139,11 @@ class Model:
             "B_aut": float(g_aut.mean()) if j.size else np.nan,
             "gini_w": gini(w),
         }
+        rec["B_tutor"] = (float((self.last_tutor[j] / h_prev[j]).mean()) if j.size else np.nan) \
+            if self.last_tutor is not None else 0.0
         rec["B"] = rec["B_meet"] + rec["B_aut"]
+        if self.last_tutor is not None:
+            rec["B"] += rec["B_tutor"]
         rec["h_by_age"], rec["n_by_age"] = by_age(pop.h, pop.age, n_ages)
         rec["h_by_age_high"], _ = by_age(pop.h[pop.high], pop.age[pop.high], n_ages)
         rec["h_by_age_low"], _ = by_age(pop.h[~pop.high], pop.age[~pop.high], n_ages)

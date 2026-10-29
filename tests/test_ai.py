@@ -259,3 +259,69 @@ def test_policy_levers_scale_one_parameter_from_ai_start():
     assert tax.automation_share(t) == pytest.approx(0.9 * ai.automation_share(t))
     with pytest.raises(ValueError):
         Policy(cfg, "theta", 0.1)
+
+
+# --- E2 (ramo esteso): l'impresa sceglie phi -----------------------------------
+
+E2_CFG = with_ai("junior").with_overrides({"ai.endogenous": True, "ai.g": 0.05})
+
+
+def test_firm_choice_formula_and_chi():
+    r0 = run(E2_CFG)
+    s = E2_CFG.ai.start
+    assert (r0["phi"][:s] == 0).all() and r0["phi"][-1] > 0
+    a = E2_CFG.ai
+    t = np.arange(E2_CFG.T)
+    cost = a.c0 / np.where(t >= a.start, (1 + a.g) ** (t - a.start), 1.0)
+    want = a.phi_max * np.maximum(0.0, 1.0 - cost / r0["w_firm"])           # chi = 0: miope
+    np.testing.assert_allclose(r0["phi"][s:], want[s:])
+    assert (r0["savings"] >= 0).all() and (r0["savings"][:s] == 0).all() and r0["savings"][-1] > 0
+    r1 = run(E2_CFG.with_overrides({"ai.chi": 1.0}))
+    assert r1["phi"][-1] < r0["phi"][-1]                                     # internalizzare frena
+
+
+def test_firm_choice_requires_junior_tasks_and_fixed_share():
+    from skillcliff.ai import FixedShareFirm
+
+    with pytest.raises(ValueError):
+        with_ai("senior").with_overrides({"ai.endogenous": True})
+    r = run_model(E2_CFG, np.random.SeedSequence(4), FixedShareFirm(E2_CFG, phi=0.2))
+    s = E2_CFG.ai.start
+    assert (r["phi"][s:] == 0.2).all() and (r["phi"][:s] == 0).all()
+
+
+# --- E1 (ramo esteso): l'IA come tutor -------------------------------------------
+
+E1_CFG = with_ai("junior").with_overrides({"ai.tutor": True, "ai.beta_ai": 0.1})
+
+
+def test_tutor_formula_and_timing():
+    from skillcliff.model import Model
+
+    m = Model(E1_CFG, np.random.SeedSequence(12))
+    for _ in range(E1_CFG.burn_in + E1_CFG.ai.start + 6):
+        m.step(record=False)
+    pop = m.pop
+    junior = pop.exp < E1_CFG.roles.junior_max_exp
+    senior = pop.exp >= E1_CFG.roles.senior_min_exp
+    gain, factor = m.ai.tutor(m.t, pop.h, pop.f, junior, senior, pop.high, None)
+    assert factor is None                                          # effort = 0
+    g = True
+    target = 0.5 * pop.h[senior & (pop.high == g)].mean()
+    j = junior & (pop.high == g)
+    np.testing.assert_allclose(gain[j], 0.1 * pop.f[j] * np.maximum(0, target - pop.h[j]))
+    assert (gain[~junior] == 0).all()
+    r, b = run(E1_CFG), run(with_ai("junior"))
+    s = E1_CFG.ai.start
+    assert (r["B_tutor"][:s] == 0).all() and r["B_tutor"][s + 2] > 0
+    np.testing.assert_array_equal(r["H"][:s], b["H"][:s])
+    assert r["H"][-1] > b["H"][-1]
+
+
+def test_tutor_effort_lowers_autonomous_learning():
+    r0 = run(E1_CFG)
+    r1 = run(E1_CFG.with_overrides({"ai.effort": 0.5}))
+    s = E1_CFG.ai.start
+    assert r1["B_aut"][s + 5] < r0["B_aut"][s + 5]
+    with pytest.raises(ValueError):
+        E1_CFG.with_overrides({"ai.effort": 1.5})

@@ -74,6 +74,24 @@ class AICfg:
     # Con familiarity = false l'output torna Y = H (1 + theta (A - 1)).
     familiarity: bool = True
     gamma: float = 0.1
+    # E2 (ramo esteso, D30-D33): un'impresa rappresentativa sceglie ogni anno la quota phi dei compiti
+    # junior da automatizzare: phi = phi_max * max(0, 1 - c_t / (w_J - chi * v_t)), con c_t = c0 / A_t il costo
+    # dell'IA, w_J il salario medio dei junior e v_t il valore formativo di un anno da junior (guadagno medio
+    # dagli incontri, scontato con rho su `career` anni). chi = quota del valore formativo che l'impresa
+    # internalizza (0 = miope). Solo con target junior e margine compiti.
+    endogenous: bool = False
+    c0: float = 1.33
+    chi: float = 0.0
+    rho: float = 0.97
+    career: int = 40
+    # E1 (ramo esteso, D34-D36): l'IA come tutor. Ogni anno il junior occupato impara anche dall'IA:
+    # beta_ai * f_j * max(0, codifiable * hbar_S - h_j), con hbar_S il capitale umano medio dei senior della
+    # sua qualifica (l'IA ha imparato dai senior di oggi) e codifiable la quota di conoscenza codificabile.
+    # effort: calo dello sforzo, l'apprendimento autonomo del junior si riduce di (1 - effort * f_j) (Ide).
+    tutor: bool = False
+    beta_ai: float = 0.05
+    codifiable: float = 0.5
+    effort: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -103,6 +121,12 @@ class Config:
             raise ValueError("ai.margin_junior e ai.margin_senior devono essere 'compiti' o 'posto'")
         if not 0 <= self.meetings.separation <= 1:
             raise ValueError("meetings.separation deve stare in [0, 1]")
+        if not (0 <= self.ai.effort <= 1 and 0 <= self.ai.codifiable <= 1 and self.ai.beta_ai >= 0):
+            raise ValueError("ai.effort e ai.codifiable in [0, 1], ai.beta_ai >= 0")
+        if not 0 <= self.ai.chi <= 1:
+            raise ValueError("ai.chi deve stare in [0, 1]")
+        if self.ai.endogenous and (self.ai.target != "junior" or self.ai.margin_junior != "compiti"):
+            raise ValueError("ai.endogenous (E2) richiede target junior e margine compiti")
         if not 0 <= self.ai.gamma <= 1:
             raise ValueError("ai.gamma deve stare in [0, 1]")
         if self.demography.mode not in ("stationary",):
