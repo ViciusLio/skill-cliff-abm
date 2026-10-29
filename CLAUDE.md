@@ -67,5 +67,7 @@ make site         # sito in locale, porta 8000
 
 - `report/piano_v2.md`: task list della seconda versione dell'articolo base (decisioni D21–D28 prese).
   La prima versione è congelata nel tag `articolo-v1` e in `site/articolo_v1.pdf`: non modificarli.
+- `paper/it/articolo_it.tex` traduce `paper/main.tex`: quando cambia l'articolo, aggiorna anche la traduzione
+  (`make paper-it`) o di' che è rimasta indietro.
 - `report/nota_calibrazione.md`: calibrazione e soglia di crescita R.
 - Affiliazioni e ruoli CRediT nell'articolo: segnaposto, da completare.
