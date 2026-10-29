@@ -29,6 +29,11 @@ globals [
   mean-h mean-h-junior mean-h-mid mean-h-senior
   n-junior n-mid n-senior n-meetings n-out
   n-pairs                    ; coppie stabili in corso (prima dei nuovi abbinamenti dell'anno)
+  ; E2: impresa che sceglie phi
+  w-firm v-firm cost-ai savings
+  gain-prev                  ; guadagno medio dei junior dagli incontri nell'anno precedente
+  ; E1: IA tutor
+  B-tutor
 ]
 
 turtles-own [
@@ -43,6 +48,7 @@ turtles-own [
   gain         ; guadagno dagli incontri nell'anno
   dh           ; guadagno totale nell'anno
   met?         ; ha imparato da un senior nell'anno
+  tutor-gain   ; E1: guadagno dall'IA tutor nell'anno
 ]
 
 ;; ---------------------------------------------------------------------------------------------
@@ -50,6 +56,9 @@ turtles-own [
 
 to setup
   clear-all
+  if endogenous? and not (ai-target = "junior" and margin-junior = "compiti") [
+    error "E2 (endogenous?) richiede ai-target = junior e margin-junior = compiti"
+  ]
   set t (- burn-in)
   create-turtles n-workers [
     init-worker
@@ -115,7 +124,8 @@ to step
   let juniors turtles with [experience < junior-max-exp]
   let seniors turtles with [experience >= senior-min-exp]
 
-  ; 4. IA: moltiplicatori degli incontri e junior non occupati
+  ; 4. IA: E2, l'impresa sceglie phi guardando i junior di inizio anno; poi moltiplicatori e non occupati
+  if ai-on? and endogenous? [ firm-choice juniors ]
   update-modifiers
   ask turtles [ set out? false ]
   if ai-on? and hits-junior? and margin-junior = "posto" [
@@ -171,13 +181,34 @@ to step
   ]
   set p-eff ifelse-value (n-seekers > 0) [p-weighted / n-seekers] [0]
 
+  ; E1: l'IA tutor, addestrata sui senior di oggi della stessa qualifica, insegna la parte codificabile
+  ask turtles [ set tutor-gain 0 ]
+  let tutor-on? ai-on? and tutor? and t >= ai-start
+  if tutor-on? [
+    foreach [false true] [ grp ->
+      let ss seniors with [high? = grp]
+      let js juniors with [high? = grp and not out?]
+      if any? ss and any? js [
+        let target codifiable * mean [h-prev] of ss
+        ask js [ set tutor-gain beta-ai * f * max list 0 (target - h-prev) ]
+      ]
+    ]
+  ]
+
   ; 7. apprendimento autonomo (alla Ben-Porath) e obsolescenza; i non occupati perdono solo d h
+  ; E1: con il tutor, chi usa l'IA si sforza meno (solo i junior occupati): delta(s) * (1 - effort * f)
+  let effort-on? tutor-on? and effort > 0
   ask turtles [
     ifelse out?
       [ set dh (- depreciation * h-prev) ]
-      [ set dh gain + (delta0 * max list 0 (1 - experience / horizon) - depreciation) * h-prev ]
+      [
+        let delta delta0 * max list 0 (1 - experience / horizon)
+        if effort-on? and experience < junior-max-exp [ set delta delta * (1 - effort * f) ]
+        set dh gain + tutor-gain + (delta - depreciation) * h-prev
+      ]
     set h h-prev + dh
   ]
+  set gain-prev ifelse-value any? juniors [mean [gain] of juniors] [0]
 
   ; 8. metriche
   if t >= 0 [ record juniors seniors ]
@@ -197,9 +228,19 @@ to-report familiarity-on?
 end
 
 to update-ai
-  ; A_t = (1 + g)^(t - t0) per t >= t0;  phi_t = phi_max (1 - 1/A_t)
+  ; A_t = (1 + g)^(t - t0) per t >= t0;  phi_t = phi_max (1 - 1/A_t), o scelto dall'impresa (E2)
   set A ifelse-value (ai-on? and t >= ai-start) [(1 + g) ^ (t - ai-start)] [1]
-  set phi ifelse-value ai-on? [phi-max * (1 - 1 / A)] [0]
+  if not (ai-on? and endogenous?) [ set phi ifelse-value ai-on? [phi-max * (1 - 1 / A)] [0] ]
+end
+
+;; E2: phi = phi_max * max(0, 1 - c_t / (w_J - chi * v_t)), c_t = c0 / A_t; v_t = valore formativo di un anno da
+;; junior (guadagno medio dagli incontri dell'anno prima, scontato con rho su career-years anni)
+to firm-choice [juniors]
+  set w-firm ifelse-value any? juniors [mean [h] of juniors] [0]
+  set v-firm gain-prev * sum map [k -> rho ^ k] (range 1 (career-years + 1))
+  set cost-ai c0 / A
+  let perceived w-firm - chi * v-firm
+  set phi ifelse-value (t >= ai-start and perceived > 0) [phi-max * max list 0 (1 - cost-ai / perceived)] [0]
 end
 
 to-report hits-junior?
@@ -261,8 +302,15 @@ to record [juniors seniors]
   set mean-h-senior ifelse-value any? seniors [mean [h] of seniors] [0]
   ; B: crescita media del capitale umano dei junior (da incontri e autonoma)
   set B-meet ifelse-value any? juniors [mean [gain / h-prev] of juniors] [0]
-  set B-aut ifelse-value any? juniors [mean [(dh - gain) / h-prev] of juniors] [0]
-  set B-total B-meet + B-aut
+  set B-aut ifelse-value any? juniors [mean [(dh - gain - tutor-gain) / h-prev] of juniors] [0]
+  set B-tutor ifelse-value any? juniors [mean [tutor-gain / h-prev] of juniors] [0]
+  set B-total B-meet + B-aut + B-tutor
+  ; E2: risparmio dell'impresa (compiti x in [0, 1] con costo dell'IA c_t / (1 - x), automatizzati se x < phi / phi-max)
+  set savings 0
+  if ai-on? and endogenous? and t >= ai-start and phi > 0 [
+    let x phi / phi-max
+    set savings n-junior * phi-max * (w-firm * x + cost-ai * ln (1 - x))
+  ]
   ; output, salari e rendita dell'IA (D18)
   let wages [h] of turtles
   ifelse familiarity-on? [
@@ -1008,12 +1056,214 @@ true
 "" ""
 PENS
 "Gini" 1.0 0 -2674135 true "" "if t > 0 [ plotxy (t - 1) gini-w ]"
+
+TEXTBOX
+5
+640
+200
+658
+E2: l'impresa sceglie φ
+12
+0.0
+1
+
+SWITCH
+5
+660
+200
+693
+endogenous?
+endogenous?
+1
+1
+-1000
+
+SLIDER
+5
+696
+200
+729
+c0
+c0
+0.5
+3
+1.33
+0.01
+1
+NIL
+HORIZONTAL
+
+SLIDER
+5
+732
+200
+765
+chi
+chi
+0
+1
+0
+0.05
+1
+NIL
+HORIZONTAL
+
+SLIDER
+5
+768
+200
+801
+rho
+rho
+0.9
+1
+0.97
+0.005
+1
+NIL
+HORIZONTAL
+
+SLIDER
+5
+804
+200
+837
+career-years
+career-years
+10
+50
+40
+1
+1
+NIL
+HORIZONTAL
+
+TEXTBOX
+210
+640
+405
+658
+E1: l'IA come tutor
+12
+0.0
+1
+
+SWITCH
+210
+660
+405
+693
+tutor?
+tutor?
+1
+1
+-1000
+
+SLIDER
+210
+696
+405
+729
+beta-ai
+beta-ai
+0
+0.2
+0.05
+0.005
+1
+NIL
+HORIZONTAL
+
+SLIDER
+210
+732
+405
+765
+codifiable
+codifiable
+0
+1
+0.5
+0.05
+1
+NIL
+HORIZONTAL
+
+SLIDER
+210
+768
+405
+801
+effort
+effort
+0
+1
+0
+0.05
+1
+NIL
+HORIZONTAL
+
+MONITOR
+415
+660
+510
+705
+φ
+phi
+3
+1
+11
+
+MONITOR
+515
+660
+610
+705
+B tutor
+B-tutor
+4
+1
+11
+
+PLOT
+625
+686
+925
+856
+Quota automatizzata φ (E2)
+anno
+φ
+0.0
+60.0
+0.0
+0.6
+true
+true
+"" ""
+PENS
+"φ" 1.0 0 -2674135 true "" "if t > 0 [ plotxy (t - 1) phi ]"
 @#$#@#$#@
 ## COS'È
 
 La *skill cliff*: un modello ad agenti sulla trasmissione del capitale umano tra senior e junior e sugli effetti ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio.
 
 Questa è la **versione estesa** (ramo `esteso`), in costruzione. Con i meccanismi nuovi spenti è il gemello NetLogo del modello della **prima versione dell'articolo** (tag git `articolo-v1` del repository `ViciusLio/skill-cliff-abm`), cioè la fase 2 con le revisioni D16–D20. L'implementazione di riferimento è in Python (`src/skillcliff`): le regole sono le stesse, nello stesso ordine. I numeri casuali sono diversi, quindi i due modelli coincidono in distribuzione, non run per run. Il confronto statistico è in `scripts/docking_netlogo.py`.
+
+## VERSIONE ESTESA (ramo esteso)
+
+Con gli interruttori nuovi spenti il modello coincide con quello della prima versione. Meccanismi in più:
+
+- **E2, l'impresa sceglie quanto automatizzare** (`endogenous?`, solo con `ai-target` = junior e `margin-junior` =
+  compiti). Ogni anno phi = phi-max · max(0, 1 − c_t / (w_J − chi · v_t)), con c_t = c0 / A il costo dell'IA, w_J il
+  salario medio dei junior e v_t il valore formativo di un anno da junior (guadagno medio dagli incontri dell'anno
+  prima, scontato con `rho` su `career-years` anni). `chi` = quota del valore formativo che l'impresa internalizza
+  (0 = miope). `savings` = risparmio dell'impresa dall'automazione.
+- **E1, l'IA come tutor** (`tutor?`). Dall'arrivo dell'IA il junior occupato impara anche dall'IA:
+  beta-ai · f · max(0, codifiable · h medio dei senior della sua qualifica − h). Con `effort` > 0 chi usa l'IA si
+  sforza meno: l'apprendimento autonomo del junior si riduce di (1 − effort · f).
+
+BehaviorSpace ha in più gli esperimenti `e2_impresa_miope`, `e2_impresa_chi_0.5`, `e1_tutor`, `e1_tutor_sforzo`.
 
 ## COME FUNZIONA
 
@@ -1402,6 +1652,11 @@ setup</setup>
     <metric>n-out</metric>
     <metric>n-pairs</metric>
     <metric>n-meetings</metric>
+    <metric>phi</metric>
+    <metric>savings</metric>
+    <metric>w-firm</metric>
+    <metric>v-firm</metric>
+    <metric>B-tutor</metric>
     <runMetricsCondition>t &gt; 0</runMetricsCondition>
     <enumeratedValueSet variable="show-agents?">
       <value value="false"/>
@@ -1432,6 +1687,11 @@ setup</setup>
     <metric>n-out</metric>
     <metric>n-pairs</metric>
     <metric>n-meetings</metric>
+    <metric>phi</metric>
+    <metric>savings</metric>
+    <metric>w-firm</metric>
+    <metric>v-firm</metric>
+    <metric>B-tutor</metric>
     <runMetricsCondition>t &gt; 0</runMetricsCondition>
     <enumeratedValueSet variable="show-agents?">
       <value value="false"/>
@@ -1465,6 +1725,11 @@ setup</setup>
     <metric>n-out</metric>
     <metric>n-pairs</metric>
     <metric>n-meetings</metric>
+    <metric>phi</metric>
+    <metric>savings</metric>
+    <metric>w-firm</metric>
+    <metric>v-firm</metric>
+    <metric>B-tutor</metric>
     <runMetricsCondition>t &gt; 0</runMetricsCondition>
     <enumeratedValueSet variable="show-agents?">
       <value value="false"/>
@@ -1498,6 +1763,11 @@ setup</setup>
     <metric>n-out</metric>
     <metric>n-pairs</metric>
     <metric>n-meetings</metric>
+    <metric>phi</metric>
+    <metric>savings</metric>
+    <metric>w-firm</metric>
+    <metric>v-firm</metric>
+    <metric>B-tutor</metric>
     <runMetricsCondition>t &gt; 0</runMetricsCondition>
     <enumeratedValueSet variable="show-agents?">
       <value value="false"/>
@@ -1531,6 +1801,11 @@ setup</setup>
     <metric>n-out</metric>
     <metric>n-pairs</metric>
     <metric>n-meetings</metric>
+    <metric>phi</metric>
+    <metric>savings</metric>
+    <metric>w-firm</metric>
+    <metric>v-firm</metric>
+    <metric>B-tutor</metric>
     <runMetricsCondition>t &gt; 0</runMetricsCondition>
     <enumeratedValueSet variable="show-agents?">
       <value value="false"/>
@@ -1564,6 +1839,11 @@ setup</setup>
     <metric>n-out</metric>
     <metric>n-pairs</metric>
     <metric>n-meetings</metric>
+    <metric>phi</metric>
+    <metric>savings</metric>
+    <metric>w-firm</metric>
+    <metric>v-firm</metric>
+    <metric>B-tutor</metric>
     <runMetricsCondition>t &gt; 0</runMetricsCondition>
     <enumeratedValueSet variable="show-agents?">
       <value value="false"/>
@@ -1594,6 +1874,11 @@ setup</setup>
     <metric>n-out</metric>
     <metric>n-pairs</metric>
     <metric>n-meetings</metric>
+    <metric>phi</metric>
+    <metric>savings</metric>
+    <metric>w-firm</metric>
+    <metric>v-firm</metric>
+    <metric>B-tutor</metric>
     <runMetricsCondition>t &gt; 0</runMetricsCondition>
     <enumeratedValueSet variable="show-agents?">
       <value value="false"/>
@@ -1609,6 +1894,170 @@ setup</setup>
     </enumeratedValueSet>
     <enumeratedValueSet variable="beta">
       <value value="0.0754"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="e2_impresa_miope" repetitions="10" runMetricsEveryStep="true">
+    <setup>random-seed (20261008 + behaviorspace-run-number)
+setup</setup>
+    <go>go</go>
+    <timeLimit steps="360"/>
+    <metric>t</metric>
+    <metric>H-agg</metric>
+    <metric>Y</metric>
+    <metric>B-meet</metric>
+    <metric>B-aut</metric>
+    <metric>mean-h</metric>
+    <metric>mean-h-junior</metric>
+    <metric>mean-h-senior</metric>
+    <metric>gini-w</metric>
+    <metric>F-users</metric>
+    <metric>rent</metric>
+    <metric>p-eff</metric>
+    <metric>n-junior</metric>
+    <metric>n-senior</metric>
+    <metric>n-out</metric>
+    <metric>n-pairs</metric>
+    <metric>n-meetings</metric>
+    <metric>phi</metric>
+    <metric>savings</metric>
+    <metric>w-firm</metric>
+    <metric>v-firm</metric>
+    <metric>B-tutor</metric>
+    <runMetricsCondition>t &gt; 0</runMetricsCondition>
+    <enumeratedValueSet variable="show-agents?">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ai-target">
+      <value value="&quot;junior&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="endogenous?">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="e2_impresa_chi_0.5" repetitions="10" runMetricsEveryStep="true">
+    <setup>random-seed (20261008 + behaviorspace-run-number)
+setup</setup>
+    <go>go</go>
+    <timeLimit steps="360"/>
+    <metric>t</metric>
+    <metric>H-agg</metric>
+    <metric>Y</metric>
+    <metric>B-meet</metric>
+    <metric>B-aut</metric>
+    <metric>mean-h</metric>
+    <metric>mean-h-junior</metric>
+    <metric>mean-h-senior</metric>
+    <metric>gini-w</metric>
+    <metric>F-users</metric>
+    <metric>rent</metric>
+    <metric>p-eff</metric>
+    <metric>n-junior</metric>
+    <metric>n-senior</metric>
+    <metric>n-out</metric>
+    <metric>n-pairs</metric>
+    <metric>n-meetings</metric>
+    <metric>phi</metric>
+    <metric>savings</metric>
+    <metric>w-firm</metric>
+    <metric>v-firm</metric>
+    <metric>B-tutor</metric>
+    <runMetricsCondition>t &gt; 0</runMetricsCondition>
+    <enumeratedValueSet variable="show-agents?">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ai-target">
+      <value value="&quot;junior&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="endogenous?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="chi">
+      <value value="0.5"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="e1_tutor" repetitions="10" runMetricsEveryStep="true">
+    <setup>random-seed (20261008 + behaviorspace-run-number)
+setup</setup>
+    <go>go</go>
+    <timeLimit steps="360"/>
+    <metric>t</metric>
+    <metric>H-agg</metric>
+    <metric>Y</metric>
+    <metric>B-meet</metric>
+    <metric>B-aut</metric>
+    <metric>mean-h</metric>
+    <metric>mean-h-junior</metric>
+    <metric>mean-h-senior</metric>
+    <metric>gini-w</metric>
+    <metric>F-users</metric>
+    <metric>rent</metric>
+    <metric>p-eff</metric>
+    <metric>n-junior</metric>
+    <metric>n-senior</metric>
+    <metric>n-out</metric>
+    <metric>n-pairs</metric>
+    <metric>n-meetings</metric>
+    <metric>phi</metric>
+    <metric>savings</metric>
+    <metric>w-firm</metric>
+    <metric>v-firm</metric>
+    <metric>B-tutor</metric>
+    <runMetricsCondition>t &gt; 0</runMetricsCondition>
+    <enumeratedValueSet variable="show-agents?">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ai-target">
+      <value value="&quot;junior&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="tutor?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="beta-ai">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="e1_tutor_sforzo" repetitions="10" runMetricsEveryStep="true">
+    <setup>random-seed (20261008 + behaviorspace-run-number)
+setup</setup>
+    <go>go</go>
+    <timeLimit steps="360"/>
+    <metric>t</metric>
+    <metric>H-agg</metric>
+    <metric>Y</metric>
+    <metric>B-meet</metric>
+    <metric>B-aut</metric>
+    <metric>mean-h</metric>
+    <metric>mean-h-junior</metric>
+    <metric>mean-h-senior</metric>
+    <metric>gini-w</metric>
+    <metric>F-users</metric>
+    <metric>rent</metric>
+    <metric>p-eff</metric>
+    <metric>n-junior</metric>
+    <metric>n-senior</metric>
+    <metric>n-out</metric>
+    <metric>n-pairs</metric>
+    <metric>n-meetings</metric>
+    <metric>phi</metric>
+    <metric>savings</metric>
+    <metric>w-firm</metric>
+    <metric>v-firm</metric>
+    <metric>B-tutor</metric>
+    <runMetricsCondition>t &gt; 0</runMetricsCondition>
+    <enumeratedValueSet variable="show-agents?">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ai-target">
+      <value value="&quot;junior&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="tutor?">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="beta-ai">
+      <value value="0.1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="effort">
+      <value value="0.25"/>
     </enumeratedValueSet>
   </experiment>
 </experiments>
