@@ -43,7 +43,7 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 
 - **Prima versione** dell'articolo congelata (tag `articolo-v1`), con traduzione italiana e modello NetLogo verificato
   contro il Python (differenza massima 0,25%).
-- **Seconda versione** (questo ramo): articolo riorganizzato attorno a due risultati (il ritardo di dieci anni e
+- **Seconda versione** (ramo `main`): articolo riorganizzato attorno a due risultati (il ritardo di dieci anni e
   l'equivalenza tra perdere occasioni e perdere efficacia), bibliografia da 18 a 49 voci verificate, validazione sulle
   coorti della recessione, politiche quantificate, sensibilità globale; traduzione italiana aggiornata. Restano
   affiliazioni e ruoli CRediT, la rigenerazione completa e l'invio (JASSS o SCED).
