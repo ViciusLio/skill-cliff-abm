@@ -22,7 +22,8 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 - **Verso la seconda versione dell'articolo**: [revisione critica](report/revisione_articolo.md) e [piano di lavoro](report/piano_v2.md).
   `main` resta la versione base del modello; la versione estesa (imprese, IA come tutor, dati italiani) cresce nel ramo
   [`esteso`](https://github.com/ViciusLio/skill-cliff-abm/tree/esteso), verso un secondo articolo.
-  La prima versione resta disponibile: [PDF](https://viciuslio.github.io/skill-cliff-abm/articolo_v1.pdf) e tag git `articolo-v1`.
+  La prima versione resta disponibile: [PDF](https://viciuslio.github.io/skill-cliff-abm/articolo_v1.pdf),
+  [traduzione italiana](https://viciuslio.github.io/skill-cliff-abm/articolo_v1_it.pdf) e tag git `articolo-v1`.
 
 ---
 
