@@ -72,8 +72,8 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
 - [ ] **T5b – Gli articoli in italiano** (richiesta di Vincenzo, 29 ottobre), per una lettura con calma:
   - [x] la prima versione (`articolo-v1`), tradotta dal tag, senza modificarlo: `paper/it/articolo_v1_it.tex`,
     PDF in `site/articolo_v1_it.pdf` (29 ottobre);
-  - [ ] la versione base in lavorazione, tradotta alla fine di T1 e T4 (prima sarebbe da rifare), poi aggiornata a ogni
-    tag;
+  - [x] la versione base in lavorazione, tradotta dopo T1–T10a: `paper/it/articolo_it.tex`, PDF in
+    `site/articolo_it.pdf` (29 ottobre); da aggiornare quando cambia `paper/main.tex`;
   - stesse figure in italiano di `report/fig`; i PDF anche sul sito.
   - *Fatto quando:* PDF compilati, numeri identici all'originale inglese, link nel README.
 - [ ] **T5 – Dati degli autori:** affiliazioni, ruoli CRediT, ringraziamenti, finanziamenti (servono da Vincenzo e
