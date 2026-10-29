@@ -4,6 +4,15 @@ Progetto: ABM sulla trasmissione del capitale umano tra senior e junior e sull'e
 (la *skill cliff*). Autori: Federico Bassi e Vincenzo Lio (in quest'ordine, alfabetico; Lio è
 l'autore di riferimento). Il README racconta il lavoro; `report/` contiene sintesi, numeri e decisioni.
 
+## Rami
+
+- **`main` è la versione base**: articolo 1, sito, lezione, NetLogo. Qui non si aggiungono meccanismi al
+  modello: testo, analisi e verifiche (piano in `report/piano_v2.md`).
+- **`esteso` è la versione complessa** (secondo articolo, piano in `report/piano_esteso.md` su quel ramo).
+  `main` confluisce in `esteso` (merge), mai il contrario senza una decisione. Un errore che tocca anche la base
+  si corregge prima su `main`. Su `esteso` non si modifica `paper/main.tex`.
+- Prima di lavorare controlla il ramo con `git branch --show-current`.
+
 ## Come lavoriamo
 
 - **Prima il piano, poi il codice.** Le scelte di modellazione ambigue si decidono insieme in formato
@@ -53,7 +62,7 @@ make site         # sito in locale, porta 8000
 
 ## Lavori aperti
 
-- `report/piano_v2.md`: task list della seconda versione dell'articolo (decisioni D21–D26 da prendere).
+- `report/piano_v2.md`: task list della seconda versione dell'articolo base (decisioni D21–D28 prese).
   La prima versione è congelata nel tag `articolo-v1` e in `site/articolo_v1.pdf`: non modificarli.
 - `report/nota_calibrazione.md`: calibrazione e soglia di crescita R.
 - Affiliazioni e ruoli CRediT nell'articolo: segnaposto, da completare.

@@ -157,5 +157,9 @@ SMM e il legame con la crescita.
 | D25 | Struttura | **A** quattro scenari nel testo, varianti in robustezza o appendice. B tenere tutto nel testo. |
 | D26 | Calibrazione | **A** SMM su 6–8 momenti più Sobol. B solo Sobol sulla calibrazione attuale. |
 
-Ordine proposto: D25 e bibliografia (subito, sono solo testo), D24 e D23 (bassi costi, alto guadagno), D22, D26, poi
+**Decise il 29 ottobre 2026** (tutte A, con una strategia che cambia D21 e sposta D22, D23 e parte di D26 nel ramo
+`esteso`): vedi [piano_v2.md](piano_v2.md). Si accetta un modello di capitale umano senza scelte economiche, da
+dichiarare come scelta di metodo; rivista JASSS o SCED.
+
+Ordine proposto in origine: D25 e bibliografia (subito, sono solo testo), D24 e D23 (bassi costi, alto guadagno), D22, D26, poi
 demografia e crescita se si punta a JEDC.
