@@ -6,7 +6,7 @@ ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro i
 [![Apri in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ViciusLio/skill-cliff-abm?quickstart=1)
 
 - **Per tutti**: [La bottega vuota](Medium/la_bottega_vuota.md), articolo divulgativo sulle conclusioni dei modelli
-  (Medium, circa 12 minuti)
+  (Medium, circa 13 minuti; versione base ed estesa)
 - **Articolo** (bozza, in inglese): [articolo](https://viciuslio.github.io/skill-cliff-abm/paper.pdf), sorgente [`paper/main.tex`](paper/main.tex);
   [traduzione italiana](https://viciuslio.github.io/skill-cliff-abm/articolo_it.pdf) della versione in lavorazione
 - **Lezione**: [lezione](https://viciuslio.github.io/skill-cliff-abm/lezione.html)

@@ -4,7 +4,7 @@
 
 ---
 
-Questo articolo racconta i risultati di un modello costruito con Federico Bassi, ed è nato in dialogo con un'intelligenza artificiale, che mi ha aiutato a scrivere il codice, a controllare i numeri e a criticare le mie idee. Le tesi, le scelte e gli errori sono nostri.
+Questo articolo racconta i risultati di un modello costruito con Federico Bassi, in una versione base e in una estesa ancora in costruzione. È nato in dialogo con un'intelligenza artificiale, che mi ha aiutato a scrivere il codice, a controllare i numeri e a criticare le mie idee. Le tesi, le scelte e gli errori sono nostri.
 
 ---
 
@@ -24,7 +24,7 @@ La domanda di questo articolo è semplice: **fra quindici anni, quando Ruggiero 
 
 Do subito un nome alle due figure, perché ci accompagneranno fino alla fine. Chiamo **junior** chi è all'inizio e impara: Marta. Chiamo **senior** chi ha esperienza e insegna: Ruggiero. E chiamo **incontro** ogni occasione in cui il primo impara dal secondo lavorando: un capitolo corretto, un pomeriggio in laboratorio, una discussione dopo il seminario.
 
-Vale un patto, come sempre: quello che segue viene da un modello, non dai dati. I numeri indicano direzioni e ordini di grandezza, non previsioni. E l'università è solo l'esempio: lo stesso vale per un'officina, uno studio professionale, un ospedale, un'azienda.
+Vale un patto, come sempre: quello che segue viene da un modello, non dai dati. I numeri indicano direzioni e ordini di grandezza, non previsioni. I risultati della versione estesa, che racconto in una sezione a parte, sono ancora più provvisori. E l'università è solo l'esempio: lo stesso vale per un'officina, uno studio professionale, un ospedale, un'azienda.
 
 ## Un numero che nessuno spiegava
 
@@ -51,6 +51,8 @@ Le nostre persone sono cinquemila lavoratori. Ogni anno:
 - **chi arriva a 65 anni va in pensione** e al suo posto entra un giovane.
 
 Tutto qui. Nessuno sceglie niente: le persone seguono le regole. È una scelta voluta: prima vogliamo capire bene il meccanismo, poi aggiungere i comportamenti.
+
+Questa è la **versione base**, quella dell'articolo scientifico. Poi ce n'è una **versione estesa**, in cui aggiungiamo un pezzo alla volta quello che la base lascia fuori: un'impresa che sceglie, un'IA che insegna. La racconto più avanti, in una sezione a parte.
 
 Con queste regole il modello riproduce due cose vere. Lo stipendio cresce lentamente e smette di salire dopo circa 34 anni di carriera, come nel settore privato italiano. E il 62% di quello che impara un junior viene dagli incontri con i senior.
 
@@ -111,19 +113,33 @@ Perché il conto non lo paga il dipartimento. Il dipartimento risparmia ore di c
 
 È la stessa struttura dell'inquinamento: chi inquina ha un vantaggio subito, chi paga è lontano nel tempo e spesso non è ancora nato.
 
-Nel modello lo misuriamo in due modi.
+Nella versione base lo misuriamo così: un'impresa e un pianificatore che pensa al bene comune scelgono quanta parte del lavoro dei junior automatizzare. L'impresa sceglie il 30%. Il pianificatore che guarda a cinquant'anni sceglie il 9%. E la scelta dell'impresa, su cinquant'anni, vale meno di non automatizzare affatto.
 
-Nel primo, un'impresa e un pianificatore che pensa al bene comune scelgono quanta parte del lavoro dei junior automatizzare. L'impresa sceglie il 30%. Il pianificatore che guarda a cinquant'anni sceglie il 9%. E la scelta dell'impresa, su cinquant'anni, vale meno di non automatizzare affatto. Su dieci anni le due scelte quasi coincidono: chi ragiona sul bilancio dell'anno, o sul prossimo ciclo elettorale, sceglie come l'impresa, perché il danno arriva dopo.
+Su dieci anni, invece, le due scelte quasi coincidono. Chi ragiona sul bilancio dell'anno, o sul prossimo ciclo elettorale, sceglie come l'impresa, perché il danno arriva dopo. È la scogliera vista da chi decide: per dieci anni il conto non arriva, e quando arriva è tardi.
 
-Nel secondo, nella versione più ricca del modello che stiamo costruendo, l'impresa sceglie ogni anno, guardando quanto costano un junior e l'IA. Un'impresa miope automatizza quasi quanto il caso peggiore, e ottiene circa metà del valore che potrebbe ottenere. Un'impresa che tiene conto di tre quarti di quello che i suoi junior imparano aspetta circa trentacinque anni, poi automatizza comunque.
+## La versione estesa: quando il modello si complica
 
-Questa è la cosa che mi sembra più utile da dire a chi decide. **L'ottimo non è automatizzare meno. È automatizzare più tardi**, quando chi deve imparare ha già imparato.
+La versione base ha due semplificazioni che un economista nota subito. Nessuno sceglie niente: la quota di lavoro automatizzata cresce da sola, con la potenza dell'IA. E l'IA toglie e basta: non insegna niente a nessuno. Nella versione estesa abbiamo tolto queste due semplificazioni, una alla volta, controllando ogni volta che, spente le aggiunte, il modello tornasse identico alla base.
 
-## E se l'IA facesse da maestra?
+### Un'impresa che sceglie
 
-C'è un'obiezione seria a tutto questo, e vale la pena prenderla sul serio. Gli esperimenti dicono che l'IA aiuta soprattutto chi ha meno esperienza. Se Marta può chiedere all'IA perché quella frase sembra un risultato non dimostrato, non le serve Ruggiero.
+La prima aggiunta è un'impresa che ogni anno decide quanto lavoro dei junior affidare all'IA. Il criterio è quello di qualunque bilancio: automatizza i compiti per cui l'IA costa meno di un junior. All'inizio l'IA costa cara e si automatizza poco; poi diventa più economica e si automatizza di più. Abbiamo regolato i costi in modo che, dopo dieci anni, l'impresa automatizzi la stessa quota della versione base.
 
-Lo abbiamo messo nel modello. Il junior impara anche dall'IA, che però sa solo quello che ha imparato dai senior di oggi, e solo la parte che si può scrivere. E chi usa l'IA, forse, si sforza un po' meno di imparare da solo.
+Il primo risultato è quasi una conferma. Un'impresa miope, che guarda solo ai costi di oggi, si comporta quasi come la versione base: dopo cinquant'anni il capitale umano è più basso del 5,1% invece del 5,2%. La piccola differenza ha una spiegazione curiosa: i junior formati peggio valgono meno sul mercato, quindi costano meno, e l'impresa ha un po' meno convenienza a sostituirli.
+
+Il secondo risultato è quello nuovo. Facciamo in modo che l'impresa tenga conto di una parte di quello che i suoi junior imparano lavorando, del loro valore formativo. Un'impresa miope ottiene circa metà del valore che potrebbe ottenere, sommando produzione e risparmi su cinquant'anni. Un'impresa che tiene conto di tre quarti del valore formativo ottiene il valore più alto tra quelli che abbiamo provato. Ma non smette di automatizzare. Aspetta: per circa trentacinque anni non tocca il lavoro dei junior, poi automatizza comunque un terzo dei loro compiti.
+
+Questa è la cosa che mi sembra più utile da dire a chi decide. **L'ottimo non è automatizzare meno. È automatizzare più tardi**, quando chi deve imparare ha già imparato. È il passo in più rispetto alla versione base, dove impresa e pianificatore sceglievano una quota fissa: anche la migliore quota fissa fa peggio dell'impresa che aspetta. Conta il *quando*, più del *quanto*.
+
+Un esempio dal dipartimento. Un dipartimento lungimirante non rinuncia all'assistente IA. Lo usa per le pratiche, le bibliografie, le traduzioni, e lascia a Marta i capitoli da scrivere e a Ruggiero quelli da correggere, finché Marta non sa scriverli da sola.
+
+Quanto dovrebbe costare l'automazione, con un contributo pubblico, perché anche l'impresa miope scelga così? Nel modello, quasi il triplo del costo dell'IA. È un numero da prendere con le pinze, perché dipende da come si misura il valore formativo di un anno da junior. Ma dice una cosa vera: quel valore è grande, circa due terzi di uno stipendio da junior, e nessun bilancio lo vede.
+
+### Un'IA che insegna
+
+La seconda aggiunta risponde a un'obiezione seria, che vale la pena prendere sul serio. Gli esperimenti dicono che l'IA aiuta soprattutto chi ha meno esperienza. Se Marta può chiedere all'IA perché quella frase sembra un risultato non dimostrato, non le serve Ruggiero.
+
+Attenzione a non confonderla con la leva che vedremo tra poco, l'IA che aiuta Ruggiero a insegnare meglio: qui l'IA insegna direttamente a Marta. Nella versione estesa il junior impara anche dall'IA, che però sa solo quello che ha imparato dai senior di oggi, e solo la parte che si può scrivere. E chi usa l'IA, forse, si sforza un po' meno di imparare da solo.
 
 La risposta dipende quasi solo da una cosa: **quanta parte della conoscenza di Ruggiero l'IA riesce a catturare**.
 
@@ -134,6 +150,10 @@ La risposta dipende quasi solo da una cosa: **quanta parte della conoscenza di R
 Un esempio dal dipartimento. L'IA può spiegare a Marta un teorema meglio di molti libri. Può anche dirle, in astratto, che certe frasi promettono più di quello che dimostrano. Più difficile che sappia come leggerà quel capitolo il revisore di quella rivista, o quale domanda le farà la commissione. Ruggiero lo sa perché c'era.
 
 Dove l'esempio si rompe: nessuno sa davvero quanta parte di quella conoscenza le prossime IA riusciranno a catturare. Il modello non risponde a questa domanda. Dice che è la domanda giusta.
+
+### Provarlo con le proprie mani
+
+Anche la versione estesa esiste in NetLogo, il programma con cui molti scienziati sociali costruiscono questi modelli. Si accende l'impresa che sceglie, si sposta il cursore del valore formativo, e si vede l'automazione slittare di decenni.
 
 ## Che cosa può fare chi decide
 
@@ -158,9 +178,10 @@ E per chi governa, il consiglio è misurare prima che sia tardi. Quando il calo 
 
 Un modello è una mappa, non il territorio. Ecco i suoi limiti principali.
 
-- **Nessuno sceglie** nella versione base: né i lavoratori, né le imprese (tranne nella versione estesa, che è ancora in costruzione). Non ci sono prezzi, né mercati.
+- **Nella versione base nessuno sceglie**: né i lavoratori, né le imprese. Non ci sono prezzi, né mercati. La versione estesa aggiunge un'impresa, ma una sola: nessuno si contende i junior formati, e chi forma un giovane non lo perde. È il prossimo passo.
 - **L'economia non cresce**: la perdita è di livello, non di velocità di crescita. Alla lunga si ferma.
-- **Diversi numeri sono scelti a mano.** Per questo li abbiamo fatti variare tutti insieme su intervalli ampi, in 704 combinazioni: i livelli cambiano, ma il segno no. La perdita di competenze dovuta all'IA non diventa mai un guadagno, e l'impresa automatizza sempre troppo.
+- **Diversi numeri sono scelti a mano.** Per questo, nella versione base, li abbiamo fatti variare tutti insieme su intervalli ampi, in 704 combinazioni: i livelli cambiano, ma il segno no. La perdita di competenze dovuta all'IA non diventa mai un guadagno, e l'impresa automatizza sempre troppo.
+- **Nella versione estesa due numeri decidono quasi tutto** e nessuno li conosce: quanto vale, davvero, un anno da junior, e quanta conoscenza dei senior l'IA riesce a catturare. Sono le prime cose da misurare.
 
 C'è anche un controllo che il modello ha superato senza che lo avessimo preparato. Chi si laurea durante una recessione guadagna meno per molti anni: dopo quindici anni, negli Stati Uniti, resta circa il 40% della perdita iniziale. Il modello, senza essere stato costruito per questo, ne lascia il 30%. Non è una prova. È un buon segno.
 
@@ -174,13 +195,15 @@ Ma ci sarà una cosa che non avrà imparato: perché quella frase, davanti a que
 
 E il giovedì sera, quando una sua studentessa le porterà i fogli, avrà meno da scrivere a margine.
 
+La versione estesa indica due vie d'uscita, nessuna gratuita: automatizzare più tardi, quando Marta avrà imparato; oppure costruire un'IA che sappia davvero quello che sa Ruggiero, e usarla senza smettere di sforzarsi.
+
 Non è una profezia. Il modello non dice che le competenze debbano crollare. Dice che cosa succede se lo permettiamo senza accorgercene, e quanto tempo abbiamo prima che sia troppo tardi per accorgersene: una decina d'anni.
 
 Il tempo, cioè, che serve a una dottoranda per diventare la professoressa che correggerà le tesi della prossima.
 
 ---
 
-*Il modello, il codice e l'articolo scientifico (in inglese, con la traduzione italiana) sono pubblici: [github.com/ViciusLio/skill-cliff-abm](https://github.com/ViciusLio/skill-cliff-abm). C'è anche una versione del modello per NetLogo, per chi vuole provarlo con le proprie mani. I personaggi del dipartimento sono inventati. L'articolo si collega a "La Zecca Cognitiva: l'inflazione del capitale umano nell'era dell'intelligenza artificiale".*
+*Il modello, il codice e l'articolo scientifico (in inglese, con la traduzione italiana) sono pubblici: [github.com/ViciusLio/skill-cliff-abm](https://github.com/ViciusLio/skill-cliff-abm). C'è anche una versione del modello per NetLogo, per chi vuole provarlo con le proprie mani; la versione estesa è nel ramo `esteso` del repository. I personaggi del dipartimento sono inventati. L'articolo si collega a "La Zecca Cognitiva: l'inflazione del capitale umano nell'era dell'intelligenza artificiale".*
 
 **Riferimenti**
 
