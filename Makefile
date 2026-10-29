@@ -1,7 +1,7 @@
 # Comandi principali del progetto. `make help` per l'elenco.
 PY ?= python
 
-.PHONY: help install test report fase2 automazione mentore scala docking docking-netlogo simmetria dynamics paper site all clean
+.PHONY: help install test report fase2 automazione mentore scala docking docking-netlogo simmetria dynamics paper paper-it site all clean
 
 help:            ## mostra questo elenco
 	@grep -E '^[a-z0-9]+:.*## ' Makefile | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -42,6 +42,10 @@ dynamics:        ## dati della vista dinamica (site/dinamica.html)
 
 paper:           ## compila l'articolo in paper/main.pdf
 	cd paper && latexmk -pdf -interaction=nonstopmode main.tex
+
+paper-it:        ## traduzioni italiane dell'articolo (paper/it), PDF copiati in site/
+	cd paper/it && latexmk -pdf -interaction=nonstopmode articolo_v1_it.tex
+	cp paper/it/articolo_v1_it.pdf site/articolo_v1_it.pdf
 
 site:            ## serve il sito in locale su http://localhost:8000
 	$(PY) -m http.server -d site 8000

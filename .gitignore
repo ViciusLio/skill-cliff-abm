@@ -25,3 +25,14 @@ paper/*.spl
 paper/*.synctex.gz
 paper/main.pdf
 node_modules/
+
+# Traduzioni italiane: si versionano .tex, figure e bibliografia; i PDF vanno in site/
+paper/it/*.aux
+paper/it/*.bbl
+paper/it/*.blg
+paper/it/*.fdb_latexmk
+paper/it/*.fls
+paper/it/*.log
+paper/it/*.out
+paper/it/*.spl
+paper/it/*.pdf

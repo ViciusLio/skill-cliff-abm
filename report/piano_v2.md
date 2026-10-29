@@ -39,6 +39,7 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
 ## 1. Testo
 
 - [ ] **T1 – Un messaggio, una gerarchia** [D25]
+  - Correggere la sezione 3.1: l'esperienza cresce solo da occupati (D19), come già nell'ODD e nella sezione 6.
   - Messaggio principale: il ritardo (Proposizione 2) e l'equivalenza p/β.
   - Conseguenze: l'eccesso di automazione e la corsa.
   - Tabella principale con 4 scenari: junior compiti, senior compiti, junior posto, complementare.
@@ -68,8 +69,9 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
   - "Proposition" diventa "Result" o "Lemma".
   - *Fatto quando:* testo rivisto e letto da entrambi.
 - [ ] **T5b – Gli articoli in italiano** (richiesta di Vincenzo, 29 ottobre), per una lettura con calma:
-  - la prima versione (`articolo-v1`), tradotta dal tag, senza modificarlo: `paper/it/articolo_v1_it.tex` e PDF;
-  - la versione base in lavorazione, tradotta alla fine di T1 e T4 (prima sarebbe da rifare), poi aggiornata a ogni
+  - [x] la prima versione (`articolo-v1`), tradotta dal tag, senza modificarlo: `paper/it/articolo_v1_it.tex`,
+    PDF in `site/articolo_v1_it.pdf` (29 ottobre);
+  - [ ] la versione base in lavorazione, tradotta alla fine di T1 e T4 (prima sarebbe da rifare), poi aggiornata a ogni
     tag;
   - stesse figure in italiano di `report/fig`; i PDF anche sul sito.
   - *Fatto quando:* PDF compilati, numeri identici all'originale inglese, link nel README.
@@ -108,4 +110,5 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
 
 - **28 ottobre 2026.** Prima versione congelata (`articolo-v1`). Revisione e piano scritti.
 - **28 ottobre 2026.** Modello in NetLogo pubblicato in `Netlogo/` (docking: differenza massima 0,25%).
-- **29 ottobre 2026.** Decisioni D21–D28: modello base su `main`, versione estesa nel ramo `esteso`. Si parte da T3 e T2.
+- **29 ottobre 2026.** Decisioni D21–D28: modello base su `main`, versione estesa nel ramo `esteso`. Fatti T2, T3 e la
+  traduzione italiana della prima versione.
