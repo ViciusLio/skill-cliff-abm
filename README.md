@@ -120,13 +120,20 @@ grandezza, non previsioni.
   il 30% dei compiti junior; il pianificatore, su 50 anni, si ferma al 9%.
 - **L'orizzonte decide.** Su 10 anni le due scelte quasi coincidono (25% contro 30%). Una politica
   valutata sul bilancio annuale o sul ciclo elettorale non vede il problema.
-- **Le leve hanno un parametro preciso nel modello:**
-  - capacità di mentoring riservata nelle imprese (κ);
-  - apprendistati su progetti reali (p);
-  - contributo sull'automazione dei compiti entry-level (tassa sulle riduzioni di p);
-  - incentivi all'IA che aiuta a insegnare invece di sostituire chi impara (β).
+- **Le leve hanno un parametro preciso nel modello**, e lo stesso aumento del 10% recupera quote molto
+  diverse della perdita di capitale umano (dopo 10, 25 e 50 anni):
 
-  La Proposizione 1 permette di confrontarle con la stessa metrica, l'effetto su `B`.
+  | Leva | IA sui compiti dei junior, mentori abbondanti | senior che perdono il posto, mentori scarsi |
+  |---|---|---|
+  | apprendistati su progetti reali (p) | 117% / 52% / 24% | 0% |
+  | capacità di mentoring riservata nelle imprese (κ) | 0% | 96% / 47% / 24% |
+  | IA che aiuta i senior a insegnare (β) | 118% / 52% / 24% | 124% / 53% / 24% |
+  | contributo sull'automazione dei compiti d'ingresso (φ −10%) | 10% | 10% |
+
+  La leva giusta dipende da quale vincolo è attivo: se mancano occasioni d'incontro servono gli apprendistati,
+  se mancano mentori serve la loro capacità; rendere più efficace l'insegnamento funziona in entrambi i casi.
+  Per un'impresa la prima domanda è quindi: ai junior mancano occasioni per imparare, o ai senior il tempo per
+  insegnare? (Nel modello non ci sono prezzi: stessa intensità non vuol dire stesso costo.)
 - **Misurare prima.** Quando il calo si vede nei senior è tardi. Gli indicatori da seguire sono le
   assunzioni entry-level, il rapporto junior/senior e il tempo dedicato al mentoring.
 
@@ -186,6 +193,7 @@ make fase2       # fase 2: scenari IA, corsa, sensibilità (~2 min con 4 core)
 make automazione # D15: automazione dell'impresa contro ottimo sociale (~30 s)
 make scala       # invarianza alla scala, fino a 5 milioni di agenti (~3 min)
 make validazione # T6: coorti che entrano in una recessione (~3 min)
+make politiche   # T9: leve di politica a parità di intensità (~4 min)
 make mentore     # D20: mentore stabile, calibrazione, IA e docking della variante (~10 min con 2 core)
 make docking     # NumPy contro Mesa: test di differenza e di equivalenza (~1 min)
 make docking-netlogo  # NumPy contro NetLogo, 7 scenari (serve NETLOGO_HOME; ~15 min con 2 core)
@@ -240,6 +248,7 @@ scripts/          run_scenario.py   repliche di uno scenario con parametri da ri
                   automazione.py    D15: automazione scelta dall'impresa contro ottimo sociale
                   scale_check.py    invarianza alla scala (fino a 24 milioni di agenti)
                   validazione.py    T6: coorti che entrano in una recessione (validazione non mirata)
+                  politiche.py      T9: leve di politica (apprendistati, mentoring, IA che insegna, contributo)
                   mentore_stabile.py  D20: mentore stabile (variante), calibrazione di beta, proposizioni, IA
                   docking.py        confronto NumPy vs Mesa (anche la variante D20, con --mentore)
                   docking_netlogo.py  confronto NumPy vs NetLogo, scenario per scenario

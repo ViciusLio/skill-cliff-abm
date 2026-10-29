@@ -223,5 +223,31 @@ class CohortShock(NoAI):
         return junior & (exp == 0) & (draw < self.u)
 
 
+class Policy(AI):
+    """Esperimento di politica (T9): l'IA della configurazione più una leva che dall'arrivo dell'IA
+    cambia del fattore (1 + size) un parametro esistente. Leve: "p" (apprendistati), "kappa"
+    (capacità di mentoring), "beta" (IA che aiuta a insegnare), "phi" (contributo sull'automazione
+    dei compiti d'ingresso: phi * (1 - size)). Nessuna regola nuova."""
+
+    LEVERS = ("p", "kappa", "beta", "phi")
+
+    def __init__(self, cfg: Config, lever: str, size: float) -> None:
+        super().__init__(cfg)
+        if lever not in self.LEVERS:
+            raise ValueError(f"lever deve essere uno di {self.LEVERS}")
+        self.lever, self.size = lever, size
+
+    def automation_share(self, t: int) -> float:
+        phi = super().automation_share(t)
+        return phi * (1.0 - self.size) if self.lever == "phi" else phi
+
+    def meeting_modifiers(self, t: int) -> MeetingModifiers:
+        m = super().meeting_modifiers(t)
+        if self.lever == "phi" or t < self.a.start:
+            return m
+        scaled = tuple(x * (1.0 + self.size) for x in getattr(m, self.lever))
+        return MeetingModifiers(**{**{k: getattr(m, k) for k in ("p", "kappa", "beta")}, self.lever: scaled})
+
+
 def make_ai(cfg: Config) -> NoAI:
     return AI(cfg) if cfg.ai.enabled else NoAI(cfg)

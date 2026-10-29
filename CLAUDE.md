@@ -55,6 +55,7 @@ make fase2        # fase 2: scenari IA (report/numeri_fase2.json)
 make automazione  # D15 (report/numeri_d15.json)
 make mentore      # D20, mentore stabile, e suo docking (report/numeri_d20.json)
 make validazione  # T6, coorti della recessione (report/numeri_validazione.json)
+make politiche    # T9, leve di politica (report/numeri_politiche.json)
 make docking      # NumPy contro Mesa
 make docking-netlogo  # NumPy contro NetLogo (serve NETLOGO_HOME)
 make paper        # paper/main.pdf

@@ -520,3 +520,33 @@ le tre intensità.
   (Economic Policy Institute; Yale Alumni Magazine) concordi tra loro. Da controllare sul testo prima dell'invio.
 - **Accoppiamento non perfetto.** Chi è fuori non cerca un mentore, quindi le estrazioni degli incontri degli altri si
   spostano; con 30 repliche e N = 50.000 l'effetto sugli intervalli è piccolo.
+
+## 12. Politiche quantificate (T9)
+
+Script `scripts/politiche.py` (`make politiche`), numeri in `report/numeri_politiche.json`, figura sotto.
+Modulo `Policy`: l'IA della configurazione più una leva che, dall'arrivo dell'IA, cambia del 10% un parametro
+esistente. Nessuna regola nuova. Metrica comune: quota della perdita di H dovuta all'IA che la leva recupera,
+(H con leva − H con IA) / (H senza IA − H con IA), a numeri casuali comuni. N = 50.000, 30 repliche.
+
+![Politiche](fig/fig12_politiche.png)
+
+| Leva (+10%) | IA sui compiti dei junior, κ = 0,2: 10 / 25 / 50 anni | senior che perdono il posto, κ = 0,1: 10 / 25 / 50 anni |
+|---|---|---|
+| apprendistati (p) | 117% / 52% / 24% | 1% / 0% / 0% |
+| capacità di mentoring (κ) | 0% / 0% / 0% | 96% / 47% / 24% |
+| IA che aiuta a insegnare (β) | 118% / 52% / 24% | 124% / 53% / 24% |
+| contributo sull'automazione (φ × 0,9) | 10% / 10% / 10% | 10% / 10% / 10% |
+
+*Perdita di H senza politiche: −0,26%, −1,52%, −5,24% (junior, compiti); −0,23%, −1,38%, −4,80% (senior, posto, κ = 0,1).*
+
+1. **La leva giusta dipende dal vincolo attivo.** Con mentori abbondanti p e β sono equivalenti (Proposizione 1) e κ
+   non fa nulla; con mentori scarsi κ funziona e p no, perché la domanda di incontri in più è razionata.
+2. **β funziona sempre.** Rendere più efficace l'insegnamento agisce sul guadagno per incontro, qualunque sia il
+   vincolo sul numero di incontri.
+3. **Le quote scendono nel tempo** perché la leva è fissa mentre la perdita cresce; sopra il 100% vuol dire che nei
+   primi anni la leva più che compensa la perdita.
+4. **Il contributo sull'automazione recupera in proporzione** (10% di φ in meno, 10% della perdita in meno).
+
+**Limiti.** Nessun prezzo: stessa intensità non è stesso costo. L'output del modello non dipende da φ, quindi il costo
+in produzione del contributo è quello dell'esercizio D15 (sez. 4.4). Le leve partono tutte dall'arrivo dell'IA; una
+politica tardiva vede il proprio effetto sui senior solo dopo il ritardo della Proposizione 2.
