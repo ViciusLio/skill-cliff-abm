@@ -89,11 +89,15 @@ meno trasmesso per incontro (β) o meno mentori (κ). Risultati, 50 anni dopo l'
    quindi la formazione da junior è rinviata, non persa. Il capitale umano cala del 5,7%, poco più
    che con la perdita di compiti (−5,2%); i senior sono l'11% in meno e le carriere più brevi.
    (Prima di D19, quando l'esperienza cresceva anche da non occupati, la perdita era del 10,2%.)
-6. **Le imprese automatizzano troppo.** Un'impresa che non vede la perdita futura di capitale umano
+6. **I segni non dipendono dai parametri scelti a mano.** Variando insieme nove parametri su intervalli ampi
+   (704 combinazioni), la perdita di capitale umano dovuta all'IA non è mai positiva e l'eccesso di automazione è
+   sempre positivo; i livelli dipendono soprattutto da p, β e δ₀ (sensibilità globale di Sobol, appendice
+   dell'articolo).
+7. **Le imprese automatizzano troppo.** Un'impresa che non vede la perdita futura di capitale umano
    automatizza il 30% dei compiti junior; su un orizzonte di 50 anni l'ottimo sociale è il 9%, e la
    scelta privata vale meno di non automatizzare affatto. Su 10 anni le due scelte quasi coincidono:
    il danno arriva dopo.
-7. **Se il junior resta con lo stesso mentore** (variante D20, separazione annua del 15%, β
+8. **Se il junior resta con lo stesso mentore** (variante D20, separazione annua del 15%, β
    ricalibrato sull'apprendimento della fase 1) profilo salariale, ritardo e disuguaglianza non
    cambiano, ma togliere incontri costa meno che togliere efficacia: −3,5% di capitale umano se l'IA
    toglie compiti ai junior, −5,3% se li toglie ai senior. Chi ha già un mentore lo tiene; chi perde il
@@ -194,6 +198,7 @@ make automazione # D15: automazione dell'impresa contro ottimo sociale (~30 s)
 make scala       # invarianza alla scala, fino a 5 milioni di agenti (~3 min)
 make validazione # T6: coorti che entrano in una recessione (~3 min)
 make politiche   # T9: leve di politica a parità di intensità (~4 min)
+make sensibilita # T10a: sensibilità globale (Sobol), 704 punti (~8 min)
 make mentore     # D20: mentore stabile, calibrazione, IA e docking della variante (~10 min con 2 core)
 make docking     # NumPy contro Mesa: test di differenza e di equivalenza (~1 min)
 make docking-netlogo  # NumPy contro NetLogo, 7 scenari (serve NETLOGO_HOME; ~15 min con 2 core)
@@ -249,6 +254,7 @@ scripts/          run_scenario.py   repliche di uno scenario con parametri da ri
                   scale_check.py    invarianza alla scala (fino a 24 milioni di agenti)
                   validazione.py    T6: coorti che entrano in una recessione (validazione non mirata)
                   politiche.py      T9: leve di politica (apprendistati, mentoring, IA che insegna, contributo)
+                  sensibilita.py    T10a: indici di Sobol dei risultati principali su nove parametri
                   mentore_stabile.py  D20: mentore stabile (variante), calibrazione di beta, proposizioni, IA
                   docking.py        confronto NumPy vs Mesa (anche la variante D20, con --mentore)
                   docking_netlogo.py  confronto NumPy vs NetLogo, scenario per scenario
