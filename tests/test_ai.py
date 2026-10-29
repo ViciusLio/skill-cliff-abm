@@ -241,3 +241,21 @@ def test_cohort_shock_hits_only_entrants_in_recession_years():
     for _ in range(AI_CFG.burn_in + 4):
         m.step(record=False)
     assert m.pop.out.any() and (m.pop.exp[m.pop.out] == 0).all()   # solo chi cerca il primo lavoro
+
+
+# --- T9: leve di politica ----------------------------------------------------
+
+def test_policy_levers_scale_one_parameter_from_ai_start():
+    from skillcliff.ai import Policy
+
+    cfg = with_ai("junior")
+    ai, pol = AI(cfg), Policy(cfg, "beta", 0.1)
+    s = cfg.ai.start
+    assert pol.meeting_modifiers(s - 1) == ai.meeting_modifiers(s - 1)
+    t = s + 5
+    assert pol.meeting_modifiers(t).beta == pytest.approx((1.1, 1.1))
+    assert pol.meeting_modifiers(t).p == ai.meeting_modifiers(t).p
+    tax = Policy(cfg, "phi", 0.1)
+    assert tax.automation_share(t) == pytest.approx(0.9 * ai.automation_share(t))
+    with pytest.raises(ValueError):
+        Policy(cfg, "theta", 0.1)

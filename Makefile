@@ -1,7 +1,7 @@
 # Comandi principali del progetto. `make help` per l'elenco.
 PY ?= python
 
-.PHONY: help install test report fase2 automazione mentore validazione scala docking docking-netlogo simmetria dynamics paper paper-it site all clean
+.PHONY: help install test report fase2 automazione mentore validazione politiche scala docking docking-netlogo simmetria dynamics paper paper-it site all clean
 
 help:            ## mostra questo elenco
 	@grep -E '^[a-z0-9]+:.*## ' Makefile | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -23,6 +23,9 @@ automazione:     ## D15: automazione scelta dall'impresa contro ottimo sociale
 
 validazione:     ## T6: coorti che entrano in una recessione, persistenza della perdita (~3 min)
 	$(PY) scripts/validazione.py
+
+politiche:       ## T9: quattro leve di politica a parità di intensità, due contesti (~4 min)
+	$(PY) scripts/politiche.py
 
 mentore:         ## D20: mentore stabile (calibrazione, proposizioni, IA) e suo docking con Mesa
 	$(PY) scripts/mentore_stabile.py
@@ -53,7 +56,7 @@ paper-it:        ## traduzioni italiane dell'articolo (paper/it), PDF copiati in
 site:            ## serve il sito in locale su http://localhost:8000
 	$(PY) -m http.server -d site 8000
 
-all: test docking report fase2 automazione mentore validazione dynamics paper  ## tutta la pipeline
+all: test docking report fase2 automazione mentore validazione politiche dynamics paper  ## tutta la pipeline
 
 clean:           ## rimuove i file intermedi di LaTeX
 	cd paper && latexmk -c

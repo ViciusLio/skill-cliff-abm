@@ -87,7 +87,7 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
     per calibrare.
   - Script `scripts/validazione.py`, `numeri_validazione.json`, figura in italiano e in inglese, test.
   - *Fatto quando:* confronto con almeno due stime pubblicate, con le fonti verificate.
-- [ ] **T9 – Politiche quantificate**
+- [x] **T9 – Politiche quantificate** (29 ottobre: la leva giusta dipende dal vincolo attivo; β funziona sempre)
   - Sussidio al mentoring (κ), apprendistati (p), contributo sull'automazione dei compiti entry-level, IA che aiuta a
     insegnare (β).
   - Stessa metrica per tutte (effetto su B, H e output) e confronto a parità di intensità.
