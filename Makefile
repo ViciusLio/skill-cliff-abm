@@ -1,7 +1,7 @@
 # Comandi principali del progetto. `make help` per l'elenco.
 PY ?= python
 
-.PHONY: help install test report fase2 automazione mentore validazione politiche sensibilita scala docking docking-netlogo simmetria dynamics paper paper-it site all clean
+.PHONY: help install test report fase2 automazione mentore validazione politiche sensibilita scala docking docking-netlogo esteso-e1 esteso-e2 docking-netlogo-esteso simmetria dynamics paper paper-it site all clean
 
 help:            ## mostra questo elenco
 	@grep -E '^[a-z0-9]+:.*## ' Makefile | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -42,6 +42,15 @@ docking:         ## confronto statistico NumPy vs Mesa (modello base; la variant
 
 docking-netlogo: ## NetLogo vs NumPy, 7 scenari (serve NETLOGO_HOME, NetLogo 6.4 e Java; ~15 min)
 	$(PY) scripts/docking_netlogo.py
+
+esteso-e2:       ## ramo esteso, E2: l'impresa sceglie quanto automatizzare (~6 min)
+	$(PY) scripts/esteso_e2.py
+
+esteso-e1:       ## ramo esteso, E1: l'IA come tutor (~15 min)
+	$(PY) scripts/esteso_e1.py
+
+docking-netlogo-esteso: ## ramo esteso: NumPy contro Netlogo/skill_cliff_esteso.nlogo (serve NETLOGO_HOME)
+	$(PY) scripts/docking_netlogo.py --esteso
 
 simmetria:       ## p dimezzato contro beta dimezzato: stesso effetto medio? (~10 s)
 	$(PY) scripts/simmetria_p_beta.py

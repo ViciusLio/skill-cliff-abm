@@ -2,6 +2,17 @@
 
 > **Ramo `esteso`**: versione estesa del modello, in costruzione verso un secondo articolo
 > ([piano](report/piano_esteso.md)). La versione base, con articolo e sito, è sul ramo `main`.
+>
+> **Risultati della versione estesa** ([sintesi](report/sintesi_esteso.md)):
+> - **E2, l'impresa sceglie quanto automatizzare.** Un'impresa miope automatizza quasi come il percorso esogeno
+>   (−5,1% di capitale umano dopo 50 anni) e ottiene metà del valore possibile (+0,9% di output e risparmi scontati,
+>   contro +1,7%). L'ottimo non è automatizzare meno ma più tardi: un'impresa che internalizza il 75% del valore
+>   formativo dei junior aspetta circa 35 anni.
+> - **E1, l'IA come tutor.** Compensa la perdita di incontri solo se codifica gran parte della conoscenza dei senior
+>   (da circa il 75%); con il 50% recupera il 7–14%. Un calo dello sforzo del 25% quasi raddoppia la perdita.
+> - **NetLogo esteso** per provarli: [`Netlogo/skill_cliff_esteso.nlogo`](Netlogo/skill_cliff_esteso.nlogo), guida in
+>   [`Netlogo/LEGGIMI_esteso.md`](Netlogo/LEGGIMI_esteso.md). Comandi: `make esteso-e2`, `make esteso-e1`,
+>   `make docking-netlogo-esteso`.
 
 Modello ad agenti sulla trasmissione di capitale umano tra generazioni e sugli effetti
 ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro in corso.

@@ -23,11 +23,12 @@ la base identica bit per bit.*
 
 Ognuno parte con un piano in formato D da confermare.
 
-- [ ] **E1 – L'IA come tutor** (era T7, D23)
+- [x] **E1 – L'IA come tutor** (era T7, D23; D34–D36; 29 ottobre: compensa solo se la quota codificabile è alta, il calo dello sforzo domina)
   - Il junior impara anche dall'IA, con un'efficacia legata alla familiarità (D18).
   - Possibile calo dello sforzo nell'apprendimento autonomo (Ide).
   - Domanda: quando l'IA tutor compensa la perdita di incontri?
-- [ ] **E2 – Imprese che scelgono quanto automatizzare** (era T8, D22)
+- [x] **E2 – Imprese che scelgono quanto automatizzare** (era T8, D22; D30–D33; 29 ottobre: impresa rappresentativa; l'ottimo è automatizzare più tardi)
+- [ ] **E2b – Più imprese con mobilità dei lavoratori** (D30 B): chi forma un junior può perderlo
   - Un'impresa rappresentativa, poi poche imprese, scelgono φ ogni anno confrontando il costo dei junior con quello
     dell'IA, senza vedere l'effetto futuro sul capitale umano.
   - L'eccesso di automazione emerge dalle scelte; D15 resta il caso statico.
@@ -50,3 +51,6 @@ Ognuno parte con un piano in formato D da confermare.
 
 - **29 ottobre 2026.** Ramo creato da `main` (commit `5608a24`). Nessun meccanismo nuovo ancora.
 - **29 ottobre 2026.** D29 A: NetLogo esteso in `Netlogo/skill_cliff_esteso.nlogo`. Ordine: E2, poi E1.
+- **29 ottobre 2026.** D30–D37 A. E2 ed E1 implementati in Python e NetLogo, verificati (sintesi in
+  `report/sintesi_esteso.md`). Aperti: differenza dell'1% sull'apprendimento dal tutor tra NetLogo e Python; E1 con
+  quota codificabile alta e calo dello sforzo insieme.
