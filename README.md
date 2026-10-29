@@ -13,6 +13,10 @@
 > - **NetLogo esteso** per provarli: [`Netlogo/skill_cliff_esteso.nlogo`](Netlogo/skill_cliff_esteso.nlogo), guida in
 >   [`Netlogo/LEGGIMI_esteso.md`](Netlogo/LEGGIMI_esteso.md). Comandi: `make esteso-e2`, `make esteso-e1`,
 >   `make docking-netlogo-esteso`.
+> - **Aperti**: più imprese che si contendono i lavoratori (E2b), calibrazione su dati italiani (E3), legame con la
+>   crescita (E4), demografia italiana (E5), ruoli sfumati (E6), persistenza della non occupazione (E7), secondo
+>   articolo (E8); in E1, una differenza dell'1% tra NetLogo e Python sull'apprendimento dal tutor e la combinazione
+>   di quota codificabile alta con calo dello sforzo.
 
 Modello ad agenti sulla trasmissione di capitale umano tra generazioni e sugli effetti
 ritardati dell'intelligenza artificiale. Federico Bassi e Vincenzo Lio, lavoro in corso.
