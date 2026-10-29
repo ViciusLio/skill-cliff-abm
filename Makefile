@@ -4,7 +4,7 @@ PY ?= python
 .PHONY: help install test report fase2 automazione mentore validazione politiche sensibilita scala docking docking-netlogo esteso-e1 esteso-e2 docking-netlogo-esteso simmetria dynamics paper paper-it site all clean
 
 help:            ## mostra questo elenco
-	@grep -E '^[a-z0-9]+:.*## ' Makefile | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
+	@grep -E '^[a-z0-9-]+:.*## ' Makefile | awk -F':.*## ' '{printf "  make %-16s %s\n", $$1, $$2}'
 
 install:         ## installa il pacchetto con test e Mesa
 	$(PY) -m pip install -e ".[dev,mesa]"
