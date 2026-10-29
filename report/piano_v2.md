@@ -46,7 +46,7 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
     o in appendice.
   - La scelta di metodo detta nell'introduzione: prima il meccanismo del capitale umano, poi i comportamenti.
   - *Fatto quando:* sezioni 4–6 riorganizzate, abstract e introduzione allineati, README e sintesi aggiornati.
-- [ ] **T2 – Bibliografia e posizionamento**
+- [x] **T2 – Bibliografia e posizionamento** (29 ottobre: 48 voci, tutte verificate e citate; nuova sottosezione 2.4)
   - Da 18 a circa 50 voci, ognuna verificata sulla fonte (autori, anno, rivista):
     - ABM con competenze (Dawid et al., Eurace; Dosi et al., K+S);
     - diffusione della conoscenza (Perla e Tonetti; Buera e Oberfield; Akcigit et al.);
@@ -55,10 +55,11 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
     - apprendimento sul lavoro (Rosen 1972);
     - effetti cicatrice (Kahn; Oreopoulos et al.);
     - IA e lavoro (Brynjolfsson, Li e Raymond; Autor);
-    - letteratura di JASSS sui modelli di apprendimento e diffusione.
+    - letteratura di JASSS sui modelli di apprendimento e diffusione;
+    - restano da aggiungere con T6 e T10a: Saltelli et al. (2008) e Sobol (2001), già verificati.
   - Un paragrafo su cosa ci distingue dagli ABM con competenze.
   - *Fatto quando:* `references.bib` aggiornato, nessuna voce non verificata.
-- [ ] **T3 – Effetti in punti di crescita annua**
+- [x] **T3 – Effetti in punti di crescita annua** (29 ottobre: −0,11 punti l'anno per 49 anni, bersaglio junior)
   - Tradurre le perdite di H in tasso di crescita annuo equivalente e confrontarle con Ide (−0,05 punti).
   - *Fatto quando:* calcolo in `scripts/fase2.py`, numero in `numeri_fase2.json` e nel testo.
 - [ ] **T4 – Stile**
@@ -66,6 +67,12 @@ Si spunta una casella quando il lavoro è fatto e verificato: test verdi, numeri
   - Titolo più corto.
   - "Proposition" diventa "Result" o "Lemma".
   - *Fatto quando:* testo rivisto e letto da entrambi.
+- [ ] **T5b – Gli articoli in italiano** (richiesta di Vincenzo, 29 ottobre), per una lettura con calma:
+  - la prima versione (`articolo-v1`), tradotta dal tag, senza modificarlo: `paper/it/articolo_v1_it.tex` e PDF;
+  - la versione base in lavorazione, tradotta alla fine di T1 e T4 (prima sarebbe da rifare), poi aggiornata a ogni
+    tag;
+  - stesse figure in italiano di `report/fig`; i PDF anche sul sito.
+  - *Fatto quando:* PDF compilati, numeri identici all'originale inglese, link nel README.
 - [ ] **T5 – Dati degli autori:** affiliazioni, ruoli CRediT, ringraziamenti, finanziamenti (servono da Vincenzo e
   Federico).
 
